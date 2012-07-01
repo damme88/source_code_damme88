@@ -1,5 +1,5 @@
 // OpenGLView.cpp : implementation of the COpenGLView class
-//
+
 
 #include "stdafx.h"
 #include "OpenGL.h"
