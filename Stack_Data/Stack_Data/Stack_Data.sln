@@ -1,0 +1,20 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual Studio 2008
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Stack_Data", "C:\Users\Damme88\AppData\Local\Temp\Stack_Data.vcproj", "{576A98DB-B661-40DC-B238-9F780BCEF16A}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{576A98DB-B661-40DC-B238-9F780BCEF16A}.Debug|Win32.ActiveCfg = Debug|Win32
+		{576A98DB-B661-40DC-B238-9F780BCEF16A}.Debug|Win32.Build.0 = Debug|Win32
+		{576A98DB-B661-40DC-B238-9F780BCEF16A}.Release|Win32.ActiveCfg = Release|Win32
+		{576A98DB-B661-40DC-B238-9F780BCEF16A}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
