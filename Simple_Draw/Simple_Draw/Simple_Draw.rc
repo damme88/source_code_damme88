@@ -74,7 +74,7 @@ END
 // Icon with lowest ID value placed first to ensure application icon
 // remains consistent on all systems.
 IDR_MAINFRAME           ICON                    "res\\Simple_Draw.ico"
-IDR_SIMPLE_DRAWTYPE     ICON                    "res\\Simple_DrawDoc.ico"
+IDR_Simple_DrawTYPE     ICON                    "res\\Simple_DrawDoc.ico"
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -84,8 +84,6 @@ IDR_SIMPLE_DRAWTYPE     ICON                    "res\\Simple_DrawDoc.ico"
 IDR_MAINFRAME           BITMAP                  "res\\Toolbar.bmp"
 IDR_MAINFRAME_256       BITMAP                  "res\\Toolbar256.bmp"
 IDR_TOOLBAR_DIRECT      BITMAP                  "res\\Toolbar_Driect.bmp"
-IDB_BITMAP_RED          BITMAP                  "res\\bitmap2.bmp"
-IDR_TOOLBAR_OFFICE      BITMAP                  "res\\toolbar1.bmp"
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -128,50 +126,20 @@ END
 
 IDR_TOOLBAR_DIRECT TOOLBAR  16, 16
 BEGIN
-    BUTTON      ID_FRONT
+    BUTTON      ID_BUTTON32782
     SEPARATOR
-    BUTTON      ID_TOP
+    BUTTON      ID_BUTTON32783
+    BUTTON      ID_BUTTON32784
     SEPARATOR
-    BUTTON      ID_RIGHT
+    BUTTON      ID_BUTTON32785
+    BUTTON      ID_BUTTON32787
+    BUTTON      ID_BUTTON32788
+    BUTTON      ID_BUTTON32789
     SEPARATOR
-    BUTTON      ID_LEFT
-    BUTTON      ID_BEHIND
-    BUTTON      ID_BOTTOM
-    BUTTON      ID_PAN_STANDAR
+    BUTTON      ID_BUTTON32790
     SEPARATOR
-    BUTTON      ID_ZOOM_IN
-    SEPARATOR
-    BUTTON      ID_ZOOM_OUT
-    BUTTON      ID_ZOOM_STANDAR
-    SEPARATOR
-    BUTTON      ID_SELECT
-    BUTTON      ID_MOVE_UP
-    SEPARATOR
-    BUTTON      ID_MOVE_DOWN
-    SEPARATOR
-    BUTTON      ID_MOVE_LEFT
-    BUTTON      ID_MOVE_RIGHT
-END
-
-IDR_TOOLBAR_OFFICE TOOLBAR  16, 15
-BEGIN
-    BUTTON      ID_BOLD
-    BUTTON      ID_ITALIC
-    BUTTON      ID_UNDER_LINE
-    BUTTON      ID_ALIGN_LEFT
-    SEPARATOR
-    BUTTON      ID_ALIGN_CENTER
-    SEPARATOR
-    BUTTON      ID_ALIGN_RIGHT
-    BUTTON      ID_ALIGN_JUSTIFY
-    BUTTON      ID_TEXT_STYLE
-    SEPARATOR
-    BUTTON      ID_TEXT_SIZE
-    SEPARATOR
-    BUTTON      ID_TEXT_COLOR
-    SEPARATOR
-    BUTTON      ID_TEXT_FILL_COLOR
-    BUTTON      ID_TEXT_STRIKE
+    BUTTON      ID_BUTTON32793
+    BUTTON      ID_BUTTON32794
 END
 
 
@@ -280,10 +248,12 @@ BEGIN
     DEFPUSHBUTTON   "OK",IDOK,113,41,50,14,WS_GROUP
 END
 
-IDD_TOOLBOX DIALOGEX 0, 0, 156, 192
-STYLE DS_SETFONT | DS_FIXEDSYS | WS_CHILD
+IDD_TOOLBOX DIALOGEX 0, 0, 172, 206
+STYLE DS_SETFONT | DS_FIXEDSYS | WS_CHILD | WS_CAPTION
+EXSTYLE WS_EX_TOOLWINDOW
 FONT 8, "MS Shell Dlg", 400, 0, 0x0
 BEGIN
+    PUSHBUTTON      "Submit",IDC_SUBMIT_BTN,42,25,87,31
 END
 
 
@@ -345,9 +315,9 @@ BEGIN
     IDD_TOOLBOX, DIALOG
     BEGIN
         LEFTMARGIN, 6
-        RIGHTMARGIN, 149
+        RIGHTMARGIN, 165
         TOPMARGIN, 7
-        BOTTOMMARGIN, 185
+        BOTTOMMARGIN, 199
     END
 END
 #endif    // APSTUDIO_INVOKED
@@ -457,16 +427,6 @@ END
 
 STRINGTABLE 
 BEGIN
-    ID_DRAW_GRID            "Draw a Grid \nGrid"
-    ID_COORDINATE_OXYZ      "Show OXYZ\nOXYZ"
-    ID_COORDINATE_OXY       "Show OXY\nOXY"
-    ID_DRAW_COLOR           "Show Color Table\nColor"
-    ID_FRONT                "View Front\nFront"
-    ID_TOP                  "View Top\nTop"
-END
-
-STRINGTABLE 
-BEGIN
     AFX_IDS_SCSIZE          "Change the window size"
     AFX_IDS_SCMOVE          "Change the window position"
     AFX_IDS_SCMINIMIZE      "Reduce the window to an icon"
@@ -498,23 +458,6 @@ END
 STRINGTABLE 
 BEGIN
     IDS_EDIT_MENU           "Edit"
-END
-
-STRINGTABLE 
-BEGIN
-    ID_RIGHT                "View Right\nRight"
-    ID_LEFT                 "View Left\nLeft"
-    ID_BEHIND               "View Behind\nBehind"
-    ID_BOTTOM               "View Bottom\nBottom"
-    ID_PAN_STANDAR          "View Pan Standar\nPan Standar"
-    ID_ZOOM_IN              "Zoom In\nZoom In"
-    ID_ZOOM_OUT             "Zoom Out\nZoom Out"
-    ID_ZOOM_STANDAR         "Zoom Standar\nZoom Standar"
-END
-
-STRINGTABLE 
-BEGIN
-    ID_SELECT               "ComboBox\nComboBox "
 END
 
 #endif    // English (U.S.) resources

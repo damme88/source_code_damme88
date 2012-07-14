@@ -262,14 +262,6 @@
 			UniqueIdentifier="{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}"
 			>
 			<File
-				RelativePath=".\res\bitmap2.bmp"
-				>
-			</File>
-			<File
-				RelativePath=".\res\icon1.ico"
-				>
-			</File>
-			<File
 				RelativePath=".\res\Simple_Draw.ico"
 				>
 			</File>
@@ -287,10 +279,6 @@
 			</File>
 			<File
 				RelativePath=".\res\Toolbar.bmp"
-				>
-			</File>
-			<File
-				RelativePath=".\res\toolbar1.bmp"
 				>
 			</File>
 			<File

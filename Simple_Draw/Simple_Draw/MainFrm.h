@@ -14,19 +14,13 @@ protected: // create from serialization only
 // Attributes
 public:
 
+// Operations
 public:
-  void OnComBo();
-  void OnComBoTextStyle();
-  void OnComboTextSize();
-  void OnHandleItem();
 
 // Overrides
 public:
 	virtual BOOL PreCreateWindow(CREATESTRUCT& cs);
-	virtual BOOL LoadFrame(UINT nIDResource, 
-                         DWORD dwDefaultStyle = WS_OVERLAPPEDWINDOW |
-                         FWS_ADDTOTITLE, CWnd* pParentWnd = NULL, 
-                         CCreateContext* pContext = NULL);
+	virtual BOOL LoadFrame(UINT nIDResource, DWORD dwDefaultStyle = WS_OVERLAPPEDWINDOW | FWS_ADDTOTITLE, CWnd* pParentWnd = NULL, CCreateContext* pContext = NULL);
 
 // Implementation
 public:
@@ -40,18 +34,19 @@ protected:  // control bar embedded members
 	CMFCMenuBar       m_wndMenuBar;
 	CMFCToolBar       m_wndToolBar;
   CMFCToolBar       m_wndToolBar_Direct;
-  CMFCToolBar       m_wndToolBar_Office;
-  CDialogBar	      m_wndToolbox;
+
 	CMFCStatusBar     m_wndStatusBar;
+  // using for dialog bar
+  CDialogBar	m_wndToolbox;
 
 
 // Generated message map functions
 protected:
   afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
 	afx_msg void OnViewCustomize();
-  afx_msg LRESULT OnToolbarCreateNew(WPARAM wp,LPARAM lp);
-  afx_msg LRESULT OnToolbarReset(WPARAM wParam, LPARAM lParam);
+	afx_msg LRESULT OnToolbarCreateNew(WPARAM wp, LPARAM lp);
 	DECLARE_MESSAGE_MAP()
+
 };
 
 

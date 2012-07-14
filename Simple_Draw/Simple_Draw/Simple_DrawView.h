@@ -1,5 +1,8 @@
 
 // Simple_DrawView.h : interface of the CSimple_DrawView class
+//
+
+
 #pragma once
 
 
@@ -24,7 +27,7 @@ private:
    UINT count_oxy;
    UINT count_oxyz;
    UINT count_grid;
-   BOOL m_bOXYZ;
+   BOOL  m_bOXYZ;
    GLfloat m_xAngle;
 	 GLfloat m_yAngle;
    GLfloat m_zoom;
@@ -34,21 +37,6 @@ private:
    GLfloat m_texFilter;
    GLuint  m_Texture[10];
    CPoint m_MouseDownPoint;
-
-   // variable for button checkbox of office toolbar
-   short m_text_bold;
-   short m_count_bold;
-   short m_text_italic;
-   short m_count_italic;
-   short m_text_under_line;
-   short m_count_under_line;
-   
-   short m_align_left;
-   short m_align_right;
-   short m_align_center;
-   short m_align_justify;
-
-
 public:
    void OnEditUndo();
    void OnEditCut();
@@ -63,36 +51,7 @@ public:
    void OnLButtonUp(UINT nFlags, CPoint point);
    void OnMouseMove(UINT nFlags, CPoint point);
    BOOL OnMouseWheel(UINT nFlags, short zDelta, CPoint pt);
-   void OnViewFront();
-   void OnViewBehind();
-   void OnViewTop();
-   void OnViewBottom();
-   void OnViewRight();
-   void OnViewLeft();
-   void OnViewStandar();
-   void OnZoomIn();
-   void OnZoomOut();
-   void OnZoomStandar();
-
-   // function for office toolbar button 
-   void OnTextBold();
-   void OnTextItalic();
-   void OnTextUnderLine();
-
-   void OnUpdateBold(CCmdUI * pcmdui);
-   void OnUpdateItalic(CCmdUI *pcmdui);
-   void OnUpdateUnderLine(CCmdUI *pcmdui);
-
-   void OnAlignLeft();
-   void OnAlignRight();
-   void OnAlignCenter();
-   void OnAlignJustify();
-   
-   void OnUpdateAlignLeft(CCmdUI *pcmdui);
-   void OnUpdateAlignRight(CCmdUI *pcmdui);
-   void OnUpdateAlignCenter(CCmdUI *pcmdui);
-   void OnUpdateAlignJustify(CCmdUI *pcmdui);
-
+   void LoadTexture (CString fileName, int texName);
 
 // Overrides
 public:
