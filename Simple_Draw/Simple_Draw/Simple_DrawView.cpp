@@ -12,25 +12,59 @@
 #define new DEBUG_NEW
 #endif
 
-
 // CSimple_DrawView
 
 IMPLEMENT_DYNCREATE(CSimple_DrawView, CView)
 
 BEGIN_MESSAGE_MAP(CSimple_DrawView, CView)
 	// Standard printing commands
-	ON_COMMAND(ID_FILE_PRINT, &CView::OnFilePrint)
-	ON_COMMAND(ID_FILE_PRINT_DIRECT, &CView::OnFilePrint)
+	ON_COMMAND(ID_FILE_PRINT,         &CView::OnFilePrint)
+	ON_COMMAND(ID_FILE_PRINT_DIRECT,  &CView::OnFilePrint)
 	ON_COMMAND(ID_FILE_PRINT_PREVIEW, &CSimple_DrawView::OnFilePrintPreview)
-  ON_COMMAND(ID_EDIT_UNDO, &CSimple_DrawView::OnEditUndo)
-  ON_COMMAND(ID_EDIT_CUT, &CSimple_DrawView::OnEditCut)
-  ON_COMMAND(ID_EDIT_COPY, &CSimple_DrawView::OnEditCopy)
-  ON_COMMAND(ID_EDIT_PASTE, &CSimple_DrawView::OnEditPaste)
+  ON_COMMAND(ID_EDIT_UNDO,          &CSimple_DrawView::OnEditUndo)
+  ON_COMMAND(ID_EDIT_CUT,           &CSimple_DrawView::OnEditCut)
+  ON_COMMAND(ID_EDIT_COPY,          &CSimple_DrawView::OnEditCopy)
+  ON_COMMAND(ID_EDIT_PASTE,         &CSimple_DrawView::OnEditPaste)
 
-  ON_COMMAND(ID_COORDINATE_OXYZ, &CSimple_DrawView::OnCoordinateOxyz)
-  ON_COMMAND(ID_COORDINATE_OXY, &CSimple_DrawView::OnCoordinateOxy)
-  ON_COMMAND(ID_DRAW_GRID, &CSimple_DrawView::OnDrawGrid)
-  ON_COMMAND(ID_DRAW_COLOR, &CSimple_DrawView::OnDrawColor)
+  ON_COMMAND(ID_COORDINATE_OXYZ,    &CSimple_DrawView::OnCoordinateOxyz)
+  ON_COMMAND(ID_COORDINATE_OXY,     &CSimple_DrawView::OnCoordinateOxy)
+  ON_COMMAND(ID_DRAW_GRID,          &CSimple_DrawView::OnDrawGrid)
+  ON_COMMAND(ID_DRAW_COLOR,         &CSimple_DrawView::OnDrawColor)
+  ON_COMMAND(ID_FRONT,              &CSimple_DrawView::OnViewFront)
+  ON_COMMAND(ID_BEHIND,             &CSimple_DrawView::OnViewBehind)
+  ON_COMMAND(ID_TOP,                &CSimple_DrawView::OnViewTop)
+  ON_COMMAND(ID_BOTTOM,             &CSimple_DrawView::OnViewBottom)
+  ON_COMMAND(ID_RIGHT,              &CSimple_DrawView::OnViewRight)
+  ON_COMMAND(ID_LEFT,               &CSimple_DrawView::OnViewLeft)
+  ON_COMMAND(ID_PAN_STANDAR,        &CSimple_DrawView::OnViewStandar)
+  ON_COMMAND(ID_ZOOM_IN,            &CSimple_DrawView::OnZoomIn)
+  ON_COMMAND(ID_ZOOM_OUT,           &CSimple_DrawView::OnZoomOut)
+  ON_COMMAND(ID_ZOOM_STANDAR,       &CSimple_DrawView::OnZoomStandar)
+
+
+  ON_COMMAND(ID_BOLD, &CSimple_DrawView::OnTextBold)
+  ON_UPDATE_COMMAND_UI(ID_BOLD, &CSimple_DrawView::OnUpdateBold)
+
+  ON_COMMAND(ID_ITALIC, &CSimple_DrawView::OnTextItalic)
+  ON_UPDATE_COMMAND_UI(ID_ITALIC, &CSimple_DrawView::OnUpdateItalic)
+
+  ON_COMMAND(ID_UNDER_LINE, &CSimple_DrawView::OnTextUnderLine)
+  ON_UPDATE_COMMAND_UI(ID_UNDER_LINE, &CSimple_DrawView::OnUpdateUnderLine)
+
+  ON_COMMAND(ID_ALIGN_LEFT, &CSimple_DrawView::OnAlignLeft)
+  ON_UPDATE_COMMAND_UI(ID_ALIGN_LEFT, &CSimple_DrawView::OnUpdateAlignLeft)
+
+  ON_COMMAND(ID_ALIGN_RIGHT, &CSimple_DrawView::OnAlignRight)
+  ON_UPDATE_COMMAND_UI(ID_ALIGN_RIGHT, &CSimple_DrawView::OnUpdateAlignRight)
+
+  ON_COMMAND(ID_ALIGN_CENTER, &CSimple_DrawView::OnAlignCenter)
+  ON_UPDATE_COMMAND_UI(ID_ALIGN_CENTER, &CSimple_DrawView::OnUpdateAlignCenter)
+
+  ON_COMMAND(ID_ALIGN_JUSTIFY, &CSimple_DrawView::OnAlignJustify)
+  ON_UPDATE_COMMAND_UI(ID_ALIGN_JUSTIFY, &CSimple_DrawView::OnUpdateAlignJustify)
+
+
+
 	ON_WM_CREATE()
 	ON_WM_SIZE()
 	ON_WM_ERASEBKGND()
@@ -39,7 +73,7 @@ BEGIN_MESSAGE_MAP(CSimple_DrawView, CView)
 	ON_WM_LBUTTONUP()
 	ON_WM_MOUSEMOVE()
   ON_WM_MOUSEWHEEL()
-  ON_BN_CLICKED(IDC_SUBMIT_BTN, &CSimple_DrawView::OnBnClickedSubmitBtn)
+
 END_MESSAGE_MAP()
 
 // CSimple_DrawView construction/destruction
@@ -59,39 +93,50 @@ CSimple_DrawView::CSimple_DrawView()
    m_texMode = 0;
    m_texWrap = 0;
    m_texFilter = 0;
-   m_Texture[0]=0;
-   m_Texture[1]=0;
-   m_Texture[2]=0;
-   m_Texture[3]=0;
-   m_Texture[4]=0;
+   m_Texture[0] = 0;
+   m_Texture[1] = 0;
+   m_Texture[2] = 0;
+   m_Texture[3] = 0;
+   m_Texture[4] = 0;
+
+   m_text_bold = -1;
+   m_count_bold = 0;
+
+   m_text_italic = -1;
+   m_count_italic = 0;
+
+   m_text_under_line = -1;
+   m_count_under_line = 0;
+
+   m_align_left = 0;
+   m_align_right = 0;
+   m_align_center = 0;
+   m_align_justify = 0;
 }
 
 
 /******************************************************************************
-* Function Name		:
-* Purpose			:
-* Input Param		:
-* Output Param		:
-* Writer			:
-* Time				:
+* Function Name		: CSimple_DrawView
+* Purpose			    : Ham huy cua Class CSimple_DrawView
+* Input Param		  : Nothing
+* Output Param		: Nothing
+* Writer			    : Damme88_Developer_phamtoanbonmat@gmail.com
+* Time				    : 08/2012
 *
 ******************************************************************************/
-CSimple_DrawView::~CSimple_DrawView()
-{
+CSimple_DrawView::~CSimple_DrawView() {
 }
 
 
-BOOL CSimple_DrawView::PreCreateWindow(CREATESTRUCT& cs)
-{
+BOOL CSimple_DrawView::PreCreateWindow(CREATESTRUCT& cs) {
 	// TODO: Modify the Window class or styles here by modifying
 	//  the CREATESTRUCT cs
-    cs.style |= WS_CLIPSIBLINGS | WS_CLIPCHILDREN;
+  cs.style |= WS_CLIPSIBLINGS | WS_CLIPCHILDREN;
 	return CView::PreCreateWindow(cs);
 }
 
 
-int CSimple_DrawView::OnCreate(LPCREATESTRUCT lpCreateStruct) 
-{	
+int CSimple_DrawView::OnCreate(LPCREATESTRUCT lpCreateStruct)  {	
 	if (CView::OnCreate(lpCreateStruct) == -1){
         return -1;
 	}
@@ -101,8 +146,7 @@ int CSimple_DrawView::OnCreate(LPCREATESTRUCT lpCreateStruct)
 }
 // CSimple_DrawView drawing
 
-BOOL CSimple_DrawView::InitializeOpenGL()
-{
+BOOL CSimple_DrawView::InitializeOpenGL() {
     //Get a DC for the Client Area
     m_pDC = new CClientDC(this);
 
@@ -139,8 +183,7 @@ BOOL CSimple_DrawView::InitializeOpenGL()
     ::glEnable(GL_DEPTH_TEST);
 }
 
-BOOL CSimple_DrawView::SetupPixelFormat()
-{
+BOOL CSimple_DrawView::SetupPixelFormat() {
 	static PIXELFORMATDESCRIPTOR pfd = 
     {
 		sizeof(PIXELFORMATDESCRIPTOR),    // size of this pfd
@@ -173,8 +216,7 @@ BOOL CSimple_DrawView::SetupPixelFormat()
 }
 
 
-void CSimple_DrawView::OnSize(UINT nType, int cx, int cy) 
-{
+void CSimple_DrawView::OnSize(UINT nType, int cx, int cy) {
     CView::OnSize(nType, cx, cy);
 	GLdouble aspect_ratio; 
 	if ( 0 >= cx || 0 >= cy ){
@@ -199,8 +241,7 @@ void CSimple_DrawView::OnSize(UINT nType, int cx, int cy)
 }
 
 
-BOOL CSimple_DrawView::OnEraseBkgnd(CDC* pDC) 
-{
+BOOL CSimple_DrawView::OnEraseBkgnd(CDC* pDC) {
     // TODO: Add your message handler code here and/or call default
     //comment out the original call
     //return CView::OnEraseBkgnd(pDC);
@@ -209,8 +250,7 @@ BOOL CSimple_DrawView::OnEraseBkgnd(CDC* pDC)
 }
 
 
-void CSimple_DrawView::OnDestroy() 
-{
+void CSimple_DrawView::OnDestroy() {
     CView::OnDestroy();
     // TODO: Add your message handler code here
 	   //Make the RC non-current
@@ -247,148 +287,155 @@ void CSimple_DrawView::OnDraw(CDC* /*pDC*/)
 }
 
 
-void CSimple_DrawView::RenderScene ()
-{
-	 glLoadIdentity();
-	 // Do xa gan 
-     glTranslatef(0.0f, 0.0f, m_zoom - 20.0f);
-	 // Do nghieng
-     glRotatef(m_xAngle + 45.0f, 1.0f, 0.0f, 0.0f);
-	   glRotatef(m_yAngle - 45.0f, 0.0f, 1.0f, 0.0f);
+/******************************************************************************
+* Function Name		: RenderScene
+* Purpose			    : Ham nay thuc hien ve do hoa su dung OpenGL
+* Input Param		  : Nothing
+* Output Param		: Nothing
+* Writer			    : Damme88_Developer_phamtoanbonmat@gmail.com
+* Time				    : 08/2012
+*
+******************************************************************************/
+void CSimple_DrawView::RenderScene () {
+  glLoadIdentity();
+	// Do xa gan 
+  glTranslatef(0.0f, 0.0f, m_zoom - 20.0f);
+	// Do nghieng
+  glRotatef(m_xAngle + 45.0f, 1.0f, 0.0f, 0.0f);
+	glRotatef(m_yAngle - 45.0f, 0.0f, 1.0f, 0.0f);
 
-     if(m_bOXYZ == TRUE)
-	 {	
-	 // Truc OX co mau do 
-		glColor3f(1.0f,0.0f,0.0f);
+  if (m_bOXYZ == TRUE) {	
+	  // Truc OX co mau do 
+		glColor3f(1.0f, 0.0f, 0.0f);
 		glLineWidth(3.0f);
+
 		glBegin(GL_LINES);
-			 glVertex3f(0.0f,0.0f,0.0f);
-			 glVertex3f(3.0f,0.0f,0.0f);
+		glVertex3f(0.0f, 0.0f, 0.0f);
+		glVertex3f(3.0f, 0.0f, 0.0f);
 		glEnd();
     //Arrow for OX
     glBegin(GL_LINES);
-			 glVertex3f(2.8f,0.2f,0.0f);
-			 glVertex3f(3.0f,0.0f,0.0f);
+		glVertex3f(2.8f, 0.2f, 0.0f);
+		glVertex3f(3.0f, 0.0f, 0.0f);
 		glEnd();
+
     glBegin(GL_LINES);
-			 glVertex3f(2.8f,0.0f,0.2f);
-			 glVertex3f(3.0f,0.0f,0.0f);
+		glVertex3f(2.8f, 0.0f, 0.2f);
+	  glVertex3f(3.0f, 0.0f, 0.0f);
 		glEnd();
 
 
 	// Truc OY co mau xanh la cay
-		glColor3f(0.0f,1.0f,0.0f);
+		glColor3f(0.0f, 1.0f, 0.0f);
 		glLineWidth(3.0f);  
 		glBegin(GL_LINES);
-			 glVertex3f(0.0f,0.0f,0.0f);
-			 glVertex3f(0.0f,3.0f,0.0f);
+		glVertex3f(0.0f, 0.0f, 0.0f);
+	  glVertex3f(0.0f, 3.0f, 0.0f);
 		glEnd();
     // Arrow for Oy
     glBegin(GL_LINES);
-			 glVertex3f(0.2f,2.8f,0.0f);
-			 glVertex3f(0.0f,3.0f,0.0f);
+		glVertex3f(0.2f, 2.8f, 0.0f);
+	  glVertex3f(0.0f, 3.0f, 0.0f);
 		glEnd();
     glBegin(GL_LINES);
-			 glVertex3f(0.0f,2.8f,0.2f);
-			 glVertex3f(0.0f,3.0f,0.0f);
+		glVertex3f(0.0f, 2.8f, 0.2f);
+		glVertex3f(0.0f, 3.0f, 0.0f);
 		glEnd();
 
 	// Truc OZ co mau xanh nuoc bien 
-		glColor3f(0.0f,0.0f,1.0f);
+		glColor3f(0.0f, 0.0f, 1.0f);
 		glLineWidth(3.0f);
 		glBegin(GL_LINES);
-		glVertex3f(0.0f,0.0f,0.0f);
-		glVertex3f(0.0f,0.0f,3.0f);
+		glVertex3f(0.0f, 0.0f, 0.0f);
+		glVertex3f(0.0f, 0.0f, 3.0f);
 		glEnd();
     // Arrow for OZ
     glBegin(GL_LINES);
-		glVertex3f(0.2f,0.0f,2.8f);
-		glVertex3f(0.0f,0.0f,3.0f);
+		glVertex3f(0.2f, 0.0f, 2.8f);
+		glVertex3f(0.0f, 0.0f, 3.0f);
 		glEnd();
     glBegin(GL_LINES);
-		glVertex3f(0.0f,0.2f,2.8f);
-		glVertex3f(0.0f,0.0f,3.0f);
+		glVertex3f(0.0f, 0.2f, 2.8f);
+		glVertex3f(0.0f, 0.0f, 3.0f);
 		glEnd();
 	 }
 
-	 if(m_bOXY == TRUE)
-	 {
+	 if(m_bOXY == TRUE) {
 	 // Truc OX co mau do 
-		glColor3f(1.0f,0.0f,0.0f);
+		glColor3f(1.0f, 0.0f, 0.0f);
 		glLineWidth(3.0f);
 		glBegin(GL_LINES);
-			 glVertex2f(0.0f,0.0f);
-			 glVertex2f(3.0f,0.0f);
+		glVertex2f(0.0f, 0.0f);
+		glVertex2f(3.0f, 0.0f);
 		glEnd();
     // Arrow for OX
     glBegin(GL_LINES);
-			 glVertex3f(2.8f,0.2f,0.0f);
-			 glVertex3f(3.0f,0.0f,0.0f);
+		glVertex3f(2.8f, 0.2f, 0.0f);
+		glVertex3f(3.0f, 0.0f, 0.0f);
 		glEnd();
     glBegin(GL_LINES);
-			 glVertex3f(2.8f,0.0f,0.2f);
-			 glVertex3f(3.0f,0.0f,0.0f);
+		glVertex3f(2.8f, 0.0f, 0.2f);
+		glVertex3f(3.0f, 0.0f, 0.0f);
 		glEnd();
 	// Truc OY co mau xanh la cay
-		glColor3f(0.0f,1.0f,0.0f);
+		glColor3f(0.0f, 1.0f, 0.0f);
 		glLineWidth(3.0f);
 		glBegin(GL_LINES);
-			 glVertex2f(0.0f,0.0f);
-			 glVertex2f(0.0f,3.0f);
+		glVertex2f(0.0f, 0.0f);
+		glVertex2f(0.0f, 3.0f);
 		glEnd();	 
     // Arrow for Oy
-      glBegin(GL_LINES);
-			 glVertex3f(0.2f,2.8f,0.0f);
-			 glVertex3f(0.0f,3.0f,0.0f);
+    glBegin(GL_LINES);
+		glVertex3f(0.2f, 2.8f, 0.0f);
+		glVertex3f(0.0f, 3.0f, 0.0f);
 		glEnd();
     glBegin(GL_LINES);
-			 glVertex3f(0.0f,2.8f,0.2f);
-			 glVertex3f(0.0f,3.0f,0.0f);
+	  glVertex3f(0.0f, 2.8f, 0.2f);
+		glVertex3f(0.0f, 3.0f, 0.0f);
 		glEnd();
 	 }
    if (m_draw_grid == TRUE) {
-     // Draw a Plane
-     glColor3f(1.0f,1.0f,1.0f);
-      glBegin(GL_POLYGON);
-			   glVertex3f(10.0f,-4.5f,10.0f);
-			   glVertex3f(10.0f,-4.5f,-10.0f);
-         glVertex3f(-10.0f,-4.5f,-10.0f);
-			   glVertex3f(-10.0f,-4.5f,10.0f);
-		  glEnd();
+     //Draw a Plane
+     glColor3f(1.0f, 1.0f, 1.0f);
+     glBegin(GL_POLYGON);
+		 glVertex3f(10.0f, -4.5f, 10.0f);
+		 glVertex3f(10.0f, -4.5f, -10.0f);
+     glVertex3f(-10.0f, -4.5f, -10.0f);
+		 glVertex3f(-10.0f, -4.5f, 10.0f);
+		 glEnd();
      // Draw Grid
-		  glColor3f(1.0f,1.0f,0.0f);
-		  glLineWidth(4.0f);
-      // OX +
-     for (float i = 10.0 ;i >=0;i=i-0.5) {
-         glBegin(GL_LINES);
-			   glVertex3f(i,-2.0f,10.0f);
-			   glVertex3f(i,-2.0f,-10.0f);
-		  glEnd();
+		 glColor3f(1.0f, 1.0f, 0.0f);
+		 glLineWidth(4.0f);
+     // OX +
+     for (float i = 10.0; i >= 0; i = i-0.5) {
+       glBegin(GL_LINES);
+			 glVertex3f(i, -2.0f, 10.0f);
+			 glVertex3f(i, -2.0f, -10.0f);
+		   glEnd();
      }
       
      // OX -
      for (float i = - 10.0 ;i <=0;i=i+0.5) {
        glBegin(GL_LINES);
-		   glVertex3f(i,-2.0f,10.0f);
-		   glVertex3f(i,-2.0f,-10.0f);
+		   glVertex3f(i, -2.0f, 10.0f);
+		   glVertex3f(i, -2.0f, -10.0f);
 	     glEnd();
      }
 
-     for (float i = 10.0f; i>=0;i=i-0.5) {
+     for (float i = 10.0f; i>=0; i = i-0.5) {
        glBegin(GL_LINES);
-		   glVertex3f(10,-2.0f,i);
-		   glVertex3f(-10,-2.0f,i);
+		   glVertex3f(10, -2.0f, i);
+		   glVertex3f(-10, -2.0f, i);
 	     glEnd();
      }
 
-     for (float i = -10.0f; i<=0;i=i+0.5) {
+     for (float i = -10.0f; i <=0; i = i+0.5) {
        glBegin(GL_LINES);
-		   glVertex3f(10,-2.0f,i);
-		   glVertex3f(-10,-2.0f,i);
+		   glVertex3f(10, -2.0f, i);
+		   glVertex3f(-10, -2.0f, i);
 	     glEnd();
      }
    }
-
 }
 
 
@@ -397,16 +444,16 @@ void CSimple_DrawView::RenderScene ()
 void CSimple_DrawView::OnCoordinateOxy()
 {
   count_oxy ++;
-  count_oxyz =0;
-  if (count_oxy%2!=0){
+  count_oxyz = 0;
+  if (count_oxy %2 != 0) {
   m_bOXY = TRUE ;
-	m_bOXYZ=FALSE ;
+	m_bOXYZ = FALSE ;
 	InvalidateRect(NULL,FALSE);
   }
   else {
    m_bOXY = FALSE ;
-	 m_bOXYZ=FALSE ;
-	 InvalidateRect(NULL,FALSE);
+	 m_bOXYZ = FALSE ;
+	 InvalidateRect(NULL, FALSE);
   }
 }
 
@@ -416,13 +463,13 @@ void CSimple_DrawView::OnCoordinateOxyz()
   count_oxyz ++;
   if (count_oxyz%2 != 0) {
     m_bOXYZ = TRUE ;
-	  m_bOXY=FALSE ;
-	  InvalidateRect(NULL,FALSE);
+	  m_bOXY = FALSE ;
+	  InvalidateRect(NULL, FALSE);
   }
   else {
     m_bOXYZ = FALSE ;
-	  m_bOXY=FALSE ;
-	  InvalidateRect(NULL,FALSE);
+	  m_bOXY = FALSE ;
+	  InvalidateRect(NULL, FALSE);
   }
 }
 void CSimple_DrawView::OnEditUndo() {
@@ -437,12 +484,12 @@ void CSimple_DrawView::OnEditPaste() {
 
 void CSimple_DrawView::OnDrawGrid() {
      count_grid ++ ;
-     if(count_grid%2 !=0 ) {
+     if(count_grid%2 != 0 ) {
          m_draw_grid = TRUE;
-         InvalidateRect(NULL,FALSE);
+         InvalidateRect(NULL, FALSE);
      } else {
         m_draw_grid = FALSE;
-        InvalidateRect(NULL,FALSE);
+        InvalidateRect(NULL, FALSE);
      }
 }
 
@@ -454,16 +501,15 @@ void CSimple_DrawView::OnDrawColor() {
 void CSimple_DrawView::OnLButtonDown(UINT nFlags, CPoint point) 
 {
   // TODO: Add your message handler code here and/or call default
-  m_MouseDownPoint=point;
+  m_MouseDownPoint = point;
   SetCapture();
   CView::OnLButtonDown(nFlags, point);
 }
 
 
-void CSimple_DrawView::OnLButtonUp(UINT nFlags, CPoint point) 
-{
+void CSimple_DrawView::OnLButtonUp(UINT nFlags, CPoint point)  {
         // TODO: Add your message handler code here and/or call default
-        m_MouseDownPoint=CPoint(0,0);
+        m_MouseDownPoint = CPoint(0, 0);
         ReleaseCapture();
         CView::OnLButtonUp(nFlags, point);
 }
@@ -482,15 +528,14 @@ void CSimple_DrawView::OnMouseMove(UINT nFlags, CPoint point)
 {
         // TODO: Add your message handler code here and/or call default
         // Check if we have captured the mouse
-        if (GetCapture()==this)
-        {
-            //Increment the object rotation angles
-            m_xAngle+=(point.y-m_MouseDownPoint.y)/3.6;
-            m_yAngle+=(point.x-m_MouseDownPoint.x)/3.6;
+        if (GetCapture() == this){
+          //Increment the object rotation angles
+          m_xAngle += (point.y - m_MouseDownPoint.y)/3.6;
+            m_yAngle += (point.x - m_MouseDownPoint.x)/3.6;
             //Redraw the view
-            InvalidateRect(NULL,FALSE);
+            InvalidateRect(NULL, FALSE);
             //Set the mouse point
-            m_MouseDownPoint=point;
+            m_MouseDownPoint = point;
         }
         CView::OnMouseMove(nFlags, point);
 }
@@ -498,7 +543,7 @@ void CSimple_DrawView::OnMouseMove(UINT nFlags, CPoint point)
 BOOL CSimple_DrawView::OnMouseWheel(UINT nFlags, short zDelta, CPoint point)
 {
   BOOL ret = FALSE ;
-  if(zDelta >=0) {
+  if (zDelta >=0) {
     m_zoom = m_zoom + 0.4f;
     ret = TRUE ;
   }
@@ -508,10 +553,34 @@ BOOL CSimple_DrawView::OnMouseWheel(UINT nFlags, short zDelta, CPoint point)
   }
   InvalidateRect(NULL,FALSE);
   //Set the mouse point
-  m_MouseDownPoint=point;
+  m_MouseDownPoint = point;
   CWnd::OnMouseMove(nFlags, point);
   return ret;
 }
+
+void CSimple_DrawView::OnViewFront() {
+}
+void CSimple_DrawView::OnViewBehind() {
+}
+void CSimple_DrawView::OnViewTop() {
+}
+void CSimple_DrawView::OnViewBottom() {
+}
+void CSimple_DrawView::OnViewRight() {
+}
+void CSimple_DrawView::OnViewLeft() {
+}
+void CSimple_DrawView::OnViewStandar() {
+}
+void CSimple_DrawView::OnZoomIn() {
+}
+void CSimple_DrawView::OnZoomOut() {
+}
+void CSimple_DrawView::OnZoomStandar() {
+}
+
+
+
 
 
 // CSimple_DrawView printing
@@ -575,4 +644,126 @@ void CSimple_DrawView::OnBnClickedSubmitBtn()
 {
   // TODO: Add your control notification handler code here
   MessageBox(_T("Thank you for your consideration\n"));
+}
+
+void CSimple_DrawView::OnTextBold() {
+  m_count_bold++;
+  if (m_count_bold %2 !=0) {
+    m_text_bold = 1;
+  } else {
+    m_text_bold = 0;
+  }
+  if(m_count_bold == 10) {
+    m_count_bold = 0;
+  }
+}
+
+
+void CSimple_DrawView::OnTextItalic() {
+  m_count_italic ++;
+  if (m_count_italic %2 !=0) {
+    m_text_italic = 1;
+  } else {
+    m_text_italic = 0;
+  }
+  if(m_count_italic == 10) {
+    m_count_italic = 0;
+  }
+}
+void CSimple_DrawView::OnTextUnderLine() {
+  m_count_under_line ++;
+  if (m_count_under_line %2 !=0) {
+    m_text_under_line = 1;
+  } else {
+    m_text_under_line = 0;
+  }
+  if(m_count_under_line == 10) {
+    m_count_under_line = 0;
+  }
+}
+
+
+
+
+void CSimple_DrawView::OnUpdateBold(CCmdUI * pcmdui) {
+  if (m_text_bold ==1) {
+    pcmdui->SetCheck(1);
+  } else {
+    pcmdui->SetCheck(0);
+  }
+}
+
+void CSimple_DrawView::OnUpdateItalic(CCmdUI * pcmdui) {
+  if (m_text_italic ==1) {
+    pcmdui->SetCheck(1);
+  } else {
+    pcmdui->SetCheck(0);
+  }
+}
+
+
+void CSimple_DrawView::OnUpdateUnderLine(CCmdUI *pcmdui) {
+  if (m_text_under_line ==1) {
+    pcmdui->SetCheck(1);
+  } else {
+    pcmdui->SetCheck(0);
+  }
+}
+
+
+void CSimple_DrawView::OnAlignLeft() {
+  m_align_left = 1;
+  m_align_center = 0;
+  m_align_right = 0;
+  m_align_justify = 0;
+}
+
+void CSimple_DrawView::OnAlignRight() {
+  m_align_left = 0;
+  m_align_center = 0;
+  m_align_right = 1;
+  m_align_justify = 0;
+}
+
+void CSimple_DrawView::OnAlignCenter(){
+  m_align_left = 0;
+  m_align_center = 1;
+  m_align_right = 0;
+  m_align_justify = 0;
+}
+
+void CSimple_DrawView::OnAlignJustify() {
+  m_align_left = 0;
+  m_align_center = 0;
+  m_align_right = 0;
+  m_align_justify = 1;
+}
+
+
+void CSimple_DrawView::OnUpdateAlignLeft(CCmdUI *pcmdui) {
+  if (m_align_left) 
+    pcmdui->SetCheck(1);
+  else
+    pcmdui->SetCheck(0);
+}
+
+void CSimple_DrawView::OnUpdateAlignRight(CCmdUI *pcmdui) {
+  if(m_align_right)
+    pcmdui->SetCheck(1);
+  else
+    pcmdui->SetCheck(0);
+}
+
+void CSimple_DrawView::OnUpdateAlignCenter(CCmdUI *pcmdui) {
+  if (m_align_center)
+    pcmdui->SetCheck(1);
+  else
+    pcmdui->SetCheck(0);
+}
+
+void CSimple_DrawView::OnUpdateAlignJustify(CCmdUI *pcmdui) {
+  if (m_align_justify)
+    pcmdui->SetCheck(1);
+  else
+    pcmdui->SetCheck(0);
 }
