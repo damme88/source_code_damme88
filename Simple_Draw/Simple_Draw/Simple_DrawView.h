@@ -48,6 +48,13 @@ private:
    short m_align_center;
    short m_align_justify;
 
+   short m_draw_line;
+   short m_count_draw_line;
+
+   CPoint m_first_point;
+   CPoint m_end_point;
+   int count_down;
+   BOOL check_down;
 
 public:
    void OnEditUndo();
@@ -92,7 +99,9 @@ public:
    void OnUpdateAlignRight(CCmdUI *pcmdui);
    void OnUpdateAlignCenter(CCmdUI *pcmdui);
    void OnUpdateAlignJustify(CCmdUI *pcmdui);
-
+    
+   void OnDrawline();
+   void OnUpdateDrawLine(CCmdUI *pcmdui);
 
 // Overrides
 public:

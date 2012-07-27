@@ -37,12 +37,15 @@ public:
 #endif
 
 protected:  // control bar embedded members
+  CMFCStatusBar     m_wndStatusBar;
 	CMFCMenuBar       m_wndMenuBar;
+  CDialogBar	      m_wndToolbox;           //use for dialog bar
 	CMFCToolBar       m_wndToolBar;
   CMFCToolBar       m_wndToolBar_Direct;
   CMFCToolBar       m_wndToolBar_Office;
-  CDialogBar	      m_wndToolbox;
-	CMFCStatusBar     m_wndStatusBar;
+  CMFCToolBar       m_wndToolBar_Draw;
+
+
 
 
 // Generated message map functions

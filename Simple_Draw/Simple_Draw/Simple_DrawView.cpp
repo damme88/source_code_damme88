@@ -63,6 +63,9 @@ BEGIN_MESSAGE_MAP(CSimple_DrawView, CView)
   ON_COMMAND(ID_ALIGN_JUSTIFY, &CSimple_DrawView::OnAlignJustify)
   ON_UPDATE_COMMAND_UI(ID_ALIGN_JUSTIFY, &CSimple_DrawView::OnUpdateAlignJustify)
 
+  ON_COMMAND(ID_DRAW_LINE, &CSimple_DrawView::OnDrawline)
+  ON_UPDATE_COMMAND_UI(ID_DRAW_LINE, &CSimple_DrawView::OnUpdateDrawLine)
+
 
 
 	ON_WM_CREATE()
@@ -112,6 +115,13 @@ CSimple_DrawView::CSimple_DrawView()
    m_align_right = 0;
    m_align_center = 0;
    m_align_justify = 0;
+
+   m_draw_line = 0;
+   m_count_draw_line = 0;
+
+   // variable for draw
+   check_down = FALSE;
+   count_down = 0;
 }
 
 
@@ -174,7 +184,7 @@ BOOL CSimple_DrawView::InitializeOpenGL() {
         return FALSE;
     }
 	//Specify Black as the clear color
-    ::glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+    ::glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
 
     //Specify the back of the buffer as clear depth
     ::glClearDepth(1.0f);
@@ -504,6 +514,10 @@ void CSimple_DrawView::OnLButtonDown(UINT nFlags, CPoint point)
   m_MouseDownPoint = point;
   SetCapture();
   CView::OnLButtonDown(nFlags, point);
+  if (m_draw_line == 1) {
+    m_first_point = point;
+    check_down = TRUE;
+  }
 }
 
 
@@ -512,6 +526,10 @@ void CSimple_DrawView::OnLButtonUp(UINT nFlags, CPoint point)  {
         m_MouseDownPoint = CPoint(0, 0);
         ReleaseCapture();
         CView::OnLButtonUp(nFlags, point);
+  if (m_draw_line == 1) {
+    check_down = FALSE;
+    m_end_point = point;
+  }
 }
 
 /******************************************************************************
@@ -531,14 +549,27 @@ void CSimple_DrawView::OnMouseMove(UINT nFlags, CPoint point)
         if (GetCapture() == this){
           //Increment the object rotation angles
           m_xAngle += (point.y - m_MouseDownPoint.y)/3.6;
-            m_yAngle += (point.x - m_MouseDownPoint.x)/3.6;
+          m_yAngle += (point.x - m_MouseDownPoint.x)/3.6;
             //Redraw the view
-            InvalidateRect(NULL, FALSE);
+          InvalidateRect(NULL, FALSE);
             //Set the mouse point
-            m_MouseDownPoint = point;
+          m_MouseDownPoint = point;
         }
         CView::OnMouseMove(nFlags, point);
+
+        // handle draw 
+        if ( m_draw_line == 1) {
+          CDC* pdc = GetDC();
+          if( check_down == FALSE){
+             pdc->MoveTo(point.x, point.y);
+             pdc->LineTo(m_first_point.x, m_first_point.y);
+          } else {
+              pdc->LineTo(m_end_point.x, m_first_point.y);
+              pdc->MoveTo(m_first_point.x, m_first_point.y);
+          }
+        }
 }
+
 
 BOOL CSimple_DrawView::OnMouseWheel(UINT nFlags, short zDelta, CPoint point)
 {
@@ -763,6 +794,22 @@ void CSimple_DrawView::OnUpdateAlignCenter(CCmdUI *pcmdui) {
 
 void CSimple_DrawView::OnUpdateAlignJustify(CCmdUI *pcmdui) {
   if (m_align_justify)
+    pcmdui->SetCheck(1);
+  else
+    pcmdui->SetCheck(0);
+}
+
+    
+void CSimple_DrawView::OnDrawline() {
+  m_count_draw_line ++;
+  if (m_count_draw_line %2 != 0)
+    m_draw_line = 1;
+  else m_draw_line = 0;
+  if(m_count_draw_line == 0)
+    m_count_draw_line = 0 ;
+}
+void CSimple_DrawView::OnUpdateDrawLine(CCmdUI *pcmdui) {
+  if (m_draw_line ==1 )
     pcmdui->SetCheck(1);
   else
     pcmdui->SetCheck(0);

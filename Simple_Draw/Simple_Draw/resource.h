@@ -20,6 +20,8 @@
 #define IDR_TOOLBAR_DIRECT              312
 #define IDB_BITMAP_RED                  315
 #define IDR_TOOLBAR_OFFICE              316
+#define IDR_TOOLBAR_DRAW                318
+#define IDI_ICON1                       320
 #define ID_DRAW_GRID                    32773
 #define ID_COORDINATE_OXYZ              32775
 #define ID_COORDINATE_OXY               32776
@@ -51,13 +53,23 @@
 #define ID_MOVE_DOWN                    32822
 #define ID_MOVE_LEFT                    32823
 #define ID_MOVE_RIGHT                   32824
+#define ID_DRAW_LINE                    32825
+#define ID_DRAW_CURVE                   32826
+#define ID_DRAW_POINT                   32827
+#define ID_DRAW_CIRCLE                  32828
+#define ID_DRAW_RECTANGLE               32829
+#define ID_DRAW_ROUNDED_RECTANGLE       32830
+#define ID_DRAW_POLYGON                 32831
+#define ID_DRAW_ERASER                  32832
+#define ID_DRAW_COLOR_PICKER            32833
+#define ID_DRAW_FILL_COLOR              32834
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        318
-#define _APS_NEXT_COMMAND_VALUE         32825
+#define _APS_NEXT_RESOURCE_VALUE        324
+#define _APS_NEXT_COMMAND_VALUE         32835
 #define _APS_NEXT_CONTROL_VALUE         1001
 #define _APS_NEXT_SYMED_VALUE           310
 #endif

@@ -6,6 +6,9 @@
 #include "Simple_Draw.h"
 
 #include "MainFrm.h"
+#include "CustomComboButton.h"
+#include "CustomCombo.h"
+
 
 
 #ifdef _DEBUG
@@ -72,6 +75,10 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 
 	// prevent the menu bar from taking the focus on activation
 	CMFCPopupMenu::SetForceMenuFocus(FALSE);
+  
+  m_wndMenuBar.EnableDocking(CBRS_ALIGN_TOP);
+  EnableDocking(CBRS_ALIGN_ANY);
+  DockPane(&m_wndMenuBar);
 
 	if (!m_wndToolBar.CreateEx(this, TBSTYLE_FLAT, WS_CHILD | WS_VISIBLE | 
                                    CBRS_TOP | CBRS_GRIPPER | CBRS_TOOLTIPS | 
@@ -104,6 +111,16 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 		TRACE0("Failed to create Toolbar_Direct\n");
 		return -1;      // fail to create
 	}
+ 
+  m_wndToolBar.EnableDocking(CBRS_ALIGN_TOP);
+  m_wndToolBar_Direct.EnableDocking(CBRS_ALIGN_TOP);
+  
+  EnableDocking(CBRS_ALIGN_ANY);
+
+  DockPane(&m_wndToolBar_Direct);
+  DockPaneLeftOf(&m_wndToolBar, &m_wndToolBar_Direct);
+
+
 
   if (! m_wndToolBar_Office.CreateEx(this, TBSTYLE_FLAT, WS_CHILD | WS_VISIBLE 
                                      | CBRS_TOP | CBRS_GRIPPER | CBRS_TOOLTIPS 
@@ -114,17 +131,20 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 		return -1;      // fail to create
 	}
 
-
-
-
-    if( !m_wndToolbox.Create(this,
-			          IDD_TOOLBOX,
-			   CBRS_LEFT | CBRS_GRIPPER | CBRS_TOOLTIPS | CBRS_FLYBY,IDD_TOOLBOX) )
+  if (! m_wndToolBar_Draw.CreateEx(this, TBSTYLE_FLAT, WS_CHILD | WS_VISIBLE 
+                                     | CBRS_TOP | CBRS_GRIPPER | CBRS_TOOLTIPS 
+                                     | CBRS_FLYBY | CBRS_SIZE_DYNAMIC) ||
+                        ! m_wndToolBar_Draw.LoadToolBar(IDR_TOOLBAR_DRAW))
 	{
-		TRACE0("Failed to create the toolbox\n");
-		return -1;
+		TRACE0("Failed to create Toolbar_Draw\n");
+		return -1;      // fail to create
 	}
-  m_wndToolbox.SetWindowText(L"Toolbox");
+
+  m_wndToolBar_Office.EnableDocking(CBRS_ALIGN_TOP);
+  m_wndToolBar_Draw.EnableDocking(CBRS_ALIGN_TOP);
+  EnableDocking(CBRS_ALIGN_ANY);
+  DockPane(&m_wndToolBar_Office);
+  DockPane(&m_wndToolBar_Draw);
 
 	if (!m_wndStatusBar.Create(this))
 	{
@@ -134,22 +154,6 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	m_wndStatusBar.SetIndicators(indicators, sizeof(indicators)/sizeof(UINT));
 
 	// TODO: Delete these five lines if you don't want the toolbar and menubar to be dockable
-
-  m_wndMenuBar.EnableDocking(CBRS_ALIGN_ANY);
-  m_wndToolBar.EnableDocking(CBRS_ALIGN_ANY);
-  m_wndToolBar_Direct.EnableDocking(CBRS_ALIGN_ANY);
-  m_wndToolbox.EnableDocking(CBRS_ALIGN_ANY);
-  m_wndToolBar_Office.EnableDocking(CBRS_ALIGN_ANY);
-
-  EnableDocking(CBRS_ALIGN_ANY);
-  DockPane(&m_wndMenuBar);
-  DockPane(&m_wndToolBar_Office);
-  DockPaneLeftOf(&m_wndToolBar_Direct, &m_wndToolBar_Office);
-  DockPaneLeftOf(&m_wndToolBar, &m_wndToolBar_Direct);
-  //DockControlBar(&m_wndToolbox,AFX_IDW_DOCKBAR_LEFT);
-
-
-  
 
 	// enable Visual Studio 2005 style docking window behavior
 	CDockingManager::SetDockingMode(DT_SMART);
@@ -282,11 +286,11 @@ BOOL CMainFrame::LoadFrame(UINT nIDResource, DWORD dwDefaultStyle,
 
 LRESULT CMainFrame::OnToolbarReset(WPARAM wParam, LPARAM lParam) {
   UINT id = (UINT)wParam;
-  if (id == IDR_MAINFRAME_256) {
-    CMFCToolBarComboBoxButton combo(ID_SELECT, 
+  if (id == IDR_TOOLBAR_OFFICE) {
+   /* CMFCToolBarComboBoxButton combo(ID_SELECT, 
       GetCmdMgr()->GetCmdImage(ID_SELECT), 
                                     CBS_DROPDOWNLIST);
-    combo.OnSize(100);
+    combo.OnSize(60);
     combo.AddItem(L"Green");
     combo.AddItem(L"Red");
     combo.AddItem(L"Yellow");
@@ -295,8 +299,7 @@ LRESULT CMainFrame::OnToolbarReset(WPARAM wParam, LPARAM lParam) {
     combo.AddItem(L"Orange");
     VERIFY(combo.SelectItem(1));
     int rplum_driect = m_wndToolBar_Direct.ReplaceButton(ID_SELECT, 
-                                                         combo, FALSE);
-   // ASSERT(rplum_driect >= 0);
+                                                         combo, FALSE);*/
 
     CMFCToolBarComboBoxButton combo_office(ID_TEXT_STYLE, 
       GetCmdMgr()->GetCmdImage(ID_TEXT_STYLE), 
@@ -307,7 +310,6 @@ LRESULT CMainFrame::OnToolbarReset(WPARAM wParam, LPARAM lParam) {
     VERIFY(combo_office.SelectItem(0));
     int rplum_text_style = m_wndToolBar_Office.ReplaceButton(ID_TEXT_STYLE, 
                                                        combo_office, FALSE);
-   // ASSERT(rplum_text_style >= 0 );
 
     CMFCToolBarComboBoxButton combo_text_size(ID_TEXT_SIZE, 
       GetCmdMgr()->GetCmdImage(ID_TEXT_SIZE), 
@@ -319,10 +321,20 @@ LRESULT CMainFrame::OnToolbarReset(WPARAM wParam, LPARAM lParam) {
     VERIFY(combo_text_size.SelectItem(0));
     int rplum_text_size = m_wndToolBar_Office.ReplaceButton(ID_TEXT_SIZE, 
                                                         combo_text_size, FALSE);
-   // ASSERT(rplum_text_size >= 0);
-  }
+
+ //int index = m_wndToolBar_Office.CommandToIndex(ID_TEXT_SIZE);
+ //CustomComboButton combox_btn(ID_TEXT_SIZE, GetCmdMgr()->GetCmdImage(ID_TEXT_SIZE), CBS_DROPDOWNLIST);
+
+ //int rplum_text_size = m_wndToolBar_Office.ReplaceButton(ID_TEXT_SIZE, combox_btn, FALSE); 
+
+ //CustomComboButton *ccb = reinterpret_cast<CustomComboButton *>(m_wndToolBar_Office.GetButton(index));
+ // CustomCombo *combo1 = reinterpret_cast<CustomCombo*>(ccb->GetComboBox());
+ // combo1->AddItemCombo(_T("Item 1"), IDI_ICON1);
+ }
   return 0L;
 }
+
+
 
 void CMainFrame::OnHandleItem() {
   int index = m_wndToolBar_Direct.CommandToIndex(ID_SELECT);
