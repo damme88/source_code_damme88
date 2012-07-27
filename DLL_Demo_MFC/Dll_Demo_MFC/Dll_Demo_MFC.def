@@ -1,6 +1,0 @@
-; Dll_Demo_MFC.def : Declares the module parameters for the DLL.
-
-LIBRARY      "Dll_Demo_MFC"
-
-EXPORTS
-    ; Explicit exports can go here
