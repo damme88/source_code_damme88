@@ -131,21 +131,27 @@ END
 IDR_TOOLBAR_DIRECT TOOLBAR  16, 16
 BEGIN
     BUTTON      ID_FRONT
+    SEPARATOR
     BUTTON      ID_TOP
+    SEPARATOR
     BUTTON      ID_RIGHT
+    SEPARATOR
     BUTTON      ID_LEFT
     BUTTON      ID_BEHIND
     BUTTON      ID_BOTTOM
     BUTTON      ID_PAN_STANDAR
     SEPARATOR
     BUTTON      ID_ZOOM_IN
+    SEPARATOR
     BUTTON      ID_ZOOM_OUT
+    SEPARATOR
     BUTTON      ID_ZOOM_STANDAR
     SEPARATOR
     BUTTON      ID_SELECT
-    SEPARATOR
     BUTTON      ID_MOVE_UP
+    SEPARATOR
     BUTTON      ID_MOVE_DOWN
+    SEPARATOR
     BUTTON      ID_MOVE_LEFT
     BUTTON      ID_MOVE_RIGHT
 END
@@ -155,27 +161,34 @@ BEGIN
     BUTTON      ID_BOLD
     BUTTON      ID_ITALIC
     BUTTON      ID_UNDER_LINE
-    SEPARATOR
     BUTTON      ID_ALIGN_LEFT
+    SEPARATOR
     BUTTON      ID_ALIGN_CENTER
+    SEPARATOR
     BUTTON      ID_ALIGN_RIGHT
     BUTTON      ID_ALIGN_JUSTIFY
-    SEPARATOR
     BUTTON      ID_TEXT_STYLE
+    SEPARATOR
     BUTTON      ID_TEXT_SIZE
     SEPARATOR
     BUTTON      ID_TEXT_COLOR
+    SEPARATOR
     BUTTON      ID_TEXT_FILL_COLOR
     BUTTON      ID_TEXT_STRIKE
+    BUTTON      ID_1
 END
 
 IDR_TOOLBAR_DRAW TOOLBAR  16, 15
 BEGIN
     BUTTON      ID_DRAW_LINE
+    SEPARATOR
     BUTTON      ID_DRAW_CURVE
     BUTTON      ID_DRAW_POINT
+    SEPARATOR
     BUTTON      ID_DRAW_CIRCLE
+    SEPARATOR
     BUTTON      ID_DRAW_RECTANGLE
+    SEPARATOR
     BUTTON      ID_DRAW_ROUNDED_RECTANGLE
     BUTTON      ID_DRAW_POLYGON
     SEPARATOR
@@ -219,19 +232,27 @@ BEGIN
     BEGIN
         POPUP "&Toolbars and Docking Windows"
         BEGIN
-            MENUITEM "<placeholder>",               ID_VIEW_TOOLBAR
+            MENUITEM "File Toolbar",                ID_VIEW_TOOLBAR
+            MENUITEM "View Toolbar",                ID_DOCKING_VIEWTOOLBAR
+            MENUITEM "Draw Toolbar",                ID_DOCKING_DRAWTOOLBAR
+            MENUITEM "Office Toolbar",              ID_DOCKING_OFFICETOOLBAR
         END
         MENUITEM "&Status Bar",                 ID_VIEW_STATUS_BAR
+        MENUITEM "Context Dialog",              32843
     END
-    POPUP "COORDINATE"
+    POPUP "Coordinate"
     BEGIN
         MENUITEM "OXYZ",                        ID_COORDINATE_OXYZ
         MENUITEM "OXY",                         ID_COORDINATE_OXY
     END
-    POPUP "DRAW"
+    POPUP "Draw"
     BEGIN
         MENUITEM "GRID",                        ID_DRAW_GRID
         MENUITEM "COLOR",                       ID_DRAW_COLOR
+    END
+    POPUP "Office"
+    BEGIN
+        MENUITEM "Text Editor",                 ID_OFFICE_TEXTEDITOR
     END
     POPUP "&Help"
     BEGIN
@@ -246,6 +267,41 @@ BEGIN
         MENUITEM "Cu&t\tCtrl+X",                ID_EDIT_CUT
         MENUITEM "&Copy\tCtrl+C",               ID_EDIT_COPY
         MENUITEM "&Paste\tCtrl+V",              ID_EDIT_PASTE
+    END
+END
+
+IDR_MENU_CONTEX MENU 
+BEGIN
+    POPUP "Pop Submit"
+    BEGIN
+        MENUITEM "Green",                       ID_POPSUBMIT_G
+        MENUITEM "Red",                         ID_POPSUBMIT_RED
+        MENUITEM "Yellow",                      ID_POPSUBMIT_YELLOW
+        MENUITEM "Blue",                        ID_POPSUBMIT_BLUE
+        MENUITEM "White",                       ID_POPSUBMIT_WHITE
+        MENUITEM "Fuchsia",                     ID_POPSUBMIT_FUCHSIA
+    END
+END
+
+IDR_MENU_DLG1 MENU 
+BEGIN
+    POPUP "File"
+    BEGIN
+        MENUITEM "New",                         ID_FILE_NEW32850
+        MENUITEM "Open",                        ID_FILE_OPEN32851
+        MENUITEM "Save",                        ID_FILE_SAVE32852
+        MENUITEM "Save as",                     ID_FILE_SAVEAS
+        MENUITEM "Print",                       ID_FILE_PRINT32854
+        MENUITEM "Exit",                        ID_FILE_EXIT
+    END
+    POPUP "Edit"
+    BEGIN
+        MENUITEM "Undo",                        ID_EDIT_UNDO32856
+        MENUITEM "Redo",                        ID_EDIT_REDO32857
+        MENUITEM "Copy",                        ID_EDIT_COPY32858
+        MENUITEM "Cut",                         ID_EDIT_CUT32859
+        MENUITEM "Paste",                       ID_EDIT_PASTE32860
+        MENUITEM "Delete",                      ID_EDIT_DELETE
     END
 END
 
@@ -290,10 +346,33 @@ BEGIN
     DEFPUSHBUTTON   "OK",IDOK,113,41,50,14,WS_GROUP
 END
 
-IDD_TOOLBOX DIALOGEX 0, 0, 156, 192
+IDD_MY_DIALOG DIALOGEX 0, 0, 121, 151
 STYLE DS_SETFONT | DS_FIXEDSYS | WS_CHILD
 FONT 8, "MS Shell Dlg", 400, 0, 0x0
 BEGIN
+    PUSHBUTTON      "With CmdUi",IDC_BUTTON1,17,25,78,28
+    PUSHBUTTON      "Without CmdUI",IDC_BUTTON2,19,77,78,28
+END
+
+IDD_DIALOG1 DIALOGEX 0, 0, 399, 213
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
+EXSTYLE WS_EX_APPWINDOW
+CAPTION "Text Editor"
+MENU IDR_MENU_DLG1
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    EDITTEXT        IDC_EDIT1,15,38,367,158,ES_AUTOHSCROLL
+END
+
+IDD_DIALOG2 DIALOGEX 0, 0, 166, 88
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Context Menu Control"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,27,20,50,18
+    PUSHBUTTON      "Cancel",IDCANCEL,27,46,50,18
+    PUSHBUTTON      "Submit",IDC_SUBMIT_BTN,91,20,50,18
+    CONTROL         "Approved",IDC_APPROVED_CHK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,93,53,47,8
 END
 
 
@@ -352,12 +431,28 @@ BEGIN
         BOTTOMMARGIN, 55
     END
 
-    IDD_TOOLBOX, DIALOG
+    IDD_MY_DIALOG, DIALOG
     BEGIN
         LEFTMARGIN, 6
-        RIGHTMARGIN, 149
+        RIGHTMARGIN, 114
         TOPMARGIN, 7
-        BOTTOMMARGIN, 185
+        BOTTOMMARGIN, 144
+    END
+
+    IDD_DIALOG1, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 392
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 206
+    END
+
+    IDD_DIALOG2, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 159
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 81
     END
 END
 #endif    // APSTUDIO_INVOKED

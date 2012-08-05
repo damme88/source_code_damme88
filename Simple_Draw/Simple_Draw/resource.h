@@ -2,6 +2,7 @@
 // Microsoft Visual C++ generated include file.
 // Used by Simple_Draw.rc
 //
+#define IDD_MY_DIALOG                   9
 #define IDD_ABOUTBOX                    100
 #define IDP_OLE_INIT_FAILED             100
 #define IDD_TOOLBOX                     104
@@ -22,6 +23,16 @@
 #define IDR_TOOLBAR_OFFICE              316
 #define IDR_TOOLBAR_DRAW                318
 #define IDI_ICON1                       320
+#define IDD_DIALOG1                     324
+#define IDD_DIALOG2                     325
+#define IDR_MENU_CONTEX                 326
+#define IDR_MENU_DLG1                   327
+#define IDR_MENU1                       328
+#define IDC_EDIT1                       1002
+#define IDC_BUTTON1                     1003
+#define IDC_BUTTON2                     1004
+#define IDC_APPROVED_CHK                1005
+#define IDC_SUBMIT_BTN                  1006
 #define ID_DRAW_GRID                    32773
 #define ID_COORDINATE_OXYZ              32775
 #define ID_COORDINATE_OXY               32776
@@ -63,14 +74,38 @@
 #define ID_DRAW_ERASER                  32832
 #define ID_DRAW_COLOR_PICKER            32833
 #define ID_DRAW_FILL_COLOR              32834
+#define ID_OFFICE_TEXTEDITOR            32835
+#define ID_1                            32836
+#define ID_POPSUBMIT_G                  32837
+#define ID_POPSUBMIT_RED                32838
+#define ID_POPSUBMIT_YELLOW             32839
+#define ID_POPSUBMIT_BLUE               32840
+#define ID_POPSUBMIT_WHITE              32841
+#define ID_POPSUBMIT_FUCHSIA            32842
+#define ID_VIEW_CONTEXT_DLG             32843
+#define ID_DOCKING_VIEWTOOLBAR          32847
+#define ID_DOCKING_DRAWTOOLBAR          32848
+#define ID_DOCKING_OFFICETOOLBAR        32849
+#define ID_FILE_NEW32850                32850
+#define ID_FILE_OPEN32851               32851
+#define ID_FILE_SAVE32852               32852
+#define ID_FILE_SAVEAS                  32853
+#define ID_FILE_PRINT32854              32854
+#define ID_FILE_EXIT                    32855
+#define ID_EDIT_UNDO32856               32856
+#define ID_EDIT_REDO32857               32857
+#define ID_EDIT_COPY32858               32858
+#define ID_EDIT_CUT32859                32859
+#define ID_EDIT_PASTE32860              32860
+#define ID_EDIT_DELETE                  32861
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        324
-#define _APS_NEXT_COMMAND_VALUE         32835
-#define _APS_NEXT_CONTROL_VALUE         1001
+#define _APS_NEXT_RESOURCE_VALUE        329
+#define _APS_NEXT_COMMAND_VALUE         32862
+#define _APS_NEXT_CONTROL_VALUE         1007
 #define _APS_NEXT_SYMED_VALUE           310
 #endif
 #endif

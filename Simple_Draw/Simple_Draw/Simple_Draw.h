@@ -19,7 +19,7 @@ class CSimple_DrawApp : public CWinAppEx
 public:
 	CSimple_DrawApp();
 
-
+public:
 // Overrides
 public:
 	virtual BOOL InitInstance();
@@ -32,6 +32,11 @@ public:
 	virtual void SaveCustomState();
 
 	afx_msg void OnAppAbout();
+  afx_msg void OnAppTextEditor();
+  afx_msg void OnAppContextDialog();
+
+  // open file and save file
+  afx_msg void OnFileOpen();
 	DECLARE_MESSAGE_MAP()
 };
 

@@ -1,7 +1,6 @@
 
 // MainFrm.h : interface of the CMainFrame class
 //
-
 #pragma once
 
 class CMainFrame : public CFrameWndEx
@@ -13,8 +12,12 @@ protected: // create from serialization only
 
 // Attributes
 public:
+  BOOL show_viewbar_;
+  BOOL show_drawbar_;
+  BOOL show_officebar_;
 
 public:
+  void OnHanleShowBar(UINT nid);
   void OnComBo();
   void OnComBoTextStyle();
   void OnComboTextSize();
@@ -44,7 +47,6 @@ protected:  // control bar embedded members
   CMFCToolBar       m_wndToolBar_Direct;
   CMFCToolBar       m_wndToolBar_Office;
   CMFCToolBar       m_wndToolBar_Draw;
-
 
 
 

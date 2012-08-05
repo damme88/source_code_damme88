@@ -9,6 +9,8 @@
 
 #include "Simple_DrawDoc.h"
 #include "Simple_DrawView.h"
+#include "TextEditor.h"
+#include "ControlContextDlg.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -19,32 +21,27 @@
 
 BEGIN_MESSAGE_MAP(CSimple_DrawApp, CWinAppEx)
 	ON_COMMAND(ID_APP_ABOUT, &CSimple_DrawApp::OnAppAbout)
+  ON_COMMAND(ID_OFFICE_TEXTEDITOR, &CSimple_DrawApp::OnAppTextEditor)
+  ON_COMMAND(ID_VIEW_CONTEXT_DLG, &CSimple_DrawApp::OnAppContextDialog)
 	// Standard file based document commands
 	ON_COMMAND(ID_FILE_NEW, &CWinAppEx::OnFileNew)
 	ON_COMMAND(ID_FILE_OPEN, &CWinAppEx::OnFileOpen)
 	// Standard print setup command
 	ON_COMMAND(ID_FILE_PRINT_SETUP, &CWinAppEx::OnFilePrintSetup)
+
 END_MESSAGE_MAP()
 
 
-// CSimple_DrawApp construction
 
-CSimple_DrawApp::CSimple_DrawApp()
-{
-
-	m_bHiColorIcons = TRUE;
-
-	// TODO: add construction code here,
-	// Place all significant initialization in InitInstance
+// Contructors
+CSimple_DrawApp::CSimple_DrawApp():
+  m_bHiColorIcons(TRUE) {
 }
 
-// The one and only CSimple_DrawApp object
 
 CSimple_DrawApp theApp;
 
-
 // CSimple_DrawApp initialization
-
 BOOL CSimple_DrawApp::InitInstance()
 {
 	// InitCommonControlsEx() is required on Windows XP if an application
@@ -159,6 +156,18 @@ void CSimple_DrawApp::OnAppAbout()
 
 // CSimple_DrawApp customization load/save methods
 
+
+void CSimple_DrawApp::OnAppTextEditor() {
+ TextEditor text_editor_Dlg;
+ text_editor_Dlg.DoModal();
+}
+
+void CSimple_DrawApp::OnAppContextDialog () {
+  CControlContextDlg context_dlg;
+  context_dlg.DoModal();
+}
+
+
 void CSimple_DrawApp::PreLoadState()
 {
 	BOOL bNameValid;
@@ -176,6 +185,13 @@ void CSimple_DrawApp::SaveCustomState()
 {
 }
 
+
+
+void CSimple_DrawApp::OnFileOpen() {
+ CFileDialog dlg(TRUE, NULL, L"", OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT, 
+		L"All Files (*.*)|*.*||");
+  dlg.DoModal();
+}
 // CSimple_DrawApp message handlers
 
 

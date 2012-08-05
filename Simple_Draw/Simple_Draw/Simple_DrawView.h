@@ -32,16 +32,16 @@ private:
    GLfloat m_texMode;
    GLfloat m_texWrap;
    GLfloat m_texFilter;
-   GLuint  m_Texture[10];
+   //GLuint  m_Texture[10];
    CPoint m_MouseDownPoint;
 
    // variable for button checkbox of office toolbar
    short m_text_bold;
-   short m_count_bold;
    short m_text_italic;
-   short m_count_italic;
    short m_text_under_line;
-   short m_count_under_line;
+   BOOL check_bold_;
+   BOOL check_italic_;
+   BOOL check_underline_;
    
    short m_align_left;
    short m_align_right;
@@ -55,6 +55,9 @@ private:
    CPoint m_end_point;
    int count_down;
    BOOL check_down;
+
+public:
+  BOOL status_text_editor_;
 
 public:
    void OnEditUndo();
@@ -85,23 +88,28 @@ public:
    void OnTextBold();
    void OnTextItalic();
    void OnTextUnderLine();
-
    void OnUpdateBold(CCmdUI * pcmdui);
    void OnUpdateItalic(CCmdUI *pcmdui);
    void OnUpdateUnderLine(CCmdUI *pcmdui);
 
-   void OnAlignLeft();
-   void OnAlignRight();
-   void OnAlignCenter();
-   void OnAlignJustify();
-   
-   void OnUpdateAlignLeft(CCmdUI *pcmdui);
-   void OnUpdateAlignRight(CCmdUI *pcmdui);
-   void OnUpdateAlignCenter(CCmdUI *pcmdui);
-   void OnUpdateAlignJustify(CCmdUI *pcmdui);
-    
+   void OnHandleAlign(UINT nID);
+   void OnUpdateHandleAlign(CCmdUI *pcmdui);
+
+   void OnSo1(); 
    void OnDrawline();
    void OnUpdateDrawLine(CCmdUI *pcmdui);
+   
+   void DrawLine();
+   void DrawCurve();
+   void DrawCircle();
+   void DrawRectangle();
+   void DrawRoundRectangle();
+   void DrawPoint();
+   void DrawColorPic();
+   void DrawColorFill();
+   void DrawEraser();
+   void DrawPolygon();
+
 
 // Overrides
 public:

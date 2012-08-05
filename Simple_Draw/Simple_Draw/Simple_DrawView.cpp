@@ -12,7 +12,8 @@
 #define new DEBUG_NEW
 #endif
 
-// CSimple_DrawView
+#define ID_ALIGN_START  ID_ALIGN_LEFT
+#define ID_ALIGN_END    ID_ALIGN_JUSTIFY
 
 IMPLEMENT_DYNCREATE(CSimple_DrawView, CView)
 
@@ -41,31 +42,29 @@ BEGIN_MESSAGE_MAP(CSimple_DrawView, CView)
   ON_COMMAND(ID_ZOOM_OUT,           &CSimple_DrawView::OnZoomOut)
   ON_COMMAND(ID_ZOOM_STANDAR,       &CSimple_DrawView::OnZoomStandar)
 
+    ON_COMMAND(ID_BOLD, &CSimple_DrawView::OnTextBold)
+    ON_UPDATE_COMMAND_UI(ID_BOLD, &CSimple_DrawView::OnUpdateBold)
 
-  ON_COMMAND(ID_BOLD, &CSimple_DrawView::OnTextBold)
-  ON_UPDATE_COMMAND_UI(ID_BOLD, &CSimple_DrawView::OnUpdateBold)
+    ON_COMMAND(ID_ITALIC, &CSimple_DrawView::OnTextItalic)
+    ON_UPDATE_COMMAND_UI(ID_ITALIC, &CSimple_DrawView::OnUpdateItalic)
 
-  ON_COMMAND(ID_ITALIC, &CSimple_DrawView::OnTextItalic)
-  ON_UPDATE_COMMAND_UI(ID_ITALIC, &CSimple_DrawView::OnUpdateItalic)
+    ON_COMMAND(ID_UNDER_LINE, &CSimple_DrawView::OnTextUnderLine)
+    ON_UPDATE_COMMAND_UI(ID_UNDER_LINE, &CSimple_DrawView::OnUpdateUnderLine)
 
-  ON_COMMAND(ID_UNDER_LINE, &CSimple_DrawView::OnTextUnderLine)
-  ON_UPDATE_COMMAND_UI(ID_UNDER_LINE, &CSimple_DrawView::OnUpdateUnderLine)
+    ON_COMMAND_RANGE(ID_ALIGN_START, ID_ALIGN_END, &CSimple_DrawView::OnHandleAlign)
+    ON_UPDATE_COMMAND_UI_RANGE(ID_ALIGN_START, ID_ALIGN_END, &CSimple_DrawView::OnUpdateHandleAlign)
 
-  ON_COMMAND(ID_ALIGN_LEFT, &CSimple_DrawView::OnAlignLeft)
-  ON_UPDATE_COMMAND_UI(ID_ALIGN_LEFT, &CSimple_DrawView::OnUpdateAlignLeft)
-
-  ON_COMMAND(ID_ALIGN_RIGHT, &CSimple_DrawView::OnAlignRight)
-  ON_UPDATE_COMMAND_UI(ID_ALIGN_RIGHT, &CSimple_DrawView::OnUpdateAlignRight)
-
-  ON_COMMAND(ID_ALIGN_CENTER, &CSimple_DrawView::OnAlignCenter)
-  ON_UPDATE_COMMAND_UI(ID_ALIGN_CENTER, &CSimple_DrawView::OnUpdateAlignCenter)
-
-  ON_COMMAND(ID_ALIGN_JUSTIFY, &CSimple_DrawView::OnAlignJustify)
-  ON_UPDATE_COMMAND_UI(ID_ALIGN_JUSTIFY, &CSimple_DrawView::OnUpdateAlignJustify)
-
-  ON_COMMAND(ID_DRAW_LINE, &CSimple_DrawView::OnDrawline)
-  ON_UPDATE_COMMAND_UI(ID_DRAW_LINE, &CSimple_DrawView::OnUpdateDrawLine)
-
+    // Enable buttons for toolbar Draw
+    ON_COMMAND(ID_DRAW_CIRCLE, &CSimple_DrawView::DrawCircle)
+    ON_COMMAND(ID_DRAW_COLOR_PICKER, &CSimple_DrawView::DrawColorPic)
+    ON_COMMAND(ID_DRAW_ERASER, &CSimple_DrawView::DrawEraser)
+    ON_COMMAND(ID_DRAW_FILL_COLOR, &CSimple_DrawView::DrawColorFill)
+    ON_COMMAND(ID_DRAW_POINT, &CSimple_DrawView::DrawPoint)
+    ON_COMMAND(ID_DRAW_LINE, &CSimple_DrawView::DrawLine)
+    ON_COMMAND(ID_DRAW_RECTANGLE, &CSimple_DrawView::DrawRectangle)
+    ON_COMMAND(ID_DRAW_POLYGON, &CSimple_DrawView::DrawPolygon)
+    ON_COMMAND(ID_DRAW_ROUNDED_RECTANGLE, &CSimple_DrawView::DrawRoundRectangle)
+    ON_COMMAND(ID_DRAW_CURVE, &CSimple_DrawView::DrawCurve)
 
 
 	ON_WM_CREATE()
@@ -81,41 +80,33 @@ END_MESSAGE_MAP()
 
 // CSimple_DrawView construction/destruction
 
-CSimple_DrawView::CSimple_DrawView()
-{
-	// TODO: add construction code here	
-   m_bOXY   = FALSE ;
-   m_bOXY   = FALSE ;
-   count_oxy = 0;
-   count_oxyz = 0;
-   count_grid = 0;
-   m_xAngle = 0;
-   m_yAngle = 0;
-   m_zoom   = 0;
-   m_draw_grid = FALSE;
-   m_texMode = 0;
-   m_texWrap = 0;
-   m_texFilter = 0;
-   m_Texture[0] = 0;
-   m_Texture[1] = 0;
-   m_Texture[2] = 0;
-   m_Texture[3] = 0;
-   m_Texture[4] = 0;
-
-   m_text_bold = -1;
-   m_count_bold = 0;
-
-   m_text_italic = -1;
-   m_count_italic = 0;
-
-   m_text_under_line = -1;
-   m_count_under_line = 0;
-
-   m_align_left = 0;
+CSimple_DrawView::CSimple_DrawView() :
+   m_bOXY(FALSE),
+   count_oxy(0),
+   count_oxyz(0),
+   count_grid(0),
+   m_xAngle(0),
+   m_yAngle(0),
+   m_zoom(0),
+   m_draw_grid(FALSE),
+   m_texMode(0),
+   m_texWrap(0),
+   m_texFilter(0),
+   m_text_bold(0),
+   m_text_italic(0),
+   m_text_under_line(0),
+   check_bold_(false),
+   check_italic_(false),
+   check_underline_(false) {
+  // m_Texture[0] = 0;
+ //  m_Texture[1] = 0;
+  // m_Texture[2] = 0;
+ //  m_Texture[3] = 0;
+ //  m_Texture[4] = 0;
+   m_align_left = 1;
    m_align_right = 0;
    m_align_center = 0;
    m_align_justify = 0;
-
    m_draw_line = 0;
    m_count_draw_line = 0;
 
@@ -184,7 +175,7 @@ BOOL CSimple_DrawView::InitializeOpenGL() {
         return FALSE;
     }
 	//Specify Black as the clear color
-    ::glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+    ::glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 
     //Specify the back of the buffer as clear depth
     ::glClearDepth(1.0f);
@@ -261,6 +252,7 @@ BOOL CSimple_DrawView::OnEraseBkgnd(CDC* pDC) {
 
 
 void CSimple_DrawView::OnDestroy() {
+    status_text_editor_ = FALSE;
     CView::OnDestroy();
     // TODO: Add your message handler code here
 	   //Make the RC non-current
@@ -612,8 +604,6 @@ void CSimple_DrawView::OnZoomStandar() {
 
 
 
-
-
 // CSimple_DrawView printing
 void CSimple_DrawView::OnFilePrintPreview()
 {
@@ -678,43 +668,35 @@ void CSimple_DrawView::OnBnClickedSubmitBtn()
 }
 
 void CSimple_DrawView::OnTextBold() {
-  m_count_bold++;
-  if (m_count_bold %2 !=0) {
-    m_text_bold = 1;
-  } else {
+  if (check_bold_ == true) {
     m_text_bold = 0;
-  }
-  if(m_count_bold == 10) {
-    m_count_bold = 0;
+    check_bold_ = false;
+  } else {
+    m_text_bold = 1;
+    check_bold_ = true;
   }
 }
-
 
 void CSimple_DrawView::OnTextItalic() {
-  m_count_italic ++;
-  if (m_count_italic %2 !=0) {
-    m_text_italic = 1;
-  } else {
+
+  if (check_italic_ == true) {
     m_text_italic = 0;
-  }
-  if(m_count_italic == 10) {
-    m_count_italic = 0;
-  }
-}
-void CSimple_DrawView::OnTextUnderLine() {
-  m_count_under_line ++;
-  if (m_count_under_line %2 !=0) {
-    m_text_under_line = 1;
+    check_italic_ = false;
   } else {
-    m_text_under_line = 0;
-  }
-  if(m_count_under_line == 10) {
-    m_count_under_line = 0;
+    m_text_italic = 1;
+    check_italic_ = true;
   }
 }
 
-
-
+void CSimple_DrawView::OnTextUnderLine() {
+  if (check_underline_ == true) {
+    m_text_under_line = 0;
+    check_underline_ = false;
+  } else {
+    m_text_under_line = 1;
+    check_underline_ = true;
+  }
+}
 
 void CSimple_DrawView::OnUpdateBold(CCmdUI * pcmdui) {
   if (m_text_bold ==1) {
@@ -742,62 +724,88 @@ void CSimple_DrawView::OnUpdateUnderLine(CCmdUI *pcmdui) {
 }
 
 
-void CSimple_DrawView::OnAlignLeft() {
-  m_align_left = 1;
-  m_align_center = 0;
-  m_align_right = 0;
-  m_align_justify = 0;
+void CSimple_DrawView::OnHandleAlign(UINT nID) {
+  if (nID == ID_ALIGN_LEFT) {
+    m_align_left = 1;
+    m_align_center = 0;
+    m_align_right = 0;
+    m_align_justify = 0;
+  }
+  if (nID == ID_ALIGN_RIGHT) {
+    m_align_left = 0;
+    m_align_center = 0;
+    m_align_right = 1;
+    m_align_justify = 0;
+  }
+  if (nID == ID_ALIGN_CENTER) {
+    m_align_left = 0;
+    m_align_center = 1;
+    m_align_right = 0;
+    m_align_justify = 0;
+  }
+  if (nID == ID_ALIGN_JUSTIFY) {
+    m_align_left = 0;
+    m_align_center = 0;
+    m_align_right = 0;
+    m_align_justify = 1;
+  }
 }
 
-void CSimple_DrawView::OnAlignRight() {
-  m_align_left = 0;
-  m_align_center = 0;
-  m_align_right = 1;
-  m_align_justify = 0;
-}
-
-void CSimple_DrawView::OnAlignCenter(){
-  m_align_left = 0;
-  m_align_center = 1;
-  m_align_right = 0;
-  m_align_justify = 0;
-}
-
-void CSimple_DrawView::OnAlignJustify() {
-  m_align_left = 0;
-  m_align_center = 0;
-  m_align_right = 0;
-  m_align_justify = 1;
-}
-
-
-void CSimple_DrawView::OnUpdateAlignLeft(CCmdUI *pcmdui) {
-  if (m_align_left) 
-    pcmdui->SetCheck(1);
-  else
+void CSimple_DrawView::OnUpdateHandleAlign(CCmdUI *pcmdui) {
+  if (pcmdui->m_nID == ID_ALIGN_LEFT) {
+    if (m_align_left) 
+      pcmdui->SetCheck(1);
+    else
     pcmdui->SetCheck(0);
+  } else if (pcmdui->m_nID == ID_ALIGN_RIGHT) {
+    if (m_align_right) 
+      pcmdui->SetCheck(1);
+    else
+    pcmdui->SetCheck(0);
+  } else if (pcmdui->m_nID == ID_ALIGN_CENTER) {
+    if (m_align_center) 
+      pcmdui->SetCheck(1);
+    else
+    pcmdui->SetCheck(0);
+  } else if (pcmdui->m_nID == ID_ALIGN_JUSTIFY) {
+    if (m_align_justify) 
+      pcmdui->SetCheck(1);
+    else
+    pcmdui->SetCheck(0);
+  }
 }
 
-void CSimple_DrawView::OnUpdateAlignRight(CCmdUI *pcmdui) {
-  if(m_align_right)
-    pcmdui->SetCheck(1);
-  else
-    pcmdui->SetCheck(0);
+
+void CSimple_DrawView::OnSo1() {
+  AfxMessageBox(L" XIN CHAO CAC BAN");
 }
 
-void CSimple_DrawView::OnUpdateAlignCenter(CCmdUI *pcmdui) {
-  if (m_align_center)
-    pcmdui->SetCheck(1);
-  else
-    pcmdui->SetCheck(0);
+
+void CSimple_DrawView::DrawLine() {
+}
+void CSimple_DrawView::DrawCurve() {
+}
+void CSimple_DrawView::DrawCircle() {
+}
+void CSimple_DrawView::DrawRectangle() {
+}
+void CSimple_DrawView::DrawRoundRectangle() {
+}
+void CSimple_DrawView::DrawPoint() {
+}
+void CSimple_DrawView::DrawColorPic() {
+}
+void CSimple_DrawView::DrawColorFill() {
+}
+void CSimple_DrawView::DrawEraser() {
+}
+void CSimple_DrawView::DrawPolygon() {
 }
 
-void CSimple_DrawView::OnUpdateAlignJustify(CCmdUI *pcmdui) {
-  if (m_align_justify)
-    pcmdui->SetCheck(1);
-  else
-    pcmdui->SetCheck(0);
-}
+
+
+
+
 
     
 void CSimple_DrawView::OnDrawline() {

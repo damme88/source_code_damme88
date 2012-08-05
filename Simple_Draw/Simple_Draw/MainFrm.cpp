@@ -15,12 +15,15 @@
 #define new DEBUG_NEW
 #endif
 
+#define ID_SHOW_BAR_START ID_DOCKING_VIEWTOOLBAR
+#define ID_SHOW_BAR_END   ID_DOCKING_OFFICETOOLBAR
+
 // CMainFrame
 
 IMPLEMENT_DYNCREATE(CMainFrame, CFrameWndEx)
 
 const int  iMaxUserToolbars = 10;
-const UINT uiFirstUserToolBarId = AFX_IDW_CONTROLBAR_FIRST + 40;
+const UINT uiFirstUserToolBarId = AFX_IDW_CONTROLBAR_FIRST + 0;
 const UINT uiLastUserToolBarId = uiFirstUserToolBarId + iMaxUserToolbars - 1;
 
 BEGIN_MESSAGE_MAP(CMainFrame, CFrameWndEx)
@@ -30,9 +33,10 @@ BEGIN_MESSAGE_MAP(CMainFrame, CFrameWndEx)
 	ON_REGISTERED_MESSAGE(AFX_WM_CREATETOOLBAR, &CMainFrame::OnToolbarCreateNew)
   ON_COMMAND(ID_SELECT,&CMainFrame::OnComBo)
   ON_CBN_SELENDOK(ID_SELECT,&CMainFrame::OnHandleItem)
-
   ON_COMMAND(ID_TEXT_STYLE, &CMainFrame::OnComBoTextStyle)
   ON_COMMAND(ID_TEXT_SIZE, &CMainFrame::OnComboTextSize)
+
+  ON_COMMAND_RANGE(ID_SHOW_BAR_START, ID_SHOW_BAR_END, &CMainFrame::OnHanleShowBar)
 
 END_MESSAGE_MAP()
 
@@ -46,7 +50,10 @@ static UINT indicators[] =
 
 // CMainFrame construction/destruction
 
-CMainFrame::CMainFrame()
+CMainFrame::CMainFrame() :
+  show_viewbar_(true),
+  show_drawbar_(true),
+  show_officebar_(true)
 {
 	// TODO: add member initialization code here
 }
@@ -57,6 +64,8 @@ CMainFrame::~CMainFrame()
 
 int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 {
+  CMenu *pmenu;
+  pmenu = GetMenu();
 	if (CFrameWndEx::OnCreate(lpCreateStruct) == -1)
 		return -1;
 
@@ -64,21 +73,23 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	// set the visual manager used to draw all user interface elements
 	CMFCVisualManager::SetDefaultManager(RUNTIME_CLASS(CMFCVisualManagerVS2005));
 
+  /*
 	if (!m_wndMenuBar.Create(this))
 	{
 		TRACE0("Failed to create menubar\n");
 		return -1;      // fail to create
-	}
+	//}
 
 	m_wndMenuBar.SetPaneStyle(m_wndMenuBar.GetPaneStyle() | CBRS_SIZE_DYNAMIC | 
                             CBRS_TOOLTIPS | CBRS_FLYBY);
-
+  m_wndMenuBar.EnableDocking(CBRS_ALIGN_ANY);
+  EnableDocking(CBRS_ALGIN_ANY)
+  DockPane(&m_wndMenuBar); 
+  */
 	// prevent the menu bar from taking the focus on activation
 	CMFCPopupMenu::SetForceMenuFocus(FALSE);
   
-  m_wndMenuBar.EnableDocking(CBRS_ALIGN_TOP);
-  EnableDocking(CBRS_ALIGN_ANY);
-  DockPane(&m_wndMenuBar);
+/***************************Create File Toolbar*******************************/
 
 	if (!m_wndToolBar.CreateEx(this, TBSTYLE_FLAT, WS_CHILD | WS_VISIBLE | 
                                    CBRS_TOP | CBRS_GRIPPER | CBRS_TOOLTIPS | 
@@ -88,11 +99,14 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 		TRACE0("Failed to create toolbar\n");
 		return -1;      // fail to create
 	}
-
-	CString strToolBarName;
-	bNameValid = strToolBarName.LoadString(IDS_TOOLBAR_STANDARD);
-	ASSERT(bNameValid);
-	m_wndToolBar.SetWindowText(strToolBarName);
+   
+   m_wndToolBar.EnableDocking(CBRS_ALIGN_ANY);
+   EnableDocking(CBRS_ALIGN_ANY);
+   DockPane(&m_wndToolBar);
+//	CString strToolBarName;
+//	bNameValid = strToolBarName.LoadString(IDS_TOOLBAR_STANDARD);
+	//ASSERT(bNameValid);
+	m_wndToolBar.SetWindowText(__T("File Toolbar"));
 
 
 	CString strCustomize;
@@ -100,9 +114,12 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	ASSERT(bNameValid);
 	m_wndToolBar.EnableCustomizeButton(TRUE, ID_VIEW_CUSTOMIZE, strCustomize);
 
-	// Allow user-defined toolbars operations:
-	InitUserToolbars(NULL, uiFirstUserToolBarId, uiLastUserToolBarId);
+/************************Create File Toolbar*********************************/
 
+	// Allow user-defined toolbars operations:
+	//InitUserToolbars(NULL, uiFirstUserToolBarId, uiLastUserToolBarId);
+
+/************************Create Direct Toolbar********************************/
     if (! m_wndToolBar_Direct.CreateEx(this, TBSTYLE_FLAT, WS_CHILD | WS_VISIBLE 
                                      | CBRS_TOP | CBRS_GRIPPER | CBRS_TOOLTIPS 
                                      | CBRS_FLYBY | CBRS_SIZE_DYNAMIC) ||
@@ -111,17 +128,11 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 		TRACE0("Failed to create Toolbar_Direct\n");
 		return -1;      // fail to create
 	}
- 
-  m_wndToolBar.EnableDocking(CBRS_ALIGN_TOP);
-  m_wndToolBar_Direct.EnableDocking(CBRS_ALIGN_TOP);
-  
+  m_wndToolBar_Direct.EnableDocking(CBRS_ALIGN_ANY);
   EnableDocking(CBRS_ALIGN_ANY);
-
   DockPane(&m_wndToolBar_Direct);
-  DockPaneLeftOf(&m_wndToolBar, &m_wndToolBar_Direct);
 
-
-
+/************************Create Office Toolbar********************************/
   if (! m_wndToolBar_Office.CreateEx(this, TBSTYLE_FLAT, WS_CHILD | WS_VISIBLE 
                                      | CBRS_TOP | CBRS_GRIPPER | CBRS_TOOLTIPS 
                                      | CBRS_FLYBY | CBRS_SIZE_DYNAMIC) ||
@@ -130,6 +141,11 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 		TRACE0("Failed to create Toolbar_Office\n");
 		return -1;      // fail to create
 	}
+  m_wndToolBar_Office.EnableDocking(CBRS_ALIGN_ANY);
+  EnableDocking(CBRS_ALIGN_ANY);
+  DockPane(&m_wndToolBar_Office);
+
+/************************Create Draw Toolbar********************************/
 
   if (! m_wndToolBar_Draw.CreateEx(this, TBSTYLE_FLAT, WS_CHILD | WS_VISIBLE 
                                      | CBRS_TOP | CBRS_GRIPPER | CBRS_TOOLTIPS 
@@ -140,20 +156,29 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 		return -1;      // fail to create
 	}
 
-  m_wndToolBar_Office.EnableDocking(CBRS_ALIGN_TOP);
-  m_wndToolBar_Draw.EnableDocking(CBRS_ALIGN_TOP);
+  m_wndToolBar_Draw.EnableDocking(CBRS_ALIGN_ANY);
   EnableDocking(CBRS_ALIGN_ANY);
-  DockPane(&m_wndToolBar_Office);
   DockPane(&m_wndToolBar_Draw);
 
+/************************* Check item for bar *******************************/
+
+  show_viewbar_ = true;
+  show_drawbar_ = true;
+  show_officebar_ = true;
+  pmenu->CheckMenuItem(ID_DOCKING_VIEWTOOLBAR, MF_CHECKED | MF_BYCOMMAND);
+  pmenu->CheckMenuItem(ID_DOCKING_DRAWTOOLBAR, MF_CHECKED | MF_BYCOMMAND);
+  pmenu->CheckMenuItem(ID_DOCKING_OFFICETOOLBAR, MF_CHECKED | MF_BYCOMMAND);
+
+
+/************************* status bar **************************************/
 	if (!m_wndStatusBar.Create(this))
 	{
 		TRACE0("Failed to create status bar\n");
 		return -1;      // fail to create
 	}
-	m_wndStatusBar.SetIndicators(indicators, sizeof(indicators)/sizeof(UINT));
-
-	// TODO: Delete these five lines if you don't want the toolbar and menubar to be dockable
+	m_wndStatusBar.SetIndicators(indicators, sizeof(indicators)/sizeof(UINT)); 
+  
+  // TODO: Delete these five lines if you don't want the toolbar and menubar to be dockable
 
 	// enable Visual Studio 2005 style docking window behavior
 	CDockingManager::SetDockingMode(DT_SMART);
@@ -192,6 +217,7 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	lstBasicCommands.AddTail(ID_APP_ABOUT);
 	lstBasicCommands.AddTail(ID_VIEW_STATUS_BAR);
 	lstBasicCommands.AddTail(ID_VIEW_TOOLBAR);
+  lstBasicCommands.AddTail(ID_ZOOM_IN);
 
 	CMFCToolBar::SetBasicCommands(lstBasicCommands);
 
@@ -285,12 +311,12 @@ BOOL CMainFrame::LoadFrame(UINT nIDResource, DWORD dwDefaultStyle,
 }
 
 LRESULT CMainFrame::OnToolbarReset(WPARAM wParam, LPARAM lParam) {
-  UINT id = (UINT)wParam;
+  /*UINT id = (UINT)wParam;
   if (id == IDR_TOOLBAR_OFFICE) {
-   /* CMFCToolBarComboBoxButton combo(ID_SELECT, 
+    CMFCToolBarComboBoxButton combo(ID_SELECT, 
       GetCmdMgr()->GetCmdImage(ID_SELECT), 
                                     CBS_DROPDOWNLIST);
-    combo.OnSize(60);
+    combo.OnSize(80);
     combo.AddItem(L"Green");
     combo.AddItem(L"Red");
     combo.AddItem(L"Yellow");
@@ -299,7 +325,7 @@ LRESULT CMainFrame::OnToolbarReset(WPARAM wParam, LPARAM lParam) {
     combo.AddItem(L"Orange");
     VERIFY(combo.SelectItem(1));
     int rplum_driect = m_wndToolBar_Direct.ReplaceButton(ID_SELECT, 
-                                                         combo, FALSE);*/
+                                                         combo, FALSE);
 
     CMFCToolBarComboBoxButton combo_office(ID_TEXT_STYLE, 
       GetCmdMgr()->GetCmdImage(ID_TEXT_STYLE), 
@@ -314,27 +340,16 @@ LRESULT CMainFrame::OnToolbarReset(WPARAM wParam, LPARAM lParam) {
     CMFCToolBarComboBoxButton combo_text_size(ID_TEXT_SIZE, 
       GetCmdMgr()->GetCmdImage(ID_TEXT_SIZE), 
                                     CBS_DROPDOWNLIST);
-    combo_text_size.OnSize(50);
+    combo_text_size.OnSize(80);
     combo_text_size.AddItem(L"10");
     combo_text_size.AddItem(L"12");
     combo_text_size.AddItem(L"14");
     VERIFY(combo_text_size.SelectItem(0));
     int rplum_text_size = m_wndToolBar_Office.ReplaceButton(ID_TEXT_SIZE, 
                                                         combo_text_size, FALSE);
-
- //int index = m_wndToolBar_Office.CommandToIndex(ID_TEXT_SIZE);
- //CustomComboButton combox_btn(ID_TEXT_SIZE, GetCmdMgr()->GetCmdImage(ID_TEXT_SIZE), CBS_DROPDOWNLIST);
-
- //int rplum_text_size = m_wndToolBar_Office.ReplaceButton(ID_TEXT_SIZE, combox_btn, FALSE); 
-
- //CustomComboButton *ccb = reinterpret_cast<CustomComboButton *>(m_wndToolBar_Office.GetButton(index));
- // CustomCombo *combo1 = reinterpret_cast<CustomCombo*>(ccb->GetComboBox());
- // combo1->AddItemCombo(_T("Item 1"), IDI_ICON1);
- }
+ }*/
   return 0L;
 }
-
-
 
 void CMainFrame::OnHandleItem() {
   int index = m_wndToolBar_Direct.CommandToIndex(ID_SELECT);
@@ -376,3 +391,44 @@ void CMainFrame::OnComBoTextStyle() {
 void CMainFrame::OnComboTextSize() {
  ;
 }
+
+void CMainFrame::OnHanleShowBar(UINT nID) {
+  CMenu *pmenu;
+  pmenu = GetMenu();
+  if (nID == ID_DOCKING_VIEWTOOLBAR) {
+    if (show_viewbar_ == true) {
+      m_wndToolBar_Direct.ShowWindow(SW_HIDE);
+      pmenu->CheckMenuItem(ID_DOCKING_VIEWTOOLBAR, MF_UNCHECKED| MF_BYCOMMAND);
+      show_viewbar_ = false;
+    } else {
+      m_wndToolBar_Direct.ShowWindow(SW_SHOW);
+      pmenu->CheckMenuItem(ID_DOCKING_VIEWTOOLBAR, MF_CHECKED | MF_BYCOMMAND);
+      show_viewbar_ = true;
+    }
+  }
+
+  if (nID == ID_DOCKING_DRAWTOOLBAR) {
+    if (show_drawbar_ == true) {
+      m_wndToolBar_Draw.ShowWindow(SW_HIDE);
+      pmenu->CheckMenuItem(ID_DOCKING_DRAWTOOLBAR, MF_UNCHECKED| MF_BYCOMMAND);
+      show_drawbar_ = false;
+    } else {
+      m_wndToolBar_Draw.ShowWindow(SW_SHOW);
+      pmenu->CheckMenuItem(ID_DOCKING_DRAWTOOLBAR, MF_CHECKED | MF_BYCOMMAND);
+      show_drawbar_ = true;
+    }
+  }
+
+  if (nID == ID_DOCKING_OFFICETOOLBAR) {
+    if (show_officebar_ == true) {
+      m_wndToolBar_Office.ShowWindow(SW_HIDE);
+        pmenu->CheckMenuItem(ID_DOCKING_OFFICETOOLBAR, MF_UNCHECKED| MF_BYCOMMAND);
+      show_officebar_ = false;
+    } else {
+      m_wndToolBar_Office.ShowWindow(SW_SHOW);
+      pmenu->CheckMenuItem(ID_DOCKING_OFFICETOOLBAR, MF_CHECKED | MF_BYCOMMAND);
+      show_officebar_ = true;
+    }
+  }
+}
+
