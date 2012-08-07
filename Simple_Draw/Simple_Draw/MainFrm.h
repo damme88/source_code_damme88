@@ -2,6 +2,7 @@
 // MainFrm.h : interface of the CMainFrame class
 //
 #pragma once
+#include "WorkspaceBar.h"
 
 class CMainFrame : public CFrameWndEx
 {
@@ -12,17 +13,14 @@ protected: // create from serialization only
 
 // Attributes
 public:
-  BOOL show_viewbar_;
-  BOOL show_drawbar_;
-  BOOL show_officebar_;
 
 public:
   void OnHanleShowBar(UINT nid);
+  void OnUpdateHandleShowBar(CCmdUI* pcmd);
   void OnComBo();
   void OnComBoTextStyle();
   void OnComboTextSize();
   void OnHandleItem();
-
 // Overrides
 public:
 	virtual BOOL PreCreateWindow(CREATESTRUCT& cs);
@@ -48,6 +46,8 @@ protected:  // control bar embedded members
   CMFCToolBar       m_wndToolBar_Office;
   CMFCToolBar       m_wndToolBar_Draw;
 
+  CWorkspaceBar	m_wndWorkSpace;
+// variable for rebar
 
 
 // Generated message map functions
@@ -56,6 +56,8 @@ protected:
 	afx_msg void OnViewCustomize();
   afx_msg LRESULT OnToolbarCreateNew(WPARAM wp,LPARAM lp);
   afx_msg LRESULT OnToolbarReset(WPARAM wParam, LPARAM lParam);
+  afx_msg void OnViewWorkspace();
+	afx_msg void OnUpdateViewWorkspace(CCmdUI* pCmdUI);
 	DECLARE_MESSAGE_MAP()
 };
 

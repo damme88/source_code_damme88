@@ -237,6 +237,18 @@
 				RelativePath=".\TextEditor.cpp"
 				>
 			</File>
+			<Filter
+				Name="Work Space"
+				>
+				<File
+					RelativePath=".\WorkspaceBar.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\WorkspaceBar.h"
+					>
+				</File>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="Header Files"

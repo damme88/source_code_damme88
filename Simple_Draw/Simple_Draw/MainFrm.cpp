@@ -37,6 +37,10 @@ BEGIN_MESSAGE_MAP(CMainFrame, CFrameWndEx)
   ON_COMMAND(ID_TEXT_SIZE, &CMainFrame::OnComboTextSize)
 
   ON_COMMAND_RANGE(ID_SHOW_BAR_START, ID_SHOW_BAR_END, &CMainFrame::OnHanleShowBar)
+  ON_UPDATE_COMMAND_UI_RANGE(ID_SHOW_BAR_START, ID_SHOW_BAR_END, &CMainFrame::OnUpdateHandleShowBar)
+
+  ON_COMMAND(ID_VIEW_WORKSPACE, &CMainFrame::OnViewWorkspace)
+  ON_UPDATE_COMMAND_UI(ID_VIEW_WORKSPACE, &CMainFrame::OnUpdateViewWorkspace)
 
 END_MESSAGE_MAP()
 
@@ -50,10 +54,7 @@ static UINT indicators[] =
 
 // CMainFrame construction/destruction
 
-CMainFrame::CMainFrame() :
-  show_viewbar_(true),
-  show_drawbar_(true),
-  show_officebar_(true)
+CMainFrame::CMainFrame()
 {
 	// TODO: add member initialization code here
 }
@@ -160,17 +161,17 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
   EnableDocking(CBRS_ALIGN_ANY);
   DockPane(&m_wndToolBar_Draw);
 
-/************************* Check item for bar *******************************/
+	if (!m_wndWorkSpace.Create (_T("Workspace"), this, CSize (200, 200),
+		TRUE /* Has gripper */, ID_VIEW_WORKSPACE,
+		WS_CHILD | WS_VISIBLE | CBRS_LEFT))
+	{
+		TRACE0("Failed to create workspace bar\n");
+		return -1;      // fail to create
+	}
+  m_wndWorkSpace.EnableDocking(CBRS_ALIGN_ANY);
+  EnableDocking(CBRS_ALIGN_ANY);
+  DockPane(&m_wndWorkSpace);
 
-  show_viewbar_ = true;
-  show_drawbar_ = true;
-  show_officebar_ = true;
-  pmenu->CheckMenuItem(ID_DOCKING_VIEWTOOLBAR, MF_CHECKED | MF_BYCOMMAND);
-  pmenu->CheckMenuItem(ID_DOCKING_DRAWTOOLBAR, MF_CHECKED | MF_BYCOMMAND);
-  pmenu->CheckMenuItem(ID_DOCKING_OFFICETOOLBAR, MF_CHECKED | MF_BYCOMMAND);
-
-
-/************************* status bar **************************************/
 	if (!m_wndStatusBar.Create(this))
 	{
 		TRACE0("Failed to create status bar\n");
@@ -311,7 +312,7 @@ BOOL CMainFrame::LoadFrame(UINT nIDResource, DWORD dwDefaultStyle,
 }
 
 LRESULT CMainFrame::OnToolbarReset(WPARAM wParam, LPARAM lParam) {
-  /*UINT id = (UINT)wParam;
+  UINT id = (UINT)wParam;
   if (id == IDR_TOOLBAR_OFFICE) {
     CMFCToolBarComboBoxButton combo(ID_SELECT, 
       GetCmdMgr()->GetCmdImage(ID_SELECT), 
@@ -347,7 +348,7 @@ LRESULT CMainFrame::OnToolbarReset(WPARAM wParam, LPARAM lParam) {
     VERIFY(combo_text_size.SelectItem(0));
     int rplum_text_size = m_wndToolBar_Office.ReplaceButton(ID_TEXT_SIZE, 
                                                         combo_text_size, FALSE);
- }*/
+ }
   return 0L;
 }
 
@@ -393,42 +394,42 @@ void CMainFrame::OnComboTextSize() {
 }
 
 void CMainFrame::OnHanleShowBar(UINT nID) {
-  CMenu *pmenu;
-  pmenu = GetMenu();
   if (nID == ID_DOCKING_VIEWTOOLBAR) {
-    if (show_viewbar_ == true) {
-      m_wndToolBar_Direct.ShowWindow(SW_HIDE);
-      pmenu->CheckMenuItem(ID_DOCKING_VIEWTOOLBAR, MF_UNCHECKED| MF_BYCOMMAND);
-      show_viewbar_ = false;
-    } else {
-      m_wndToolBar_Direct.ShowWindow(SW_SHOW);
-      pmenu->CheckMenuItem(ID_DOCKING_VIEWTOOLBAR, MF_CHECKED | MF_BYCOMMAND);
-      show_viewbar_ = true;
-    }
+    ShowPane(&m_wndToolBar_Direct, !(m_wndToolBar_Direct.IsVisible()), FALSE, TRUE);
+    RecalcLayout();
   }
-
   if (nID == ID_DOCKING_DRAWTOOLBAR) {
-    if (show_drawbar_ == true) {
-      m_wndToolBar_Draw.ShowWindow(SW_HIDE);
-      pmenu->CheckMenuItem(ID_DOCKING_DRAWTOOLBAR, MF_UNCHECKED| MF_BYCOMMAND);
-      show_drawbar_ = false;
-    } else {
-      m_wndToolBar_Draw.ShowWindow(SW_SHOW);
-      pmenu->CheckMenuItem(ID_DOCKING_DRAWTOOLBAR, MF_CHECKED | MF_BYCOMMAND);
-      show_drawbar_ = true;
-    }
+    ShowPane(&m_wndToolBar_Draw, !(m_wndToolBar_Draw.IsVisible()), FALSE, TRUE);
+    RecalcLayout();
   }
 
   if (nID == ID_DOCKING_OFFICETOOLBAR) {
-    if (show_officebar_ == true) {
-      m_wndToolBar_Office.ShowWindow(SW_HIDE);
-        pmenu->CheckMenuItem(ID_DOCKING_OFFICETOOLBAR, MF_UNCHECKED| MF_BYCOMMAND);
-      show_officebar_ = false;
-    } else {
-      m_wndToolBar_Office.ShowWindow(SW_SHOW);
-      pmenu->CheckMenuItem(ID_DOCKING_OFFICETOOLBAR, MF_CHECKED | MF_BYCOMMAND);
-      show_officebar_ = true;
-    }
+    ShowPane(&m_wndToolBar_Office, !(m_wndToolBar_Office.IsVisible()), FALSE, TRUE);
+    RecalcLayout();
   }
 }
 
+void CMainFrame::OnUpdateHandleShowBar(CCmdUI* pcmd) {
+  if (pcmd->m_nID == ID_DOCKING_VIEWTOOLBAR) {
+    pcmd->SetCheck(m_wndToolBar_Direct.IsVisible());
+  }
+  if (pcmd->m_nID == ID_DOCKING_DRAWTOOLBAR) {
+    pcmd->SetCheck(m_wndToolBar_Draw.IsVisible());
+  }
+  if (pcmd->m_nID == ID_DOCKING_OFFICETOOLBAR) {
+    pcmd->SetCheck(m_wndToolBar_Office.IsVisible());
+  }
+}
+
+void CMainFrame::OnViewWorkspace() 
+{
+	ShowPane (&m_wndWorkSpace,
+					!(m_wndWorkSpace.IsVisible ()),
+					FALSE, TRUE);
+	RecalcLayout ();
+}
+
+void CMainFrame::OnUpdateViewWorkspace(CCmdUI* pCmdUI) 
+{
+	pCmdUI->SetCheck (m_wndWorkSpace.IsVisible ());
+}

@@ -27,7 +27,6 @@
 #define IDD_DIALOG2                     325
 #define IDR_MENU_CONTEX                 326
 #define IDR_MENU_DLG1                   327
-#define IDR_MENU1                       328
 #define IDC_EDIT1                       1002
 #define IDC_BUTTON1                     1003
 #define IDC_BUTTON2                     1004
@@ -98,13 +97,18 @@
 #define ID_EDIT_CUT32859                32859
 #define ID_EDIT_PASTE32860              32860
 #define ID_EDIT_DELETE                  32861
+#define ID_VIEW_FILETOOLBAR             32862
+#define ID_VIEW_VIEWTOOLBAR             32863
+#define ID_VIEW_OFFICETOOLBAR           32864
+#define ID_VIEW_DRAWTOOLBAR             32865
+#define ID_VIEW_WORKSPACE               32866
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        329
-#define _APS_NEXT_COMMAND_VALUE         32862
+#define _APS_NEXT_COMMAND_VALUE         32867
 #define _APS_NEXT_CONTROL_VALUE         1007
 #define _APS_NEXT_SYMED_VALUE           310
 #endif

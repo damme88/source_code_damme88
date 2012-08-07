@@ -230,13 +230,11 @@ BEGIN
     END
     POPUP "&View"
     BEGIN
-        POPUP "&Toolbars and Docking Windows"
-        BEGIN
-            MENUITEM "File Toolbar",                ID_VIEW_TOOLBAR
-            MENUITEM "View Toolbar",                ID_DOCKING_VIEWTOOLBAR
-            MENUITEM "Draw Toolbar",                ID_DOCKING_DRAWTOOLBAR
-            MENUITEM "Office Toolbar",              ID_DOCKING_OFFICETOOLBAR
-        END
+        MENUITEM "File Toolbar",                ID_VIEW_TOOLBAR
+        MENUITEM "View Toolbar",                ID_DOCKING_VIEWTOOLBAR
+        MENUITEM "Office Toolbar",              ID_DOCKING_OFFICETOOLBAR
+        MENUITEM "Draw Toolbar",                ID_DOCKING_DRAWTOOLBAR
+        MENUITEM "Work Space",                  ID_VIEW_WORKSPACE
         MENUITEM "&Status Bar",                 ID_VIEW_STATUS_BAR
         MENUITEM "Context Dialog",              32843
     END
