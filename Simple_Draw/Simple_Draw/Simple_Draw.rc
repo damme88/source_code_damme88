@@ -85,7 +85,6 @@ IDI_ICON1               ICON                    "res\\icon1.ico"
 IDR_MAINFRAME           BITMAP                  "res\\Toolbar.bmp"
 IDR_MAINFRAME_256       BITMAP                  "G:\\repo_damme88\\Simple_Draw\\Simple_Draw\\res\\Toolbar256.bmp"
 IDR_TOOLBAR_DIRECT      BITMAP                  "res\\Toolbar_Driect.bmp"
-IDB_BITMAP_RED          BITMAP                  "res\\bitmap2.bmp"
 IDR_TOOLBAR_OFFICE      BITMAP                  "res\\toolbar1.bmp"
 IDR_TOOLBAR_DRAW        BITMAP                  "res\\bmp00001.bmp"
 
@@ -131,27 +130,21 @@ END
 IDR_TOOLBAR_DIRECT TOOLBAR  16, 16
 BEGIN
     BUTTON      ID_FRONT
-    SEPARATOR
     BUTTON      ID_TOP
-    SEPARATOR
     BUTTON      ID_RIGHT
-    SEPARATOR
     BUTTON      ID_LEFT
     BUTTON      ID_BEHIND
     BUTTON      ID_BOTTOM
     BUTTON      ID_PAN_STANDAR
     SEPARATOR
     BUTTON      ID_ZOOM_IN
-    SEPARATOR
     BUTTON      ID_ZOOM_OUT
-    SEPARATOR
     BUTTON      ID_ZOOM_STANDAR
     SEPARATOR
     BUTTON      ID_SELECT
+    SEPARATOR
     BUTTON      ID_MOVE_UP
-    SEPARATOR
     BUTTON      ID_MOVE_DOWN
-    SEPARATOR
     BUTTON      ID_MOVE_LEFT
     BUTTON      ID_MOVE_RIGHT
 END
@@ -161,18 +154,15 @@ BEGIN
     BUTTON      ID_BOLD
     BUTTON      ID_ITALIC
     BUTTON      ID_UNDER_LINE
+    SEPARATOR
     BUTTON      ID_ALIGN_LEFT
-    SEPARATOR
     BUTTON      ID_ALIGN_CENTER
-    SEPARATOR
     BUTTON      ID_ALIGN_RIGHT
     BUTTON      ID_ALIGN_JUSTIFY
+    SEPARATOR
     BUTTON      ID_TEXT_STYLE
-    SEPARATOR
     BUTTON      ID_TEXT_SIZE
-    SEPARATOR
     BUTTON      ID_TEXT_COLOR
-    SEPARATOR
     BUTTON      ID_TEXT_FILL_COLOR
     BUTTON      ID_TEXT_STRIKE
     BUTTON      ID_1
@@ -181,14 +171,10 @@ END
 IDR_TOOLBAR_DRAW TOOLBAR  16, 15
 BEGIN
     BUTTON      ID_DRAW_LINE
-    SEPARATOR
     BUTTON      ID_DRAW_CURVE
     BUTTON      ID_DRAW_POINT
-    SEPARATOR
     BUTTON      ID_DRAW_CIRCLE
-    SEPARATOR
     BUTTON      ID_DRAW_RECTANGLE
-    SEPARATOR
     BUTTON      ID_DRAW_ROUNDED_RECTANGLE
     BUTTON      ID_DRAW_POLYGON
     SEPARATOR
@@ -247,6 +233,8 @@ BEGIN
     BEGIN
         MENUITEM "GRID",                        ID_DRAW_GRID
         MENUITEM "COLOR",                       ID_DRAW_COLOR
+        MENUITEM "2D Text",                     ID_DRAW_TEXT2D
+        MENUITEM "3D Text",                     ID_DRAW_3DTEXT
     END
     POPUP "Office"
     BEGIN
@@ -618,6 +606,34 @@ END
 STRINGTABLE 
 BEGIN
     ID_SELECT               "ComboBox\nComboBox "
+    ID_BOLD                 "Bold for text\n Bold"
+    ID_ITALIC               "Italic for text\n Italic"
+    ID_UNDER_LINE           "Under line for text\n Under Line"
+    ID_ALIGN_LEFT           "Align left\n A Left"
+    ID_ALIGN_CENTER         "Align center\n A Center"
+    ID_ALIGN_RIGHT          "Align Right\n A Right"
+    ID_ALIGN_JUSTIFY        "Align justify\n A Justify"
+END
+
+STRINGTABLE 
+BEGIN
+    ID_TEXT_COLOR           "Color for text\\ Text Color"
+    ID_TEXT_FILL_COLOR      "Fiil color for text area\n Text Area Color"
+    ID_TEXT_STRIKE          "Strike for text\n Text Strike"
+    ID_DRAW_LINE            "Draw a line\n Line"
+    ID_DRAW_CURVE           "Draw a curve\n Curve"
+    ID_DRAW_POINT           "Draw a point\n Point"
+    ID_DRAW_CIRCLE          "Draw circle\n Circle"
+    ID_DRAW_RECTANGLE       "Draw rectangle\n Rectangle"
+    ID_DRAW_ROUNDED_RECTANGLE "Draw rounded rectangle\n Rounded Rect"
+    ID_DRAW_POLYGON         "Draw polygon\n Polygon"
+END
+
+STRINGTABLE 
+BEGIN
+    ID_DRAW_ERASER          "Earser tool\n Earser"
+    ID_DRAW_COLOR_PICKER    "Color Picker Tool\n Color Picker"
+    ID_DRAW_FILL_COLOR      "Fill color\n Fill Color"
 END
 
 #endif    // English (U.S.) resources

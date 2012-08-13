@@ -2,7 +2,6 @@
 // Simple_DrawView.h : interface of the CSimple_DrawView class
 #pragma once
 
-
 class CSimple_DrawView : public CView
 {
 protected: // create from serialization only
@@ -20,11 +19,11 @@ HGLRC m_hRC; //Rendering Context
 
 private:
    BOOL m_bOXY;
-   BOOL m_draw_grid;
-   UINT count_oxy;
-   UINT count_oxyz;
-   UINT count_grid;
    BOOL m_bOXYZ;
+   BOOL check_oxy;
+   BOOL check_oxyz;
+   BOOL m_draw_grid;
+   BOOL check_grid;
    GLfloat m_xAngle;
 	 GLfloat m_yAngle;
    GLfloat m_zoom;
@@ -32,8 +31,11 @@ private:
    GLfloat m_texMode;
    GLfloat m_texWrap;
    GLfloat m_texFilter;
-   //GLuint  m_Texture[10];
    CPoint m_MouseDownPoint;
+   
+   // Variable for move object
+   GLfloat m_xPos ;
+	 GLfloat m_yPos ;
 
    // variable for button checkbox of office toolbar
    short m_text_bold;
@@ -60,6 +62,14 @@ public:
   BOOL status_text_editor_;
 
 public:
+  GLuint m_3DTextList;
+  GLuint m_2DTextList;
+  GLuint m_b3DText;
+  GLuint m_b2DText;
+
+public:
+   void OnHandleMoveObject(UINT nID);
+
    void OnEditUndo();
    void OnEditCut();
    void OnEditCopy();
@@ -110,6 +120,9 @@ public:
    void DrawEraser();
    void DrawPolygon();
 
+   // Draw a text with OPenGL
+   void Create3DTextList();
+   void Create2DTextLists();
 
 // Overrides
 public:

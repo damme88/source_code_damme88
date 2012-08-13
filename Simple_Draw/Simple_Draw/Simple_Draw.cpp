@@ -35,7 +35,12 @@ END_MESSAGE_MAP()
 
 // Contructors
 CSimple_DrawApp::CSimple_DrawApp():
-  m_bHiColorIcons(TRUE) {
+  m_bHiColorIcons(TRUE),
+  //Variable for Object Color
+  red_color_(1.0f),
+  green_color_(1.0f),
+  blue_color_(1.0f)
+{
 }
 
 
@@ -106,7 +111,7 @@ BOOL CSimple_DrawApp::InitInstance()
 	// app was launched with /RegServer, /Register, /Unregserver or /Unregister.
 	if (!ProcessShellCommand(cmdInfo))
 		return FALSE;
-  SetRegistryBase();
+  //SetRegistryBase();
 	// The one and only window has been initialized, so show and update it
 	m_pMainWnd->ShowWindow(SW_SHOW);
 	m_pMainWnd->UpdateWindow();

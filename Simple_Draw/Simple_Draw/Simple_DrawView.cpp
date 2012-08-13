@@ -1,6 +1,5 @@
 
 // Simple_DrawView.cpp : implementation of the CSimple_DrawView class
-//
 
 #include "stdafx.h"
 #include "Simple_Draw.h"
@@ -14,6 +13,9 @@
 
 #define ID_ALIGN_START  ID_ALIGN_LEFT
 #define ID_ALIGN_END    ID_ALIGN_JUSTIFY
+
+#define ID_MOVE_START    ID_MOVE_UP
+#define ID_MOVE_END      ID_MOVE_RIGHT
 
 IMPLEMENT_DYNCREATE(CSimple_DrawView, CView)
 
@@ -38,9 +40,15 @@ BEGIN_MESSAGE_MAP(CSimple_DrawView, CView)
   ON_COMMAND(ID_RIGHT,              &CSimple_DrawView::OnViewRight)
   ON_COMMAND(ID_LEFT,               &CSimple_DrawView::OnViewLeft)
   ON_COMMAND(ID_PAN_STANDAR,        &CSimple_DrawView::OnViewStandar)
+
   ON_COMMAND(ID_ZOOM_IN,            &CSimple_DrawView::OnZoomIn)
   ON_COMMAND(ID_ZOOM_OUT,           &CSimple_DrawView::OnZoomOut)
   ON_COMMAND(ID_ZOOM_STANDAR,       &CSimple_DrawView::OnZoomStandar)
+
+  ON_COMMAND(ID_DRAW_3DTEXT,         &CSimple_DrawView::Create3DTextList)
+  ON_COMMAND(ID_DRAW_TEXT2D,         &CSimple_DrawView::Create2DTextLists)
+
+  ON_COMMAND_RANGE(ID_MOVE_START, ID_MOVE_END, &CSimple_DrawView::OnHandleMoveObject)
 
     ON_COMMAND(ID_BOLD, &CSimple_DrawView::OnTextBold)
     ON_UPDATE_COMMAND_UI(ID_BOLD, &CSimple_DrawView::OnUpdateBold)
@@ -82,9 +90,9 @@ END_MESSAGE_MAP()
 
 CSimple_DrawView::CSimple_DrawView() :
    m_bOXY(FALSE),
-   count_oxy(0),
-   count_oxyz(0),
-   count_grid(0),
+   check_oxy(false),
+   check_oxyz(false),
+   check_grid(false),
    m_xAngle(0),
    m_yAngle(0),
    m_zoom(0),
@@ -97,22 +105,22 @@ CSimple_DrawView::CSimple_DrawView() :
    m_text_under_line(0),
    check_bold_(false),
    check_italic_(false),
-   check_underline_(false) {
-  // m_Texture[0] = 0;
- //  m_Texture[1] = 0;
-  // m_Texture[2] = 0;
- //  m_Texture[3] = 0;
- //  m_Texture[4] = 0;
-   m_align_left = 1;
-   m_align_right = 0;
-   m_align_center = 0;
-   m_align_justify = 0;
-   m_draw_line = 0;
-   m_count_draw_line = 0;
-
+   check_underline_(false),
+   m_align_left(1),
+   m_align_right(0),
+   m_align_center(0),
+   m_align_justify(0),
+   m_draw_line(0),
+   m_count_draw_line(0),
+   count_down(0),
    // variable for draw
-   check_down = FALSE;
-   count_down = 0;
+   check_down(FALSE),
+   // Variable for move Object 
+   m_xPos(0.0f),
+	 m_yPos(0.0f),
+   m_b2DText(0),
+   m_b3DText(0)
+{
 }
 
 
@@ -301,7 +309,7 @@ void CSimple_DrawView::OnDraw(CDC* /*pDC*/)
 void CSimple_DrawView::RenderScene () {
   glLoadIdentity();
 	// Do xa gan 
-  glTranslatef(0.0f, 0.0f, m_zoom - 20.0f);
+  glTranslatef(m_xPos, m_yPos, m_zoom - 20.0f);
 	// Do nghieng
   glRotatef(m_xAngle + 45.0f, 1.0f, 0.0f, 0.0f);
 	glRotatef(m_yAngle - 45.0f, 0.0f, 1.0f, 0.0f);
@@ -325,7 +333,6 @@ void CSimple_DrawView::RenderScene () {
 		glVertex3f(2.8f, 0.0f, 0.2f);
 	  glVertex3f(3.0f, 0.0f, 0.0f);
 		glEnd();
-
 
 	// Truc OY co mau xanh la cay
 		glColor3f(0.0f, 1.0f, 0.0f);
@@ -396,17 +403,36 @@ void CSimple_DrawView::RenderScene () {
 		glVertex3f(0.0f, 3.0f, 0.0f);
 		glEnd();
 	 }
+
+    if(m_b2DText) {
+    // Position The Text On The Screen
+    glColor3f(1.0f, 0.25f, 0.25f);
+    glDisable(GL_LIGHTING);
+    glRasterPos2f(0,0);
+    glListBase(m_2DTextList);
+    glCallLists(6, GL_UNSIGNED_BYTE , __T("Damme88"));
+    glEnable(GL_LIGHTING);
+  }
+  if(m_b3DText) {
+    glColor3f(1.0f, 0.25f, 1.0f);
+    glDisable(GL_LIGHTING);
+    glListBase(m_3DTextList);
+    glCallLists(6, GL_UNSIGNED_BYTE , __T("Damme88"));
+  }
+
    if (m_draw_grid == TRUE) {
      //Draw a Plane
-     glColor3f(1.0f, 1.0f, 1.0f);
+     glColor3f(1.0f, 0.5f, 1.0f);
      glBegin(GL_POLYGON);
 		 glVertex3f(10.0f, -4.5f, 10.0f);
 		 glVertex3f(10.0f, -4.5f, -10.0f);
      glVertex3f(-10.0f, -4.5f, -10.0f);
 		 glVertex3f(-10.0f, -4.5f, 10.0f);
 		 glEnd();
+
      // Draw Grid
-		 glColor3f(1.0f, 1.0f, 0.0f);
+		 //glColor3f(1.0f, 1.0f, 0.0f);
+     glColor3f(theApp.red_color_, theApp.green_color_, theApp.blue_color_);
 		 glLineWidth(4.0f);
      // OX +
      for (float i = 10.0; i >= 0; i = i-0.5) {
@@ -441,36 +467,35 @@ void CSimple_DrawView::RenderScene () {
 }
 
 
-
-
 void CSimple_DrawView::OnCoordinateOxy()
 {
-  count_oxy ++;
-  count_oxyz = 0;
-  if (count_oxy %2 != 0) {
+  check_oxyz = false;
+  if (check_oxy == false) {
   m_bOXY = TRUE ;
 	m_bOXYZ = FALSE ;
-	InvalidateRect(NULL,FALSE);
-  }
-  else {
+  check_oxy = true;
+  InvalidateRect(NULL,FALSE);
+  } else {
    m_bOXY = FALSE ;
 	 m_bOXYZ = FALSE ;
+   check_oxy = false;
 	 InvalidateRect(NULL, FALSE);
   }
 }
 
 void CSimple_DrawView::OnCoordinateOxyz()
 { 
-   count_oxy = 0;
-  count_oxyz ++;
-  if (count_oxyz%2 != 0) {
+  check_oxy = false;
+  if (check_oxyz == false) {
     m_bOXYZ = TRUE ;
 	  m_bOXY = FALSE ;
+    check_oxyz = true;
 	  InvalidateRect(NULL, FALSE);
   }
   else {
     m_bOXYZ = FALSE ;
 	  m_bOXY = FALSE ;
+    check_oxyz = false;
 	  InvalidateRect(NULL, FALSE);
   }
 }
@@ -485,13 +510,14 @@ void CSimple_DrawView::OnEditPaste() {
 
 
 void CSimple_DrawView::OnDrawGrid() {
-     count_grid ++ ;
-     if(count_grid%2 != 0 ) {
+  if(check_grid == false ) {
          m_draw_grid = TRUE;
          InvalidateRect(NULL, FALSE);
+         check_grid = true;
      } else {
         m_draw_grid = FALSE;
         InvalidateRect(NULL, FALSE);
+        check_grid = false;
      }
 }
 
@@ -567,11 +593,11 @@ BOOL CSimple_DrawView::OnMouseWheel(UINT nFlags, short zDelta, CPoint point)
 {
   BOOL ret = FALSE ;
   if (zDelta >=0) {
-    m_zoom = m_zoom + 0.4f;
+    m_zoom = m_zoom + 0.5f;
     ret = TRUE ;
   }
   else {
-    m_zoom = m_zoom - 0.4f;
+    m_zoom = m_zoom - 0.5f;
     ret = TRUE ;
   }
   InvalidateRect(NULL,FALSE);
@@ -594,14 +620,33 @@ void CSimple_DrawView::OnViewRight() {
 void CSimple_DrawView::OnViewLeft() {
 }
 void CSimple_DrawView::OnViewStandar() {
+
 }
 void CSimple_DrawView::OnZoomIn() {
+  m_zoom = m_zoom + 0.5;
+  InvalidateRect(NULL, FALSE);
 }
 void CSimple_DrawView::OnZoomOut() {
+  m_zoom = m_zoom - 0.5;
+  InvalidateRect(NULL, FALSE);
 }
 void CSimple_DrawView::OnZoomStandar() {
+  m_zoom = -15;
+  InvalidateRect(NULL, FALSE);
 }
 
+// Handling Move for Object
+void CSimple_DrawView::OnHandleMoveObject(UINT nID) {
+  if (nID == ID_MOVE_UP)
+    m_yPos = m_yPos + 0.5f;
+  else if (nID == ID_MOVE_DOWN) 
+    m_yPos = m_yPos - 0.5f;
+  else if (nID == ID_MOVE_LEFT)
+    m_xPos = m_xPos - 0.5f;
+  else
+    m_xPos = m_xPos + 0.5f;
+  InvalidateRect(NULL,FALSE);
+}
 
 
 // CSimple_DrawView printing
@@ -802,12 +847,6 @@ void CSimple_DrawView::DrawEraser() {
 void CSimple_DrawView::DrawPolygon() {
 }
 
-
-
-
-
-
-    
 void CSimple_DrawView::OnDrawline() {
   m_count_draw_line ++;
   if (m_count_draw_line %2 != 0)
@@ -821,4 +860,50 @@ void CSimple_DrawView::OnUpdateDrawLine(CCmdUI *pcmdui) {
     pcmdui->SetCheck(1);
   else
     pcmdui->SetCheck(0);
+}
+
+// Draw a text in OPenGL and MFC
+void CSimple_DrawView::Create3DTextList() {
+  CFont m_font;
+  GLYPHMETRICSFLOAT agmf[256];
+  // Create a true Type font 
+  m_font.CreateFont(-12,                 // Heigh of Font
+                   0,                  // Width of Font
+                   0,                  // Angle of EsCapement
+                   0,                  // Orientation Angle
+                   FW_BOLD,            // Font Weight
+                   FALSE,              // Italic = false
+                   FALSE,              // Under = false
+                   FALSE,              // Strikeout
+                   ANSI_CHARSET,       // Character Set indentifier
+                   OUT_TT_PRECIS,                 // Output Precision
+                   CLIP_DEFAULT_PRECIS,           // Clipping Precision
+                   ANTIALIASED_QUALITY,           // Output Quality
+                   FF_DONTCARE | DEFAULT_PITCH,  // Family and Pitch
+                   L"Algerin" ); 
+
+  CFont* m_pOldFont = m_pDC->SelectObject(&m_font);
+  // create display lists for glyphs 0 through 255 with 0.1 extrusion 
+  // and default deviation. The display list numbering starts at 1000 
+  // (it could be any number) 
+  m_3DTextList = glGenLists(256);
+  wglUseFontOutlines(m_pDC->GetSafeHdc(), 0, 255, m_3DTextList, 0.0f,
+
+                                0.5f,WGL_FONT_POLYGONS, agmf); 
+
+   m_pDC->SelectObject(m_pOldFont);
+   m_b3DText = 1;
+   InvalidateRect(NULL, FALSE);
+}
+
+
+void CSimple_DrawView::Create2DTextLists() {
+  m_2DTextList = glGenLists(256);
+  // Create a set of bitmap display lists 
+  // based on the glyphs in the currently selected font 
+   // in the current DC for use in the current OpenGL RC using wglUseFontBitmaps
+
+  wglUseFontBitmaps(m_pDC->GetSafeHdc(), 0, 255, m_2DTextList); 
+  m_b2DText = 1;
+  InvalidateRect(NULL, FALSE);
 }

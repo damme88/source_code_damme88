@@ -1,6 +1,5 @@
 
 // MainFrm.h : interface of the CMainFrame class
-//
 #pragma once
 #include "WorkspaceBar.h"
 
@@ -13,14 +12,18 @@ protected: // create from serialization only
 
 // Attributes
 public:
+  short red_color_;
+  short green_color_;
+  short blue_color_;
 
 public:
-  void OnHanleShowBar(UINT nid);
-  void OnUpdateHandleShowBar(CCmdUI* pcmd);
   void OnComBo();
+
   void OnComBoTextStyle();
   void OnComboTextSize();
-  void OnHandleItem();
+  void OnHanleItemCombo();
+  void OnHanleShowBar(UINT nid);
+  void OnUpdateHandleShowBar(CCmdUI* pcmd);
 // Overrides
 public:
 	virtual BOOL PreCreateWindow(CREATESTRUCT& cs);
@@ -40,14 +43,11 @@ public:
 protected:  // control bar embedded members
   CMFCStatusBar     m_wndStatusBar;
 	CMFCMenuBar       m_wndMenuBar;
-  CDialogBar	      m_wndToolbox;           //use for dialog bar
 	CMFCToolBar       m_wndToolBar;
   CMFCToolBar       m_wndToolBar_Direct;
   CMFCToolBar       m_wndToolBar_Office;
   CMFCToolBar       m_wndToolBar_Draw;
-
   CWorkspaceBar	m_wndWorkSpace;
-// variable for rebar
 
 
 // Generated message map functions

@@ -20,7 +20,10 @@ public:
 	CSimple_DrawApp();
 
 public:
-// Overrides
+   //Variable for Object Color
+   GLfloat red_color_;
+   GLfloat green_color_;
+   GLfloat blue_color_;
 public:
 	virtual BOOL InitInstance();
 
