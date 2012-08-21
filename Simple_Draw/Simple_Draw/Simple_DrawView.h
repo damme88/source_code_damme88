@@ -68,8 +68,18 @@ public:
   GLuint m_b2DText;
 
 public:
-   void OnHandleMoveObject(UINT nID);
+  // Variable store color is got ColorDialog
+  unsigned int red_color_;
+  unsigned int green_color_;
+  unsigned int blue_color_;
 
+  GLfloat gl_red_color_;
+  GLfloat gl_green_color_;
+  GLfloat gl_blue_color_;
+
+public:
+   void OnHandleMoveObject(UINT nID);
+   void OnHandleZoom(UINT nID);
    void OnEditUndo();
    void OnEditCut();
    void OnEditCopy();
@@ -90,9 +100,7 @@ public:
    void OnViewRight();
    void OnViewLeft();
    void OnViewStandar();
-   void OnZoomIn();
-   void OnZoomOut();
-   void OnZoomStandar();
+
 
    // function for office toolbar button 
    void OnTextBold();

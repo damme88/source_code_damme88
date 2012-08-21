@@ -42,9 +42,11 @@
 #define ID_BEHIND                       32787
 #define ID_BOTTOM                       32788
 #define ID_PAN_STANDAR                  32789
-#define ID_ZOOM_IN                      32790
+
+#define ID_ZOOM_IN                      32792
 #define ID_ZOOM_OUT                     32793
 #define ID_ZOOM_STANDAR                 32794
+
 #define ID_SELECT                       32806
 #define ID_BOLD                         32809
 #define ID_ITALIC                       32810

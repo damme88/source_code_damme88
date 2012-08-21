@@ -21,6 +21,7 @@ public:
 
   void OnComBoTextStyle();
   void OnComboTextSize();
+  void OnHandleTextSixe();
   void OnHanleItemCombo();
   void OnHanleShowBar(UINT nid);
   void OnUpdateHandleShowBar(CCmdUI* pcmd);
@@ -47,7 +48,9 @@ protected:  // control bar embedded members
   CMFCToolBar       m_wndToolBar_Direct;
   CMFCToolBar       m_wndToolBar_Office;
   CMFCToolBar       m_wndToolBar_Draw;
-  CWorkspaceBar	m_wndWorkSpace;
+  CWorkspaceBar	    m_wndWorkSpace;
+public:
+  CMFCToolBarComboBoxButton *check_one_;
 
 
 // Generated message map functions

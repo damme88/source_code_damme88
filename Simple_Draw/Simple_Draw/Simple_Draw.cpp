@@ -37,10 +37,11 @@ END_MESSAGE_MAP()
 CSimple_DrawApp::CSimple_DrawApp():
   m_bHiColorIcons(TRUE),
   //Variable for Object Color
-  red_color_(1.0f),
-  green_color_(1.0f),
-  blue_color_(1.0f)
+  glred_color_(1.0f),
+  glgreen_color_(1.0f),
+  glblue_color_(1.0f)
 {
+  glline_grid_size_ = 3.0f;
 }
 
 
@@ -77,7 +78,7 @@ BOOL CSimple_DrawApp::InitInstance()
 	// such as the name of your company or organization
 	SetRegistryKey(_T("Local AppWizard-Generated Applications"));
 	LoadStdProfileSettings(4);  // Load standard INI file options (including MRU)
-
+  SetRegistryBase(__T("Setting"));
 	InitContextMenuManager();
 
 	InitKeyboardManager();
@@ -100,8 +101,6 @@ BOOL CSimple_DrawApp::InitInstance()
 		return FALSE;
 	AddDocTemplate(pDocTemplate);
 
-
-
 	// Parse command line for standard shell commands, DDE, file open
 	CCommandLineInfo cmdInfo;
 	ParseCommandLine(cmdInfo);
@@ -111,7 +110,6 @@ BOOL CSimple_DrawApp::InitInstance()
 	// app was launched with /RegServer, /Register, /Unregserver or /Unregister.
 	if (!ProcessShellCommand(cmdInfo))
 		return FALSE;
-  //SetRegistryBase();
 	// The one and only window has been initialized, so show and update it
 	m_pMainWnd->ShowWindow(SW_SHOW);
 	m_pMainWnd->UpdateWindow();

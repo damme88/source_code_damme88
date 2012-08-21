@@ -17,6 +17,8 @@
 #define ID_MOVE_START    ID_MOVE_UP
 #define ID_MOVE_END      ID_MOVE_RIGHT
 
+#define ID_ZOOM_START    ID_ZOOM_IN
+#define ID_ZOOM_END      ID_ZOOM_STANDAR
 IMPLEMENT_DYNCREATE(CSimple_DrawView, CView)
 
 BEGIN_MESSAGE_MAP(CSimple_DrawView, CView)
@@ -41,9 +43,7 @@ BEGIN_MESSAGE_MAP(CSimple_DrawView, CView)
   ON_COMMAND(ID_LEFT,               &CSimple_DrawView::OnViewLeft)
   ON_COMMAND(ID_PAN_STANDAR,        &CSimple_DrawView::OnViewStandar)
 
-  ON_COMMAND(ID_ZOOM_IN,            &CSimple_DrawView::OnZoomIn)
-  ON_COMMAND(ID_ZOOM_OUT,           &CSimple_DrawView::OnZoomOut)
-  ON_COMMAND(ID_ZOOM_STANDAR,       &CSimple_DrawView::OnZoomStandar)
+  ON_COMMAND_RANGE(ID_ZOOM_START,ID_ZOOM_END,  &CSimple_DrawView::OnHandleZoom)
 
   ON_COMMAND(ID_DRAW_3DTEXT,         &CSimple_DrawView::Create3DTextList)
   ON_COMMAND(ID_DRAW_TEXT2D,         &CSimple_DrawView::Create2DTextLists)
@@ -121,6 +121,12 @@ CSimple_DrawView::CSimple_DrawView() :
    m_b2DText(0),
    m_b3DText(0)
 {
+  red_color_ = 255;
+  green_color_ = 0;
+  blue_color_ = 0;
+  gl_red_color_ = 1.0f;
+  gl_green_color_ = 1.0f;
+  gl_blue_color_ = 0.0f;
 }
 
 
@@ -422,7 +428,7 @@ void CSimple_DrawView::RenderScene () {
 
    if (m_draw_grid == TRUE) {
      //Draw a Plane
-     glColor3f(1.0f, 0.5f, 1.0f);
+     glColor3f(gl_red_color_, gl_green_color_, gl_blue_color_);
      glBegin(GL_POLYGON);
 		 glVertex3f(10.0f, -4.5f, 10.0f);
 		 glVertex3f(10.0f, -4.5f, -10.0f);
@@ -432,8 +438,8 @@ void CSimple_DrawView::RenderScene () {
 
      // Draw Grid
 		 //glColor3f(1.0f, 1.0f, 0.0f);
-     glColor3f(theApp.red_color_, theApp.green_color_, theApp.blue_color_);
-		 glLineWidth(4.0f);
+     glColor3f(theApp.glred_color_, theApp.glgreen_color_, theApp.glblue_color_);
+     glLineWidth(theApp.glline_grid_size_);
      // OX +
      for (float i = 10.0; i >= 0; i = i-0.5) {
        glBegin(GL_LINES);
@@ -524,6 +530,17 @@ void CSimple_DrawView::OnDrawGrid() {
 void CSimple_DrawView::OnDrawColor() {
   CColorDialog dlg ;
   dlg.DoModal();
+  COLORREF color;
+  if (IDOK == TRUE) {
+    color = dlg.GetColor();
+    red_color_ = GetRValue(color);
+    green_color_ = GetGValue(color);
+    blue_color_ = GetBValue(color);
+    gl_red_color_ = (GLfloat)red_color_/255.0f;
+    gl_green_color_ = (GLfloat)green_color_/255.0f;
+    gl_blue_color_ = (GLfloat)blue_color_/255.0f;
+    InvalidateRect(NULL, TRUE);
+  }
 }
 
 void CSimple_DrawView::OnLButtonDown(UINT nFlags, CPoint point) 
@@ -532,10 +549,7 @@ void CSimple_DrawView::OnLButtonDown(UINT nFlags, CPoint point)
   m_MouseDownPoint = point;
   SetCapture();
   CView::OnLButtonDown(nFlags, point);
-  if (m_draw_line == 1) {
-    m_first_point = point;
-    check_down = TRUE;
-  }
+ 
 }
 
 
@@ -544,10 +558,6 @@ void CSimple_DrawView::OnLButtonUp(UINT nFlags, CPoint point)  {
         m_MouseDownPoint = CPoint(0, 0);
         ReleaseCapture();
         CView::OnLButtonUp(nFlags, point);
-  if (m_draw_line == 1) {
-    check_down = FALSE;
-    m_end_point = point;
-  }
 }
 
 /******************************************************************************
@@ -608,32 +618,51 @@ BOOL CSimple_DrawView::OnMouseWheel(UINT nFlags, short zDelta, CPoint point)
 }
 
 void CSimple_DrawView::OnViewFront() {
+  m_xAngle = -45;
+  m_yAngle = 45;
+  InvalidateRect(NULL, FALSE);
 }
 void CSimple_DrawView::OnViewBehind() {
+  m_xAngle = -45;
+  m_yAngle = 45;
+  InvalidateRect(NULL, FALSE);
 }
 void CSimple_DrawView::OnViewTop() {
+  m_xAngle = 45;
+  m_yAngle = -45;
+  InvalidateRect(NULL, FALSE);
 }
 void CSimple_DrawView::OnViewBottom() {
+  m_xAngle = 0;
+  m_yAngle = -45;
+  InvalidateRect(NULL, FALSE);
 }
 void CSimple_DrawView::OnViewRight() {
+  m_xAngle = 45;
+  m_yAngle = 0;
+  InvalidateRect(NULL, FALSE);
 }
 void CSimple_DrawView::OnViewLeft() {
+  m_xAngle = 45;
+  m_yAngle = 45;
+  InvalidateRect(NULL, FALSE);
 }
 void CSimple_DrawView::OnViewStandar() {
+  m_xAngle = 0;
+  m_yAngle = 0;
+  InvalidateRect(NULL, FALSE);
 
 }
-void CSimple_DrawView::OnZoomIn() {
-  m_zoom = m_zoom + 0.5;
+void CSimple_DrawView::OnHandleZoom(UINT nID) {
+  if (nID == ID_ZOOM_IN)
+    m_zoom = m_zoom + 0.5;
+  if (nID == ID_ZOOM_OUT)
+    m_zoom = m_zoom - 0.5;
+  if (nID == ID_ZOOM_STANDAR)
+    m_zoom = -15;
   InvalidateRect(NULL, FALSE);
 }
-void CSimple_DrawView::OnZoomOut() {
-  m_zoom = m_zoom - 0.5;
-  InvalidateRect(NULL, FALSE);
-}
-void CSimple_DrawView::OnZoomStandar() {
-  m_zoom = -15;
-  InvalidateRect(NULL, FALSE);
-}
+
 
 // Handling Move for Object
 void CSimple_DrawView::OnHandleMoveObject(UINT nID) {

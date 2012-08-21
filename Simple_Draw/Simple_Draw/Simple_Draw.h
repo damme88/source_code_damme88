@@ -21,9 +21,11 @@ public:
 
 public:
    //Variable for Object Color
-   GLfloat red_color_;
-   GLfloat green_color_;
-   GLfloat blue_color_;
+   GLfloat glred_color_;
+   GLfloat glgreen_color_;
+   GLfloat glblue_color_;
+   // variable for storing size of object
+   GLfloat glline_grid_size_;
 public:
 	virtual BOOL InitInstance();
 

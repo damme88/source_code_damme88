@@ -33,6 +33,8 @@ BEGIN_MESSAGE_MAP(CMainFrame, CFrameWndEx)
 
   ON_COMMAND(ID_TEXT_STYLE, &CMainFrame::OnComBoTextStyle)
   ON_COMMAND(ID_TEXT_SIZE, &CMainFrame::OnComboTextSize)
+  ON_CBN_SELENDOK(ID_TEXT_SIZE, &CMainFrame::OnHandleTextSixe)
+
   ON_COMMAND_RANGE(ID_SHOW_BAR_START, ID_SHOW_BAR_END,
                    &CMainFrame::OnHanleShowBar)
   ON_UPDATE_COMMAND_UI_RANGE(ID_SHOW_BAR_START, ID_SHOW_BAR_END,
@@ -319,14 +321,33 @@ LRESULT CMainFrame::OnToolbarReset(WPARAM wParam, LPARAM lParam) {
   if (id == IDR_TOOLBAR_OFFICE) {
     CMFCToolBarComboBoxButton combo(ID_SELECT, 
       GetCmdMgr()->GetCmdImage(ID_SELECT), 
-                                    CBS_DROPDOWNLIST);
+      CBS_DROPDOWNLIST );
     combo.OnSize(80);
+    combo.AddItem(L"White");
     combo.AddItem(L"Red");
     combo.AddItem(L"Green");
     combo.AddItem(L"Blue");
     VERIFY(combo.SelectItem(0));
     int rplum_driect = m_wndToolBar_Direct.ReplaceButton(ID_SELECT, 
                                                          combo, FALSE);
+    int index = m_wndToolBar_Direct.CommandToIndex(ID_SELECT);
+    check_one_ = reinterpret_cast<CMFCToolBarComboBoxButton*>
+                 (m_wndToolBar_Direct.GetButton(index));
+    CustomCombo* combo1 = reinterpret_cast<CustomCombo*>(check_one_->GetComboBox());
+
+    //CustomComboButton combo_color(ID_SELECT, GetCmdMgr()->GetCmdImage(ID_SELECT), 
+    //  CBS_DROPDOWNLIST| CBS_OWNERDRAWVARIABLE);
+    //m_wndToolBar_Direct.ReplaceButton(ID_SELECT, combo_color, FALSE);
+
+    //int index_color = m_wndToolBar_Direct.CommandToIndex(ID_SELECT);
+    //CustomComboButton *pcom = reinterpret_cast<CustomComboButton*>
+    //                         (m_wndToolBar_Direct.GetButton(index_color));
+    //CustomCombo *pcombo_color = reinterpret_cast<CustomCombo*>(pcom->GetComboBox());
+    //pcombo_color->AddItemCombo(__T("Red"));
+    //pcombo_color->AddItemCombo(__T("Green"));
+    //pcombo_color->AddItemCombo(__T("Blue"));
+    //pcombo_color->SetItemHeight(-1, 25);
+    //pcombo_color->SetCurSel(1);
 
     CMFCToolBarComboBoxButton combo_office(ID_TEXT_STYLE, 
       GetCmdMgr()->GetCmdImage(ID_TEXT_STYLE), 
@@ -348,6 +369,7 @@ LRESULT CMainFrame::OnToolbarReset(WPARAM wParam, LPARAM lParam) {
     VERIFY(combo_text_size.SelectItem(0));
     int rplum_text_size = m_wndToolBar_Office.ReplaceButton(ID_TEXT_SIZE, 
                                                         combo_text_size, FALSE);
+    
  }
   return 0L;
 }
@@ -368,24 +390,29 @@ void CMainFrame::OnHanleItemCombo() {
                                      (m_wndToolBar_Direct.GetButton(index));
   int item_combo = combo->GetCurSel();
   if (item_combo == 0) {
-    theApp.red_color_ = 1.0f;
-    theApp.green_color_ = 0.0f;
-    theApp.blue_color_ = 0.0f;
+    theApp.glred_color_ = 1.0f;
+    theApp.glgreen_color_ = 1.0f;
+    theApp.glblue_color_ = 1.0f;
     InvalidateRect(NULL, FALSE);
   } else if (item_combo == 1) {
-    theApp.red_color_ = 0.0f;
-    theApp.green_color_ = 1.0f;
-    theApp.blue_color_ = 0.0f;
+    theApp.glred_color_ = 1.0f;
+    theApp.glgreen_color_ = 0.0f;
+    theApp.glblue_color_ = 0.0f;
     InvalidateRect(NULL, FALSE);
   } else if (item_combo == 2) {
-    theApp.red_color_ = 0.0f;
-    theApp.green_color_ = 0.0f;
-    theApp.blue_color_ = 1.0f;
+    theApp.glred_color_ = 0.0f;
+    theApp.glgreen_color_ = 1.0f;
+    theApp.glblue_color_ = 0.0f;
+    InvalidateRect(NULL, FALSE);
+  } else if(item_combo == 3) {
+    theApp.glred_color_ = 0.0f;
+    theApp.glgreen_color_ = 0.0f;
+    theApp.glblue_color_ = 1.0f;
     InvalidateRect(NULL, FALSE);
   } else {
-    theApp.red_color_ = 1.0f;
-    theApp.green_color_ = 1.0f;
-    theApp.blue_color_ = 1.0f;
+    theApp.glred_color_ = 1.0f;
+    theApp.glgreen_color_ = 1.0f;
+    theApp.glblue_color_ = 1.0f;
     InvalidateRect(NULL, FALSE);
   }
 }
@@ -401,8 +428,23 @@ void CMainFrame::OnComBoTextStyle() {
 
 void CMainFrame::OnComboTextSize() {
  ;
+ // dont implement nothing
+ // funcion oly implementting enable combo
 }
 
+void CMainFrame::OnHandleTextSixe() {
+  int index = m_wndToolBar_Office.CommandToIndex(ID_TEXT_SIZE);
+  CMFCToolBarComboBoxButton *combo = reinterpret_cast<CMFCToolBarComboBoxButton *>
+                                     (m_wndToolBar_Office.GetButton(index));
+  int item_combo = combo->GetCurSel();
+  if (item_combo == 0)
+    theApp.glline_grid_size_ = 4.0f;
+  if (item_combo == 1)
+    theApp.glline_grid_size_ = 5.0f;
+  if (item_combo == 2)
+    theApp.glline_grid_size_ = 8.0f;
+  InvalidateRect(NULL, TRUE);
+}
 void CMainFrame::OnHanleShowBar(UINT nID) {
   if (nID == ID_DOCKING_VIEWTOOLBAR) {
     ShowPane(&m_wndToolBar_Direct, !(m_wndToolBar_Direct.IsVisible()), FALSE, TRUE);
