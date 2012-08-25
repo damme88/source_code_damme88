@@ -244,6 +244,26 @@ BEGIN
     BEGIN
         MENUITEM "&About Simple_Draw...",       ID_APP_ABOUT
     END
+    POPUP "Sample Object"
+    BEGIN
+        POPUP "2D Object"
+        BEGIN
+            MENUITEM "Points",                      ID_2DOBJECT_POINTS
+            MENUITEM "Lines",                       ID_2DOBJECT_LINES
+            MENUITEM "Rectang",                     ID_2DOBJECT_RECTANG
+            MENUITEM "Square",                      ID_2DOBJECT_SQUARE
+            MENUITEM "Triangle",                    ID_2DOBJECT_TRIANGLE
+            MENUITEM "Cricle",                      ID_2DOBJECT_CRICLE
+            MENUITEM "Polygon",                     ID_2DOBJECT_POLYGON
+        END
+        POPUP "3D Object"
+        BEGIN
+            MENUITEM "Write Cube",                  ID_3DOBJECT_WRITECUBE
+            MENUITEM "Write Teaport",               ID_3DOBJECT_WRITETEAPORT
+            MENUITEM "Write Torus",                 ID_3DOBJECT_WRITETOURUS
+            MENUITEM "Write lcosahedron",           ID_3DOBJECT_WRITELCOSAHEDRON
+        END
+    END
 END
 
 IDR_POPUP_EDIT MENU 

@@ -42,11 +42,9 @@
 #define ID_BEHIND                       32787
 #define ID_BOTTOM                       32788
 #define ID_PAN_STANDAR                  32789
-
 #define ID_ZOOM_IN                      32792
 #define ID_ZOOM_OUT                     32793
 #define ID_ZOOM_STANDAR                 32794
-
 #define ID_SELECT                       32806
 #define ID_BOLD                         32809
 #define ID_ITALIC                       32810
@@ -106,6 +104,21 @@
 #define ID_DRAW_TEXT2D                  32867
 #define ID_DRAW_3DTEXT                  32868
 
+
+#define ID_2DOBJECT_POINTS              35001
+#define ID_2DOBJECT_LINES               35002
+#define ID_2DOBJECT_RECTANG             35003
+#define ID_2DOBJECT_SQUARE              35004
+#define ID_2DOBJECT_TRIANGLE            35005
+#define ID_2DOBJECT_CRICLE              35006
+#define ID_2DOBJECT_POLYGON             35007
+
+#define ID_3DOBJECT_WRITECUBE           35020
+#define ID_3DOBJECT_WRITETEAPORT        35021
+#define ID_3DOBJECT_WRITETOURUS         35022
+#define ID_3DOBJECT_WRITELCOSAHEDRON    35023
+
+
 #define ID_CUSTOMIZE_VIEW               50001
 #define ID_CUSTOMIZE_OFFICE             50002
 #define ID_CUSTOMIZE_DRAW               50003
@@ -115,7 +128,7 @@
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        329
-#define _APS_NEXT_COMMAND_VALUE         32869
+#define _APS_NEXT_COMMAND_VALUE         32882
 #define _APS_NEXT_CONTROL_VALUE         1007
 #define _APS_NEXT_SYMED_VALUE           310
 #endif

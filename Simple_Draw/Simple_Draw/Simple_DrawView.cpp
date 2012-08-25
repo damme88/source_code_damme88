@@ -19,6 +19,14 @@
 
 #define ID_ZOOM_START    ID_ZOOM_IN
 #define ID_ZOOM_END      ID_ZOOM_STANDAR
+
+#define ID_2D_START      ID_2DOBJECT_POINTS
+#define ID_2D_END        ID_2DOBJECT_POLYGON
+
+#define ID_3D_START      ID_3DOBJECT_WRITECUBE
+#define ID_3D_END        ID_3DOBJECT_WRITELCOSAHEDRON
+
+
 IMPLEMENT_DYNCREATE(CSimple_DrawView, CView)
 
 BEGIN_MESSAGE_MAP(CSimple_DrawView, CView)
@@ -50,29 +58,33 @@ BEGIN_MESSAGE_MAP(CSimple_DrawView, CView)
 
   ON_COMMAND_RANGE(ID_MOVE_START, ID_MOVE_END, &CSimple_DrawView::OnHandleMoveObject)
 
-    ON_COMMAND(ID_BOLD, &CSimple_DrawView::OnTextBold)
-    ON_UPDATE_COMMAND_UI(ID_BOLD, &CSimple_DrawView::OnUpdateBold)
+  ON_COMMAND(ID_BOLD, &CSimple_DrawView::OnTextBold)
+  ON_UPDATE_COMMAND_UI(ID_BOLD, &CSimple_DrawView::OnUpdateBold)
 
-    ON_COMMAND(ID_ITALIC, &CSimple_DrawView::OnTextItalic)
-    ON_UPDATE_COMMAND_UI(ID_ITALIC, &CSimple_DrawView::OnUpdateItalic)
+  ON_COMMAND(ID_ITALIC, &CSimple_DrawView::OnTextItalic)
+  ON_UPDATE_COMMAND_UI(ID_ITALIC, &CSimple_DrawView::OnUpdateItalic)
 
-    ON_COMMAND(ID_UNDER_LINE, &CSimple_DrawView::OnTextUnderLine)
-    ON_UPDATE_COMMAND_UI(ID_UNDER_LINE, &CSimple_DrawView::OnUpdateUnderLine)
+  ON_COMMAND(ID_UNDER_LINE, &CSimple_DrawView::OnTextUnderLine)
+  ON_UPDATE_COMMAND_UI(ID_UNDER_LINE, &CSimple_DrawView::OnUpdateUnderLine)
 
-    ON_COMMAND_RANGE(ID_ALIGN_START, ID_ALIGN_END, &CSimple_DrawView::OnHandleAlign)
-    ON_UPDATE_COMMAND_UI_RANGE(ID_ALIGN_START, ID_ALIGN_END, &CSimple_DrawView::OnUpdateHandleAlign)
+  ON_COMMAND_RANGE(ID_ALIGN_START, ID_ALIGN_END, &CSimple_DrawView::OnHandleAlign)
+  ON_UPDATE_COMMAND_UI_RANGE(ID_ALIGN_START, ID_ALIGN_END, &CSimple_DrawView::OnUpdateHandleAlign)
 
-    // Enable buttons for toolbar Draw
-    ON_COMMAND(ID_DRAW_CIRCLE, &CSimple_DrawView::DrawCircle)
-    ON_COMMAND(ID_DRAW_COLOR_PICKER, &CSimple_DrawView::DrawColorPic)
-    ON_COMMAND(ID_DRAW_ERASER, &CSimple_DrawView::DrawEraser)
-    ON_COMMAND(ID_DRAW_FILL_COLOR, &CSimple_DrawView::DrawColorFill)
-    ON_COMMAND(ID_DRAW_POINT, &CSimple_DrawView::DrawPoint)
-    ON_COMMAND(ID_DRAW_LINE, &CSimple_DrawView::DrawLine)
-    ON_COMMAND(ID_DRAW_RECTANGLE, &CSimple_DrawView::DrawRectangle)
-    ON_COMMAND(ID_DRAW_POLYGON, &CSimple_DrawView::DrawPolygon)
-    ON_COMMAND(ID_DRAW_ROUNDED_RECTANGLE, &CSimple_DrawView::DrawRoundRectangle)
-    ON_COMMAND(ID_DRAW_CURVE, &CSimple_DrawView::DrawCurve)
+  // Enable buttons for toolbar Draw
+  ON_COMMAND(ID_DRAW_CIRCLE, &CSimple_DrawView::DrawCircle)
+  ON_COMMAND(ID_DRAW_COLOR_PICKER, &CSimple_DrawView::DrawColorPic)
+  ON_COMMAND(ID_DRAW_ERASER, &CSimple_DrawView::DrawEraser)
+  ON_COMMAND(ID_DRAW_FILL_COLOR, &CSimple_DrawView::DrawColorFill)
+  ON_COMMAND(ID_DRAW_POINT, &CSimple_DrawView::DrawPoint)
+  ON_COMMAND(ID_DRAW_LINE, &CSimple_DrawView::DrawLine)
+  ON_COMMAND(ID_DRAW_RECTANGLE, &CSimple_DrawView::DrawRectangle)
+  ON_COMMAND(ID_DRAW_POLYGON, &CSimple_DrawView::DrawPolygon)
+  ON_COMMAND(ID_DRAW_ROUNDED_RECTANGLE, &CSimple_DrawView::DrawRoundRectangle)
+  ON_COMMAND(ID_DRAW_CURVE, &CSimple_DrawView::DrawCurve)
+
+  ON_COMMAND_RANGE(ID_2D_START, ID_2D_END, &CSimple_DrawView::Draw2DObject)
+  ON_COMMAND_RANGE(ID_3D_START, ID_3D_END, &CSimple_DrawView::Draw3DObject)
+
 
 
 	ON_WM_CREATE()
@@ -119,7 +131,18 @@ CSimple_DrawView::CSimple_DrawView() :
    m_xPos(0.0f),
 	 m_yPos(0.0f),
    m_b2DText(0),
-   m_b3DText(0)
+   m_b3DText(0),
+   enalbe_point_(false),
+   enable_line_(false),
+   enable_polygon_(false),
+   enable_triangle_(false),
+   enable_circle_(false),
+   enable_square_(false),
+   enable_rectang_(false),
+	 enable_cube_(false),
+	 enable_torus_(false),
+	 enable_teaport_(false),
+	 enable_lsahedron_(false)
 {
   red_color_ = 255;
   green_color_ = 0;
@@ -470,6 +493,9 @@ void CSimple_DrawView::RenderScene () {
 	     glEnd();
      }
    }
+
+   OnDraw2DObject();
+   OnDraw3DObject();
 }
 
 
@@ -651,7 +677,6 @@ void CSimple_DrawView::OnViewStandar() {
   m_xAngle = 0;
   m_yAngle = 0;
   InvalidateRect(NULL, FALSE);
-
 }
 void CSimple_DrawView::OnHandleZoom(UINT nID) {
   if (nID == ID_ZOOM_IN)
@@ -935,4 +960,175 @@ void CSimple_DrawView::Create2DTextLists() {
   wglUseFontBitmaps(m_pDC->GetSafeHdc(), 0, 255, m_2DTextList); 
   m_b2DText = 1;
   InvalidateRect(NULL, FALSE);
+}
+
+
+void CSimple_DrawView::Draw2DObject(UINT nID) {
+  if (nID == ID_2DOBJECT_LINES) {
+    enable_line_ = true;
+    enalbe_point_ = false;
+    enable_circle_ = false;
+    enable_rectang_ = false;
+    enable_triangle_ = false;
+    enable_polygon_ = false;
+    enable_square_ = false;
+  }
+  if (nID == ID_2DOBJECT_POINTS) {
+      enable_line_ = false;
+    enalbe_point_ = true;
+    enable_circle_ = false;
+    enable_rectang_ = false;
+    enable_triangle_ = false;
+    enable_polygon_ = false;
+    enable_square_ = false;
+  }
+  if (nID == ID_2DOBJECT_CRICLE) {
+      enable_line_ = false;
+    enalbe_point_ = false;
+    enable_circle_ = true;
+    enable_rectang_ = false;
+    enable_triangle_ = false;
+    enable_polygon_ = false;
+    enable_square_ = false;
+  }
+  if (nID == ID_2DOBJECT_RECTANG) {
+    enable_line_ = false;
+    enalbe_point_ = false;
+    enable_circle_ = false;
+    enable_rectang_ = true;
+    enable_triangle_ = false;
+    enable_polygon_ = false;
+    enable_square_ = false;
+  }
+  if (nID == ID_2DOBJECT_SQUARE) {
+    enable_line_ = false;
+    enalbe_point_ = false;
+    enable_circle_ = false;
+    enable_rectang_ = false;
+    enable_triangle_ = false;
+    enable_polygon_ = false;
+    enable_square_ = true;
+  }
+  if (nID == ID_2DOBJECT_TRIANGLE) {
+    enable_line_ = false;
+    enalbe_point_ = false;
+    enable_circle_ = false;
+    enable_rectang_ = false;
+    enable_triangle_ = true;
+    enable_polygon_ = false;
+    enable_square_ = false;
+  }
+  if (nID == ID_2DOBJECT_POLYGON) {
+    enable_line_ = false;
+    enalbe_point_ = false;
+    enable_circle_ = false;
+    enable_rectang_ = false;
+    enable_triangle_ = false;
+    enable_polygon_ = true;
+    enable_square_ = false;
+  }
+  InvalidateRect(NULL);
+}
+
+void CSimple_DrawView::Draw3DObject(UINT nID) {
+  if (nID == ID_3DOBJECT_WRITECUBE) {
+    enable_cube_ = true;
+    enable_teaport_ = false;
+    enable_torus_ = false;
+    enable_lsahedron_ = false;
+  }
+  if (nID == ID_3DOBJECT_WRITETEAPORT) {
+    enable_cube_ = false;
+    enable_teaport_ = true;
+    enable_torus_ = false;
+    enable_lsahedron_ = false;
+  }
+  if (nID == ID_3DOBJECT_WRITETOURUS) {
+    enable_cube_ = false;
+    enable_teaport_ = false;
+    enable_torus_ = true;
+    enable_lsahedron_ = false;
+  }
+  if (nID == ID_3DOBJECT_WRITELCOSAHEDRON) {
+    enable_cube_ = false;
+    enable_teaport_ = false;
+    enable_torus_ = false;
+    enable_lsahedron_ = true;
+  }
+  InvalidateRect(NULL);
+}
+
+void CSimple_DrawView::OnDraw2DObject() {
+  if (enalbe_point_ == true) {
+    glColor3f(1.0f, 0.0f, 0.0f);
+		glPointSize(3.0f);
+		glBegin(GL_POINTS);
+	  glVertex2f(0.0f, 0.0f);
+		glVertex2f(1.0f, 0.0f);
+		glEnd();
+  }
+
+  if (enable_line_ == true) {
+ 		glColor3f(0.0f, 1.0f, 0.0f);
+		glPointSize(3.0f);
+		glBegin(GL_LINES);
+	  glVertex2f(0.0f, 0.0f);
+		glVertex2f(10.0f, 0.0f);
+		glEnd(); 
+  }
+
+  if (enable_circle_ == true) {
+   const float PI = 3.14;
+   glBegin(GL_LINE_STRIP);
+   glLineWidth(3.0f);
+   glColor3f(0.5f, 0.5f, 1.0f);
+   for(int i=0; i <= 360; i++)
+   glVertex3f(sin(i*PI/180)*5, cos(i*PI/180)*5, 1);
+   glEnd();
+  }
+
+  if (enable_rectang_ == true) {
+  }
+
+  if (enable_triangle_ == true) {
+    glColor3f(1.0f,0.0f,1.0f);
+		glBegin(GL_TRIANGLES);
+		glVertex2f(1.0f,0.0f);
+		glVertex2f(1.0f,0.5f);
+		glVertex2f(0.5f,0.5f);
+		glEnd();
+  }
+
+  if (enable_polygon_ == true) {
+    glColor3f(1.0f, 1.0f, 0.5f);
+		glBegin(GL_POLYGON);
+	  glVertex2f(0.0f,0.0f);
+	  glVertex2f(1.0f,0.0f);
+		glVertex2f(1.0f,1.0f);
+		glVertex2f(0.0f,1.5f);
+		glEnd();
+  }
+
+   if (enable_square_ == true) {
+  }
+}
+
+
+void CSimple_DrawView::OnDraw3DObject() {
+  if( enable_cube_== true){
+		 glColor3f(1.0f, 0.1f, 1.0f);
+		 glutWireCube(2.0f);
+	 }
+  if (enable_torus_ == true) {
+    glColor3f(1.0f,0.0f,0.0f);
+		glutWireTorus(0.5f, 1.0f, 50, 50);	
+  }
+  if (enable_teaport_ == true) {
+    glColor3f(0.0f, 1.0f, 0.0f);
+		glutWireTeapot(2.0f);
+  }
+  if ( enable_lsahedron_ == true) {
+    glColor3f(1.0f, 1.0f, 0.0f);
+		glutWireIcosahedron();
+  }
 }

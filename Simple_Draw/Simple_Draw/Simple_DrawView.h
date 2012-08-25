@@ -58,17 +58,13 @@ private:
    int count_down;
    BOOL check_down;
 
-public:
   BOOL status_text_editor_;
 
-public:
   GLuint m_3DTextList;
   GLuint m_2DTextList;
   GLuint m_b3DText;
   GLuint m_b2DText;
 
-public:
-  // Variable store color is got ColorDialog
   unsigned int red_color_;
   unsigned int green_color_;
   unsigned int blue_color_;
@@ -76,6 +72,20 @@ public:
   GLfloat gl_red_color_;
   GLfloat gl_green_color_;
   GLfloat gl_blue_color_;
+
+// variable for draw 2d and 3d Object
+  BOOL enalbe_point_ ;
+  BOOL enable_line_ ;
+  BOOL enable_polygon_ ;
+  BOOL enable_triangle_ ;
+  BOOL enable_rectang_;
+  BOOL enable_square_;
+  BOOL enable_circle_;
+
+	BOOL enable_cube_ ;
+	BOOL enable_torus_ ;
+	BOOL enable_teaport_;
+	BOOL enable_lsahedron_ ;
 
 public:
    void OnHandleMoveObject(UINT nID);
@@ -131,6 +141,16 @@ public:
    // Draw a text with OPenGL
    void Create3DTextList();
    void Create2DTextLists();
+
+   // Function for draw 2d 3d Opengl Object
+   void Draw2DObject(UINT nID);
+   void Draw3DObject(UINT nID);
+
+
+   // functions for drawing 2d and 3d object 
+   void OnDraw2DObject();
+   void OnDraw3DObject();
+
 
 // Overrides
 public:
