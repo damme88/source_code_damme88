@@ -17,7 +17,6 @@
 #define IDR_MAINFRAME                   128
 #define IDR_MAINFRAME_256               129
 #define IDS_EDIT_MENU                   306
-#define IDB_BITMAP1                     311
 #define IDR_TOOLBAR_DIRECT              312
 #define IDR_TOOLBAR_OFFICE              316
 #define IDR_TOOLBAR_DRAW                318
@@ -26,6 +25,8 @@
 #define IDD_DIALOG2                     325
 #define IDR_MENU_CONTEX                 326
 #define IDR_MENU_DLG1                   327
+#define IDB_SPLASH_WINDOWS              334
+#define IDB_BITMAP1                     335
 #define IDC_EDIT1                       1002
 #define IDC_BUTTON1                     1003
 #define IDC_BUTTON2                     1004
@@ -103,8 +104,6 @@
 #define ID_VIEW_WORKSPACE               32866
 #define ID_DRAW_TEXT2D                  32867
 #define ID_DRAW_3DTEXT                  32868
-
-
 #define ID_2DOBJECT_POINTS              35001
 #define ID_2DOBJECT_LINES               35002
 #define ID_2DOBJECT_RECTANG             35003
@@ -112,13 +111,11 @@
 #define ID_2DOBJECT_TRIANGLE            35005
 #define ID_2DOBJECT_CRICLE              35006
 #define ID_2DOBJECT_POLYGON             35007
-
 #define ID_3DOBJECT_WRITECUBE           35020
 #define ID_3DOBJECT_WRITETEAPORT        35021
 #define ID_3DOBJECT_WRITETOURUS         35022
-#define ID_3DOBJECT_WRITELCOSAHEDRON    35023
-
-
+#define ID_3DOBJECT_SPHERE              35023
+#define ID_3DOBJECT_WRITELCOSAHEDRON    35024
 #define ID_CUSTOMIZE_VIEW               50001
 #define ID_CUSTOMIZE_OFFICE             50002
 #define ID_CUSTOMIZE_DRAW               50003
@@ -127,8 +124,8 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        329
-#define _APS_NEXT_COMMAND_VALUE         32882
+#define _APS_NEXT_RESOURCE_VALUE        336
+#define _APS_NEXT_COMMAND_VALUE         32884
 #define _APS_NEXT_CONTROL_VALUE         1007
 #define _APS_NEXT_SYMED_VALUE           310
 #endif

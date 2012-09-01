@@ -91,6 +91,7 @@ BEGIN_MESSAGE_MAP(CSimple_DrawView, CView)
 	ON_WM_SIZE()
 	ON_WM_ERASEBKGND()
 	ON_WM_DESTROY()
+  ON_WM_KEYDOWN()
   ON_WM_LBUTTONDOWN()
 	ON_WM_LBUTTONUP()
 	ON_WM_MOUSEMOVE()
@@ -142,7 +143,8 @@ CSimple_DrawView::CSimple_DrawView() :
 	 enable_cube_(false),
 	 enable_torus_(false),
 	 enable_teaport_(false),
-	 enable_lsahedron_(false)
+	 enable_lsahedron_(false),
+   enable_sphere_(false)
 {
   red_color_ = 255;
   green_color_ = 0;
@@ -451,6 +453,7 @@ void CSimple_DrawView::RenderScene () {
 
    if (m_draw_grid == TRUE) {
      //Draw a Plane
+     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
      glColor3f(gl_red_color_, gl_green_color_, gl_blue_color_);
      glBegin(GL_POLYGON);
 		 glVertex3f(10.0f, -4.5f, 10.0f);
@@ -496,6 +499,7 @@ void CSimple_DrawView::RenderScene () {
 
    OnDraw2DObject();
    OnDraw3DObject();
+   DrawCubeFull();
 }
 
 
@@ -585,6 +589,25 @@ void CSimple_DrawView::OnLButtonUp(UINT nFlags, CPoint point)  {
         ReleaseCapture();
         CView::OnLButtonUp(nFlags, point);
 }
+
+void CSimple_DrawView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags) 
+{
+        // TODO: Add your message handler code here and/or call default
+        switch (nChar)
+        {
+            case VK_UP:        m_yPos = m_yPos + 0.5f;
+                                          break;
+            case VK_DOWN:      m_yPos = m_yPos - 0.5f;
+                                          break;
+            case VK_LEFT:      m_xPos = m_xPos - 0.5f;
+                                          break;
+            case VK_RIGHT:     m_xPos = m_xPos + 0.5f;
+                                          break;
+        } 
+        InvalidateRect(NULL,FALSE);
+        CView::OnKeyDown(nChar, nRepCnt, nFlags);
+}
+
 
 /******************************************************************************
 * Function Name		:
@@ -1036,29 +1059,41 @@ void CSimple_DrawView::Draw3DObject(UINT nID) {
     enable_teaport_ = false;
     enable_torus_ = false;
     enable_lsahedron_ = false;
+    enable_sphere_ = false;
   }
   if (nID == ID_3DOBJECT_WRITETEAPORT) {
     enable_cube_ = false;
     enable_teaport_ = true;
     enable_torus_ = false;
     enable_lsahedron_ = false;
+    enable_sphere_ = false;
   }
   if (nID == ID_3DOBJECT_WRITETOURUS) {
     enable_cube_ = false;
     enable_teaport_ = false;
     enable_torus_ = true;
     enable_lsahedron_ = false;
+    enable_sphere_ = false;
   }
   if (nID == ID_3DOBJECT_WRITELCOSAHEDRON) {
     enable_cube_ = false;
     enable_teaport_ = false;
     enable_torus_ = false;
     enable_lsahedron_ = true;
+    enable_sphere_ = false;
+  }
+  if (nID == ID_3DOBJECT_SPHERE) {
+    enable_cube_ = false;
+    enable_teaport_ = false;
+    enable_torus_ = false;
+    enable_lsahedron_ = false;
+    enable_sphere_ = true;
   }
   InvalidateRect(NULL);
 }
 
 void CSimple_DrawView::OnDraw2DObject() {
+  glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
   if (enalbe_point_ == true) {
     glColor3f(1.0f, 0.0f, 0.0f);
 		glPointSize(3.0f);
@@ -1115,20 +1150,98 @@ void CSimple_DrawView::OnDraw2DObject() {
 
 
 void CSimple_DrawView::OnDraw3DObject() {
+  glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
   if( enable_cube_== true){
+     glLineWidth(1.0f);
 		 glColor3f(1.0f, 0.1f, 1.0f);
 		 glutWireCube(2.0f);
 	 }
   if (enable_torus_ == true) {
+     glLineWidth(1.0f);
     glColor3f(1.0f,0.0f,0.0f);
 		glutWireTorus(0.5f, 1.0f, 50, 50);	
   }
   if (enable_teaport_ == true) {
+     glLineWidth(1.0f);
     glColor3f(0.0f, 1.0f, 0.0f);
 		glutWireTeapot(2.0f);
   }
   if ( enable_lsahedron_ == true) {
+     glLineWidth(1.0f);
     glColor3f(1.0f, 1.0f, 0.0f);
 		glutWireIcosahedron();
   }
+  if (enable_sphere_ == true) {
+    //DrawCylinder();
+    DrawQuadric();
+  }
+}
+
+void CSimple_DrawView::DrawQuadric() {
+  SetupLighting();
+  glColor3f(gl_red_color_ , gl_green_color_, gl_blue_color_);
+  glLineWidth(1.0f);
+  glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+  glEnable(GL_TEXTURE_2D);
+  glBindTexture(GL_TEXTURE_2D , 5);
+  GLUquadricObj* obj;
+  obj = gluNewQuadric();
+  gluQuadricNormals(obj, GLU_SMOOTH);
+  gluQuadricTexture(obj, GL_TRUE);
+  gluSphere(obj, 3.0f, 100, 100);
+}
+
+void CSimple_DrawView::DrawCylinder() {
+  glColor3f(1.0f, 0.3f, 0.8f);
+  //glLineWidth(1.0f);
+  glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+  glBlendFunc(GL_ONE, GL_ONE);
+  glEnable(GL_BLEND);
+  glDepthMask(GL_FALSE);
+  GLUquadricObj* obj;
+  obj = gluNewQuadric();
+  gluCylinder(obj, 1.0, 1.0, 2.0, 50, 50);
+  glDisable(GL_BLEND);
+  glDepthMask(GL_TRUE);
+
+}
+
+void CSimple_DrawView::DrawCubeFull() {
+  
+}
+
+
+void CSimple_DrawView::SetupLighting() {
+  // khoi tao thuoc tinh material
+  GLfloat matSpecular[] = {0.5f, 0.0f, 0.0f, 0.0f};
+  // do lon cua diem sang value cang cao thi no cang nho
+  GLfloat matShininess[] = {100.0f};
+  // Phu vat lieu toan bo 
+  GLfloat matAmbient[] = {0.25f, 0.25f, 0.25f, 1.0f};
+  // phu vat lieu 1 phan (1 nua)
+  GLfloat matDiffuse[] = {0.5f, 0.5f, 0.5f, 1.0f};
+
+  // goi ham xu ly tao chat lieu voi cac gia tri da duoc khai bao o tren
+  glMaterialfv(GL_FRONT, GL_SPECULAR, matSpecular);
+  glMaterialfv(GL_FRONT, GL_SHININESS, matShininess);
+  glMaterialfv(GL_FRONT, GL_DIFFUSE, matDiffuse);
+  glMaterialfv(GL_FRONT, GL_AMBIENT, matAmbient);
+
+  // Handle lightin
+  // cho phep chieu sang
+  glEnable(GL_LIGHTING);
+
+  // chi dinh 1 huong chieu sang co ban
+  GLfloat ambien1[] = {1.0f, 0.5f, 0.5f};
+  GLfloat diffuse1[] = {1.0f, 0.5f, 0.5f};
+  GLfloat specular1[] = {1.0f, 0.0f, 0.0f};
+  GLfloat position1[] = {0.0f, 0.0f, 5.0f, 0.0f};
+
+  glLightfv(GL_LIGHT0, GL_AMBIENT, ambien1);
+  glLightfv(GL_LIGHT0, GL_DIFFUSE, diffuse1);
+  glLightfv(GL_LIGHT0, GL_SPECULAR, specular1);
+  glLightfv(GL_LIGHT0, GL_POSITION, position1);
+
+  // cho phep huong chieu sang
+  glEnable(GL_LIGHT0);
 }

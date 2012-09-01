@@ -11,7 +11,7 @@
 #include "Simple_DrawView.h"
 #include "TextEditor.h"
 #include "ControlContextDlg.h"
-
+#include "SplashWindows.h"
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
@@ -105,6 +105,8 @@ BOOL CSimple_DrawApp::InitInstance()
 	CCommandLineInfo cmdInfo;
 	ParseCommandLine(cmdInfo);
 
+	SplashWindows::EnableSplashWindows(cmdInfo.m_bShowSplash);
+  SplashWindows::ShowSplashWindows(1000, IDB_SPLASH_WINDOWS, NULL);
 
 	// Dispatch commands specified on the command line.  Will return FALSE if
 	// app was launched with /RegServer, /Register, /Unregserver or /Unregister.
@@ -197,5 +199,13 @@ void CSimple_DrawApp::OnFileOpen() {
 }
 // CSimple_DrawApp message handlers
 
-
+BOOL CSimple_DrawApp::PreTranslateMessage(MSG* pMsg) 
+{
+	// Route messages to the splash screen while it is visible
+  if (SplashWindows::PreTranslateAppMessage(pMsg)) {
+		return TRUE;
+	}
+	
+	return CWinApp::PreTranslateMessage(pMsg);
+}
 

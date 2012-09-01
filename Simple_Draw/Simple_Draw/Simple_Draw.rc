@@ -73,7 +73,7 @@ END
 
 // Icon with lowest ID value placed first to ensure application icon
 // remains consistent on all systems.
-IDR_MAINFRAME           ICON                    "res\\Simple_Draw.ico"
+IDR_MAINFRAME           ICON                    "res\\S_D.ico"
 IDR_SIMPLE_DRAWTYPE     ICON                    "res\\Simple_DrawDoc.ico"
 IDI_ICON1               ICON                    "res\\icon1.ico"
 
@@ -87,6 +87,8 @@ IDR_MAINFRAME_256       BITMAP                  "G:\\repo_damme88\\Simple_Draw\\
 IDR_TOOLBAR_DIRECT      BITMAP                  "res\\Toolbar_Driect.bmp"
 IDR_TOOLBAR_OFFICE      BITMAP                  "res\\toolbar1.bmp"
 IDR_TOOLBAR_DRAW        BITMAP                  "res\\bmp00001.bmp"
+IDB_SPLASH_WINDOWS      BITMAP                  "res\\splash_windows.bmp"
+IDB_BITMAP1             BITMAP                  "res\\earth.bmp"
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -258,10 +260,11 @@ BEGIN
         END
         POPUP "3D Object"
         BEGIN
-            MENUITEM "Write Cube",                  ID_3DOBJECT_WRITECUBE
-            MENUITEM "Write Teaport",               ID_3DOBJECT_WRITETEAPORT
-            MENUITEM "Write Torus",                 ID_3DOBJECT_WRITETOURUS
-            MENUITEM "Write lcosahedron",           ID_3DOBJECT_WRITELCOSAHEDRON
+            MENUITEM "Draw Cube",                   ID_3DOBJECT_WRITECUBE
+            MENUITEM "Draw Teaport",                ID_3DOBJECT_WRITETEAPORT
+            MENUITEM "Draw Torus",                  ID_3DOBJECT_WRITETOURUS
+            MENUITEM "Draw lcosahedron",            ID_3DOBJECT_WRITELCOSAHEDRON
+            MENUITEM "Draw Sphere",                 ID_3DOBJECT_SPHERE
         END
     END
 END

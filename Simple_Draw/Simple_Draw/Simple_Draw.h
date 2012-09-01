@@ -35,7 +35,7 @@ public:
 	virtual void PreLoadState();
 	virtual void LoadCustomState();
 	virtual void SaveCustomState();
-
+  virtual BOOL PreTranslateMessage(MSG* pMsg) ;
 	afx_msg void OnAppAbout();
   afx_msg void OnAppTextEditor();
   afx_msg void OnAppContextDialog();

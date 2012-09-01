@@ -25,7 +25,7 @@
 #include <windows.h>
 #include <fstream>
 #include <iostream>
-
+#include <math.h>
 //OpenGL Headers
 #include <gl\gl.h>         //OpenGL Main Library Header
 #include <gl\glu.h>       //OpenGL Utility Library Header

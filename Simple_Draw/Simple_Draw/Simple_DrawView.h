@@ -64,11 +64,12 @@ private:
   GLuint m_2DTextList;
   GLuint m_b3DText;
   GLuint m_b2DText;
-
+  // variable for getting color from color dialog 
+  // variable for MFC color
   unsigned int red_color_;
   unsigned int green_color_;
   unsigned int blue_color_;
-
+  // variable for Opengl color
   GLfloat gl_red_color_;
   GLfloat gl_green_color_;
   GLfloat gl_blue_color_;
@@ -86,6 +87,7 @@ private:
 	BOOL enable_torus_ ;
 	BOOL enable_teaport_;
 	BOOL enable_lsahedron_ ;
+  BOOL enable_sphere_;
 
 public:
    void OnHandleMoveObject(UINT nID);
@@ -146,11 +148,13 @@ public:
    void Draw2DObject(UINT nID);
    void Draw3DObject(UINT nID);
 
-
+   void DrawQuadric();
+   void DrawCylinder();
+   void DrawCubeFull();
    // functions for drawing 2d and 3d object 
    void OnDraw2DObject();
    void OnDraw3DObject();
-
+   void SetupLighting();
 
 // Overrides
 public:
@@ -186,6 +190,7 @@ protected:
 	afx_msg void OnFilePrintPreview();
 	afx_msg void OnRButtonUp(UINT nFlags, CPoint point);
 	afx_msg void OnContextMenu(CWnd* pWnd, CPoint point);
+  afx_msg void OnKeyDown(UINT nchar , UINT nRepCnt, UINT nFlas);
 	DECLARE_MESSAGE_MAP()
 public:
   afx_msg void OnBnClickedSubmitBtn();

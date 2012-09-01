@@ -249,6 +249,18 @@
 					>
 				</File>
 			</Filter>
+			<Filter
+				Name="SplashWindows"
+				>
+				<File
+					RelativePath=".\SplashWindows.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\SplashWindows.h"
+					>
+				</File>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="Header Files"
@@ -310,11 +322,23 @@
 				>
 			</File>
 			<File
+				RelativePath=".\res\bitmap3.bmp"
+				>
+			</File>
+			<File
 				RelativePath=".\res\bmp00001.bmp"
 				>
 			</File>
 			<File
+				RelativePath=".\res\earth.bmp"
+				>
+			</File>
+			<File
 				RelativePath=".\res\icon1.ico"
+				>
+			</File>
+			<File
+				RelativePath=".\res\S_D.ico"
 				>
 			</File>
 			<File
@@ -331,6 +355,10 @@
 			</File>
 			<File
 				RelativePath=".\res\Simple_DrawDoc.ico"
+				>
+			</File>
+			<File
+				RelativePath=".\res\splash_windows.bmp"
 				>
 			</File>
 			<File

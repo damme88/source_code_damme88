@@ -370,6 +370,186 @@ void COpenGLView::RenderScene ()
 	 // Do nghieng
      glRotatef(m_xAngle+3.0f, 1.0f,0.0f,0.0f);
 	   glRotatef(m_yAngle-3.0f, 0.0f,1.0f,0.0f);
+      float a[3];
+      a[0] = 1.0f/sqrt(2.0f);
+      a[1] = a[0];
+      a[2] = 5.0f;
+
+ // GLfloat box[] = { 
+ //   -0.5, -0.5, 0.5,
+ //    0.5, -0.5, 0.5,
+ //   -0.5,  0.5, 0.5,
+ //    0.5,  0.5, 0.5,
+
+ //    -0.5, -0.5, -0.5,
+ //    -0.5,  0.5, -0.5,
+ //     0.5, -0.5, -0.5,
+ //     0.5,  0.5, -0.5,
+
+ //     -0.5, -0.5, 0.5,
+ //     -0.5,  0.5, 0.5,
+ //     -0.5, -0.5, -0.5,
+ //     -0.5,  0.5, -0.5,
+
+ //     0.5, -0.5, -0.5,
+ //     0.5,  0.5, -0.5,
+ //     0.5, -0.5,  0.5,
+ //     0.5,  0.5, 0.5,
+
+ //     -0.5,  0.5, 0.5,
+ //     0.5,  0.5, 0.5,
+ //     -0.5,  0.5, -0.5,
+ //     0.5,  0.5, -0.5,
+
+ //     -0.5, -0.5, 0.5,
+ //    -0.5,  -0.5, -0.5,
+ //     0.5, -0.5, 0.5,
+ //     0.5, -0.5, -0.5,
+ // };
+ // glEnable(GL_CULL_FACE);
+  glEnable(GL_DEPTH_TEST);
+ // glDepthFunc(GL_LEQUAL);
+ // glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+ // glClearDepth(1.0f);
+ // glVertexPointer(3, GL_FLOAT, 0, box);
+ // glEnableClientState(GL_VERTEX_ARRAY);
+ // glEnable(GL_CULL_FACE);
+ // glShadeModel(GL_SMOOTH);
+
+ //float lightAmbien[] = {0.2f, 0.3f, 0.6, 1.0f};
+ // float lightDiffuse[] = {0.2f, 0.3f, 0.6f, 1.0f};
+ // float matAmbien[] = {0.6f, 0.6f, 0.6f, 1.0f};
+ // float matDiffuse[] = {0.6f, 0.6f, 0.6f, 1.0f};
+
+  glEnable (GL_LIGHTING);
+  glEnable(GL_LIGHT0);
+ // glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, matAmbien);
+ // glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, matDiffuse);
+ // glLightfv(GL_LIGHT0, GL_AMBIENT, lightAmbien);
+ // glLightfv(GL_LIGHT0, GL_DIFFUSE, lightDiffuse);
+   float pi;
+   pi = 3,1415926535 ;
+   double value;
+   value = tan((pi)/8.0);
+
+      glBlendFunc(GL_ONE, GL_ONE);
+     glEnable(GL_BLEND);
+     glDepthMask(GL_FALSE);
+
+     	glColor3f(1.0f,1.0f,0.5f);
+		  glBegin(GL_POLYGON);
+      glNormal3f(0.0f, 1.0f, 0.0f);
+			glVertex3f(0.0f, 0.0f, 1.0f);
+			glVertex3f(-1.0f, 0.0f, 1.0f);
+			glVertex3f(-1.0f, 0.0f, 0.0f);
+			glVertex3f(0.0f, 0.0f, 0.0f);
+		 glEnd();
+
+     	glBegin(GL_POLYGON);
+      glNormal3f(-1.0f, 0.0f, 0.0f);
+			glVertex3f(-1.0f, 0.0f, 1.0f);
+      glVertex3f(-1.0f, -1.0f, 1.0f);
+      glVertex3f(-1.0f, -1.0f, 0.0f);
+			glVertex3f(-1.0f, 0.0f, 0.0f);
+		 glEnd();
+      
+      glBegin(GL_POLYGON);
+      glNormal3f(0.0f, -1.0f, 0.0f);
+      glVertex3f(-1.0f, -1.0f, 1.0f);
+      glVertex3f(0.0f, -1.0f, 1.0f);
+      glVertex3f(0.0f, -1.0f, 0.0f);
+      glVertex3f(-1.0f, -1.0f, 0.0f);
+		 glEnd();
+
+      glBegin(GL_POLYGON);
+       glNormal3f(1.0f, 0.0f, 0.0f);
+      glVertex3f(0.0f, -1.0f, 1.0f);
+      glVertex3f(0.0f, 0.0f, 1.0f);
+      glVertex3f(0.0f, 0.0f, 0.0f);
+      glVertex3f(0.0f, -1.0f, 0.0f);
+		 glEnd();
+
+      glBegin(GL_POLYGON);
+      glNormal3f(0.0f, 0.0f, 1.0f);
+      glVertex3f(0.0f, 0.0f, 1.0f);
+      glVertex3f(-1.0f, 0.0f, 1.0f);
+      glVertex3f(-1.0f, -1.0f, 1.0f);
+      glVertex3f(0.0f, -1.0f, 1.0f);
+		 glEnd();
+
+       glBegin(GL_POLYGON);
+      glNormal3f(0.0f, 0.0f, -1.0f);
+      glVertex3f(0.0f, 0.0f, 0.0f);
+      glVertex3f(-1.0f, 0.0f, 0.0f);
+      glVertex3f(-1.0f, -1.0f, 0.0f);
+      glVertex3f(0.0f, -1.0f, 0.0f);
+		 glEnd();
+
+     glDisable(GL_BLEND);
+     glDepthMask(GL_TRUE);
+
+   //  	glColor3f(1.0f,1.0f,0.5f);
+		 // glBegin(GL_POLYGON);
+			//glVertex3f(1.0f, 0.0f, 0.0f);
+			//glVertex3f(a[0], a[1], 0.0f);
+			//glVertex3f(a[0], a[1], 5.0f);
+			//glVertex3f(1.0f, 0.0f, 5.0f);
+		 //glEnd();
+
+
+	  //glBegin(GL_POLYGON);
+			//glVertex3f(a[0], a[1], 0.0f);
+   //   glVertex3f(0.0f, 1.0f, 0.0f);
+   //   glVertex3f(0.0f, 1.0f, 5.0f);
+			//glVertex3f(a[0], a[1], 5.0f);
+		 //glEnd();
+
+
+			//glBegin(GL_POLYGON);
+   //   glVertex3f(0.0f, 1.0f, 0.0f);
+   // 	glVertex3f(-1*a[0], a[1], 0.0f);
+   //   glVertex3f(-1*a[0], a[1], 5.0f);
+   //   glVertex3f(0.0f, 1.0f, 5.0f);
+		 //glEnd();
+
+			//glBegin(GL_POLYGON);
+   // 	glVertex3f(-1*a[0], a[1], 0.0f);
+   //   glVertex3f(-1.0f, 0.0f, 0.0f);
+   //   glVertex3f(-1.0f, 0.0f, 5.0f);
+   //   glVertex3f(-1*a[0], a[1], 5.0f);
+		 //glEnd();
+
+			//glBegin(GL_POLYGON);
+   //   glVertex3f(-1.0f, 0.0f, 0.0f);
+   //   glVertex3f(-1*a[0], -1*a[1], 0.0f);
+   //   glVertex3f(-1*a[0], -1*a[1], 5.0f);
+   //   glVertex3f(-1.0f, 0.0f, 5.0f);
+		 //glEnd();
+
+			//glBegin(GL_POLYGON);
+   //   glVertex3f(-1*a[0], -1*a[1], 0.0f);
+   //   glVertex3f(0.0f, -1.0f, 0.0f);
+   //   glVertex3f(0.0f, -1.0f, 5.0f);
+   //   glVertex3f(-1*a[0], -1*a[1], 5.0f);
+		 //glEnd();
+
+			//glBegin(GL_POLYGON);
+   //   glVertex3f(0.0f, -1.0f, 0.0f);
+   //   glVertex3f(1*a[0], -1*a[1], 0.0f);
+   //   glVertex3f(1*a[0], -1*a[1], 5.0f);
+   //   glVertex3f(0.0f, -1.0f, 5.0f);
+		 //glEnd();
+
+			//glBegin(GL_POLYGON);
+   //   glVertex3f(1*a[0], -1*a[1], 0.0f);
+   //    glVertex3f(1.0f, 0.0f, 0.0f);
+   //    glVertex3f(1.0f, 0.0f, 5.0f);
+   //   glVertex3f(1*a[0], -1*a[1], 5.0f);
+		 //glEnd();
+
+     //glDisable(GL_BLEND);
+    // glDepthMask(GL_TRUE);
+
 
 	 if(m_bOXYZ == TRUE)
 	 {	
