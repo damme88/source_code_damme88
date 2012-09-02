@@ -6,7 +6,6 @@
 
 #include "Simple_DrawDoc.h"
 #include "Simple_DrawView.h"
-
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
@@ -345,6 +344,10 @@ void CSimple_DrawView::RenderScene () {
   glRotatef(m_xAngle + 45.0f, 1.0f, 0.0f, 0.0f);
 	glRotatef(m_yAngle - 45.0f, 0.0f, 1.0f, 0.0f);
 
+  // dua truc z thanh truc y
+ // glRotatef(m_xAngle - 60.0f, 1.0f, 0.0f, 0.0f);
+	//glRotatef(m_yAngle - 135.0f, 0.0f, 0.0f, 1.0f);
+
   if (m_bOXYZ == TRUE) {	
 	  // Truc OX co mau do 
 		glColor3f(1.0f, 0.0f, 0.0f);
@@ -354,6 +357,7 @@ void CSimple_DrawView::RenderScene () {
 		glVertex3f(0.0f, 0.0f, 0.0f);
 		glVertex3f(3.0f, 0.0f, 0.0f);
 		glEnd();
+
     //Arrow for OX
     glBegin(GL_LINES);
 		glVertex3f(2.8f, 0.2f, 0.0f);
@@ -364,6 +368,7 @@ void CSimple_DrawView::RenderScene () {
 		glVertex3f(2.8f, 0.0f, 0.2f);
 	  glVertex3f(3.0f, 0.0f, 0.0f);
 		glEnd();
+
 
 	// Truc OY co mau xanh la cay
 		glColor3f(0.0f, 1.0f, 0.0f);
@@ -499,7 +504,7 @@ void CSimple_DrawView::RenderScene () {
 
    OnDraw2DObject();
    OnDraw3DObject();
-   DrawCubeFull();
+   //DrawCubeFull();
 }
 
 
@@ -666,34 +671,45 @@ BOOL CSimple_DrawView::OnMouseWheel(UINT nFlags, short zDelta, CPoint point)
   return ret;
 }
 
+// Toa do thuc la : 0 0
 void CSimple_DrawView::OnViewFront() {
   m_xAngle = -45;
   m_yAngle = 45;
   InvalidateRect(NULL, FALSE);
 }
+
+// Toa do thuc la : 0 -180
 void CSimple_DrawView::OnViewBehind() {
   m_xAngle = -45;
-  m_yAngle = 45;
+  m_yAngle = -135;
   InvalidateRect(NULL, FALSE);
 }
+
+// Toa do thuc la : 90 -90
 void CSimple_DrawView::OnViewTop() {
   m_xAngle = 45;
   m_yAngle = -45;
   InvalidateRect(NULL, FALSE);
 }
+
+// Toa do thuc la : -90 -90
 void CSimple_DrawView::OnViewBottom() {
-  m_xAngle = 0;
+  m_xAngle = -135;
   m_yAngle = -45;
   InvalidateRect(NULL, FALSE);
 }
+
+// Toa do thuc la : 0 -90
 void CSimple_DrawView::OnViewRight() {
-  m_xAngle = 45;
-  m_yAngle = 0;
+  m_xAngle = -45;
+  m_yAngle = -45;
   InvalidateRect(NULL, FALSE);
 }
+
+// Toa do thuc la : 0 90
 void CSimple_DrawView::OnViewLeft() {
-  m_xAngle = 45;
-  m_yAngle = 45;
+  m_xAngle = -45;
+  m_yAngle = 135;
   InvalidateRect(NULL, FALSE);
 }
 void CSimple_DrawView::OnViewStandar() {
@@ -924,20 +940,6 @@ void CSimple_DrawView::DrawEraser() {
 void CSimple_DrawView::DrawPolygon() {
 }
 
-void CSimple_DrawView::OnDrawline() {
-  m_count_draw_line ++;
-  if (m_count_draw_line %2 != 0)
-    m_draw_line = 1;
-  else m_draw_line = 0;
-  if(m_count_draw_line == 0)
-    m_count_draw_line = 0 ;
-}
-void CSimple_DrawView::OnUpdateDrawLine(CCmdUI *pcmdui) {
-  if (m_draw_line ==1 )
-    pcmdui->SetCheck(1);
-  else
-    pcmdui->SetCheck(0);
-}
 
 // Draw a text in OPenGL and MFC
 void CSimple_DrawView::Create3DTextList() {
@@ -1098,14 +1100,16 @@ void CSimple_DrawView::OnDraw2DObject() {
     glColor3f(1.0f, 0.0f, 0.0f);
 		glPointSize(3.0f);
 		glBegin(GL_POINTS);
-	  glVertex2f(0.0f, 0.0f);
-		glVertex2f(1.0f, 0.0f);
+	  glVertex2f(0.5f, 0.5f);
+		glEnd();
+    glBegin(GL_POINTS);
+	  glVertex2f(2.5f, 2.5f);
 		glEnd();
   }
 
   if (enable_line_ == true) {
  		glColor3f(0.0f, 1.0f, 0.0f);
-		glPointSize(3.0f);
+    glLineWidth(3.0f);
 		glBegin(GL_LINES);
 	  glVertex2f(0.0f, 0.0f);
 		glVertex2f(10.0f, 0.0f);
@@ -1113,38 +1117,60 @@ void CSimple_DrawView::OnDraw2DObject() {
   }
 
   if (enable_circle_ == true) {
-   const float PI = 3.14;
    glBegin(GL_LINE_STRIP);
    glLineWidth(3.0f);
    glColor3f(0.5f, 0.5f, 1.0f);
-   for(int i=0; i <= 360; i++)
-   glVertex3f(sin(i*PI/180)*5, cos(i*PI/180)*5, 1);
+   for(int i = 0; i <= 360; i++)
+   glVertex3f(sin(i*M_PI/180)*5, cos(i*M_PI/180)*5, 0);
    glEnd();
   }
 
   if (enable_rectang_ == true) {
+    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    glColor3f(1.0f, 1.0f, 0.0f);
+    glLineWidth(3.0f);
+    glBegin(GL_POLYGON);
+    glVertex2f(0.0f, 0.0f);
+    glVertex2f(10.0f, 0.0f);
+    glVertex2f(10.0f, 2.0f);
+    glVertex2f(0.0f, 2.0f);
+    glEnd();
   }
 
   if (enable_triangle_ == true) {
     glColor3f(1.0f,0.0f,1.0f);
+    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    glLineWidth(3.0f);
 		glBegin(GL_TRIANGLES);
-		glVertex2f(1.0f,0.0f);
-		glVertex2f(1.0f,0.5f);
-		glVertex2f(0.5f,0.5f);
+		glVertex2f(4.0f, 1.0f);
+		glVertex2f(1.0f, 4.0f);
+		glVertex2f(4.0f, 4.0f);
 		glEnd();
   }
 
   if (enable_polygon_ == true) {
     glColor3f(1.0f, 1.0f, 0.5f);
+    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    glLineWidth(3.0f);
 		glBegin(GL_POLYGON);
-	  glVertex2f(0.0f,0.0f);
-	  glVertex2f(1.0f,0.0f);
-		glVertex2f(1.0f,1.0f);
-		glVertex2f(0.0f,1.5f);
+	  glVertex2f(1.0f,0.5f);
+    glVertex2f(0.5f,0.5f);
+		glVertex2f(0.5f,1.5f);
+    glVertex2f(4.0f,4.0f);
+    glVertex2f(6.0f,1.0f);
 		glEnd();
   }
 
    if (enable_square_ == true) {
+    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    glColor3f(1.0f, 0.0f, 1.0f);
+    glLineWidth(3.0f);
+    glBegin(GL_POLYGON);
+    glVertex2f(0.0f, 0.0f);
+    glVertex2f(10.0f, 0.0f);
+    glVertex2f(10.0f, 10.0f);
+    glVertex2f(0.0f, 10.0f);
+    glEnd();
   }
 }
 
@@ -1172,48 +1198,68 @@ void CSimple_DrawView::OnDraw3DObject() {
 		glutWireIcosahedron();
   }
   if (enable_sphere_ == true) {
-    //DrawCylinder();
     DrawQuadric();
+    DrawCylinder() ;
   }
 }
 
 void CSimple_DrawView::DrawQuadric() {
   SetupLighting();
-  glColor3f(gl_red_color_ , gl_green_color_, gl_blue_color_);
-  glLineWidth(1.0f);
   glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-  glEnable(GL_TEXTURE_2D);
-  glBindTexture(GL_TEXTURE_2D , 5);
   GLUquadricObj* obj;
   obj = gluNewQuadric();
-  gluQuadricNormals(obj, GLU_SMOOTH);
-  gluQuadricTexture(obj, GL_TRUE);
   gluSphere(obj, 3.0f, 100, 100);
 }
 
 void CSimple_DrawView::DrawCylinder() {
+  SetupLighting();
+  glTranslated(0.0f, 0.0f, 3.0f);
   glColor3f(1.0f, 0.3f, 0.8f);
-  //glLineWidth(1.0f);
   glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-  glBlendFunc(GL_ONE, GL_ONE);
-  glEnable(GL_BLEND);
-  glDepthMask(GL_FALSE);
   GLUquadricObj* obj;
   obj = gluNewQuadric();
-  gluCylinder(obj, 1.0, 1.0, 2.0, 50, 50);
-  glDisable(GL_BLEND);
-  glDepthMask(GL_TRUE);
-
+  gluCylinder(obj, 0.5, 0.5, 10.0, 50, 50);
 }
 
 void CSimple_DrawView::DrawCubeFull() {
-  
+  glEnable (GL_DEPTH_TEST);
+  glEnable (GL_LIGHTING);
+  glEnable (GL_LIGHT0);
+  glColor3f(1.0f, 0.5f, 1.0f);
+  glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+  glBegin(GL_POLYGON);
+  glNormal3f(1.0f, 0.0f, 0.0f);
+  glVertex3f(0.0f, 0.0f, 0.0f);
+  glVertex3f(2.0f, 0.0f, 0.0f);
+  glVertex3f(0.0f, 2.0f, 0.0f);
+  glEnd();
+
+  glBegin(GL_POLYGON);
+  glNormal3f(0.0f, 0.0f, 1.0f);
+  glVertex3f(0.0f, 0.0f, 0.0f);
+  glVertex3f(0.0f, 2.0f, 0.0f);
+  glVertex3f(0.0f, 0.0f, 2.0f);
+  glEnd();
+
+  glBegin(GL_POLYGON);
+  glNormal3f(0.0f, 1.0f, 0.0f);
+  glVertex3f(2.0f, 0.0f, 0.0f);
+  glVertex3f(0.0f, 2.0f, 0.0f);
+  glVertex3f(0.0f, 0.0f, 2.0f);
+  glEnd();
+
+  glBegin(GL_POLYGON);
+  glNormal3f(0.0f, -1.0f, 0.0f);
+  glVertex3f(0.0f, 0.0f, 0.0f);
+  glVertex3f(2.0f, 0.0f, 0.0f);
+  glVertex3f(0.0f, 0.0f, 2.0f);
+  glEnd();
 }
 
 
 void CSimple_DrawView::SetupLighting() {
   // khoi tao thuoc tinh material
-  GLfloat matSpecular[] = {0.5f, 0.0f, 0.0f, 0.0f};
+  GLfloat matSpecular[] = {0.5f, 1.0f, 1.0f, 1.0f};
   // do lon cua diem sang value cang cao thi no cang nho
   GLfloat matShininess[] = {100.0f};
   // Phu vat lieu toan bo 

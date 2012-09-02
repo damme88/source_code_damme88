@@ -126,8 +126,6 @@ public:
    void OnUpdateHandleAlign(CCmdUI *pcmdui);
 
    void OnSo1(); 
-   void OnDrawline();
-   void OnUpdateDrawLine(CCmdUI *pcmdui);
    
    void DrawLine();
    void DrawCurve();
