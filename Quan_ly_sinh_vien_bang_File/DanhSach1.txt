@@ -1,0 +1,25 @@
+
+	  Thong Tin Sinh Vien 
+	  Thong Tin Sinh Vien Thu [1] 
+
+
+	 Ho ten       : toan
+	 Que Quan     : hd
+	 Truong       : gha
+	 Nam Sinh     : 1988
+	 Chuyen Nganh : vt
+	 Tuoi         :  23
+	 Diem         : 8
+
+
+	  Thong Tin Sinh Vien Thu [2] 
+
+
+	 Ho ten       : duongktt
+	 Que Quan     : ht
+	 Truong       : fpt
+	 Nam Sinh     : 1988
+	 Chuyen Nganh : vt
+	 Tuoi         :  23
+	 Diem         : 10
+

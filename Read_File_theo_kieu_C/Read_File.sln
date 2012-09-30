@@ -1,0 +1,20 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual Studio 2008
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Read_File", "Read_File\Read_File.vcproj", "{D749D0F8-9A0C-4A7C-87DD-6A95D1809BEE}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{D749D0F8-9A0C-4A7C-87DD-6A95D1809BEE}.Debug|Win32.ActiveCfg = Debug|Win32
+		{D749D0F8-9A0C-4A7C-87DD-6A95D1809BEE}.Debug|Win32.Build.0 = Debug|Win32
+		{D749D0F8-9A0C-4A7C-87DD-6A95D1809BEE}.Release|Win32.ActiveCfg = Release|Win32
+		{D749D0F8-9A0C-4A7C-87DD-6A95D1809BEE}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
