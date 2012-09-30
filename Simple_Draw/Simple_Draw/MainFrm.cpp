@@ -366,10 +366,10 @@ LRESULT CMainFrame::OnToolbarReset(WPARAM wParam, LPARAM lParam) {
     combo_text_size.AddItem(L"10");
     combo_text_size.AddItem(L"12");
     combo_text_size.AddItem(L"14");
+    combo_text_size.AddItem(L"16");
     VERIFY(combo_text_size.SelectItem(0));
     int rplum_text_size = m_wndToolBar_Office.ReplaceButton(ID_TEXT_SIZE, 
                                                         combo_text_size, FALSE);
-    
  }
   return 0L;
 }

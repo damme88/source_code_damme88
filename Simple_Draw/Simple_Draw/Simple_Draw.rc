@@ -150,6 +150,7 @@ BEGIN
     BUTTON      ID_MOVE_DOWN
     BUTTON      ID_MOVE_LEFT
     BUTTON      ID_MOVE_RIGHT
+    BUTTON      ID_COORDINATE_FULL
 END
 
 IDR_TOOLBAR_OFFICE TOOLBAR  16, 15
@@ -243,10 +244,6 @@ BEGIN
     BEGIN
         MENUITEM "Text Editor",                 ID_OFFICE_TEXTEDITOR
     END
-    POPUP "&Help"
-    BEGIN
-        MENUITEM "&About Simple_Draw...",       ID_APP_ABOUT
-    END
     POPUP "Sample Object"
     BEGIN
         POPUP "2D Object"
@@ -267,6 +264,10 @@ BEGIN
             MENUITEM "Draw lcosahedron",            ID_3DOBJECT_WRITELCOSAHEDRON
             MENUITEM "Draw Sphere",                 ID_3DOBJECT_SPHERE
         END
+    END
+    POPUP "&Help"
+    BEGIN
+        MENUITEM "&About Simple_Draw...",       ID_APP_ABOUT
     END
 END
 

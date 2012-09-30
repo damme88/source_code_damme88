@@ -8,10 +8,17 @@
 #include "OpenGLDoc.h"
 #include "OpenGLView.h"
 #include "Struct.h"
+#include <afxadv.h>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
+
+#define ID_FILE_MRU_FILE17 ID_FILE_MRU_FILE16 + 1
+#define ID_FILE_MRU_FILE18 ID_FILE_MRU_FILE17 + 1
+#define ID_FILE_MRU_FILE19 ID_FILE_MRU_FILE18 + 1
+#define ID_FILE_MRU_FILE20 ID_FILE_MRU_FILE19 + 1
+
 
 Triangle GLPoint ;
 long unsigned int num=0;
@@ -24,6 +31,8 @@ BEGIN_MESSAGE_MAP(COpenGLApp, CWinApp)
 	ON_COMMAND(ID_FILE_OPEN, &COpenGLApp::OnFileOpen)
 	// Standard print setup command
 	ON_COMMAND(ID_FILE_PRINT_SETUP, &CWinApp::OnFilePrintSetup)
+  ON_COMMAND_RANGE(ID_FILE_MRU_FILE1, ID_FILE_MRU_FILE20, MyMRUFileHandler)
+
 END_MESSAGE_MAP()
 
 
@@ -70,7 +79,7 @@ BOOL COpenGLApp::InitInstance()
 	// TODO: You should modify this string to be something appropriate
 	// such as the name of your company or organization
 	SetRegistryKey(_T("Local AppWizard-Generated Applications"));
-	LoadStdProfileSettings(4);  // Load standard INI file options (including MRU)
+	LoadStdProfileSettings(1);  // Load standard INI file options (including MRU)
 	// Register the application's document templates.  Document templates
 	//  serve as the connection between documents, frame windows and views
 	CSingleDocTemplate* pDocTemplate;
@@ -197,4 +206,24 @@ void COpenGLApp::OnFileOpen()
 		InvalidateRect(NULL,NULL,FALSE);
 	}
 	fclose(pFile);
+}
+
+
+void COpenGLApp::MyMRUFileHandler(UINT i)
+{
+    ASSERT_VALID(this);
+    ASSERT(m_pRecentFileList != NULL);
+
+    ASSERT(i >= ID_FILE_MRU_FILE1);
+    ASSERT(i < ID_FILE_MRU_FILE1 + (UINT)m_pRecentFileList->GetSize());
+
+    CString strName, strCurDir, strMessage;
+    int nIndex = i - ID_FILE_MRU_FILE1;
+    ASSERT((*m_pRecentFileList)[nIndex].GetLength() != 0);
+
+   strName.Format(L"MRU: open file (%d) '%s'.\n", (nIndex) + 1,(LPCTSTR)(*m_pRecentFileList)[nIndex]);
+
+   if (OpenDocumentFile((*m_pRecentFileList)[nIndex]) == NULL)
+	 m_pRecentFileList->Remove(nIndex);
+   AfxMessageBox(strName);
 }

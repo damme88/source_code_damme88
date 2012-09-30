@@ -22,7 +22,7 @@ public:
 	BOOL m_bDrawData ;
 public:
 	virtual BOOL InitInstance();
-
+  void MyMRUFileHandler(UINT i);
 // Implementation
 	afx_msg void OnAppAbout();
 	void OnFileOpen();

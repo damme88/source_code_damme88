@@ -18,12 +18,15 @@ HGLRC m_hRC; //Rendering Context
 	CDC* m_pDC; //Device Context
 
 private:
+   GLuint m_nAxisesList;
    BOOL m_bOXY;
    BOOL m_bOXYZ;
+   BOOL m_bCoordinate_full;
    BOOL check_oxy;
    BOOL check_oxyz;
    BOOL m_draw_grid;
    BOOL check_grid;
+   BOOL check_coordinate_full_;
    GLfloat m_xAngle;
 	 GLfloat m_yAngle;
    GLfloat m_zoom;
@@ -98,8 +101,14 @@ public:
    void OnEditPaste();
    void OnCoordinateOxyz();
    void OnCoordinateOxy();
+   void OnDrawOxyz();
+   void OnDrawOxy();
+   void OnDrawCoordinateFull();
+   void OnSetCoordinateFull();
    void OnDrawGrid();
+   void OnSetDrawGrid();
    void OnDrawColor();
+   void OnDrawText();
 
    void OnLButtonDown(UINT nFlags, CPoint point);
    void OnLButtonUp(UINT nFlags, CPoint point);
@@ -148,11 +157,12 @@ public:
 
    void DrawQuadric();
    void DrawCylinder();
-   void DrawCubeFull();
+   void DrawSphereFull();
    // functions for drawing 2d and 3d object 
    void OnDraw2DObject();
    void OnDraw3DObject();
    void SetupLighting();
+   void DisableSetupLigting() ;
 
 // Overrides
 public:
