@@ -29,6 +29,7 @@ BEGIN_MESSAGE_MAP(CWorkspaceBar, CDockablePane)
   ON_WM_SIZE()
 END_MESSAGE_MAP()
 
+
 int CWorkspaceBar::OnCreate(LPCREATESTRUCT lpCreateStruct) {
   if (CDockablePane::OnCreate(lpCreateStruct) == -1)
     return -1;
@@ -56,12 +57,12 @@ int CWorkspaceBar::OnCreate(LPCREATESTRUCT lpCreateStruct) {
 
 	// Setup trees content: Thiet lap ra mot noi dung dang cay 
   // Create 1 tree base Named Root1
-	HTREEITEM hRoot1 = m_wndTree1.InsertItem (_T("Root 1"));
+	HTREEITEM hRoot1 = m_wndTree1.InsertItem (_T("Option 1"));
   // Trong trees co 2 item moi la item 1 va item 2
 	m_wndTree1.InsertItem (_T("Item 1"), hRoot1);
 	m_wndTree1.InsertItem (_T("Item 2"), hRoot1);
 
-	HTREEITEM hRoot2 = m_wndTree2.InsertItem (_T("Root 2"));
+	HTREEITEM hRoot2 = m_wndTree2.InsertItem (_T("Option 2"));
 	m_wndTree2.InsertItem (_T("Item 1"), hRoot2);
 	m_wndTree2.InsertItem (_T("Item 2"), hRoot2);
 

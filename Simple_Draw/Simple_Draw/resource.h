@@ -104,9 +104,8 @@
 #define ID_VIEW_WORKSPACE               32866
 #define ID_DRAW_TEXT2D                  32867
 #define ID_DRAW_3DTEXT                  32868
-
 #define ID_COORDINATE_FULL              32884
-
+#define ID_BUTTON32885                  32885
 #define ID_2DOBJECT_POINTS              35001
 #define ID_2DOBJECT_LINES               35002
 #define ID_2DOBJECT_RECTANG             35003
@@ -128,7 +127,7 @@
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        336
-#define _APS_NEXT_COMMAND_VALUE         32885
+#define _APS_NEXT_COMMAND_VALUE         32886
 #define _APS_NEXT_CONTROL_VALUE         1007
 #define _APS_NEXT_SYMED_VALUE           310
 #endif

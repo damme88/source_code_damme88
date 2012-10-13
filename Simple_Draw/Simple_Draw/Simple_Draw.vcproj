@@ -338,6 +338,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\res\mainfram.bmp"
+				>
+			</File>
+			<File
 				RelativePath=".\res\S_D.ico"
 				>
 			</File>
