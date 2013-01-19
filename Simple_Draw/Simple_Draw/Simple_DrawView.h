@@ -176,7 +176,7 @@ public:
   void OnDestroy();
   virtual void OnDraw(CDC* pDC);  // overridden to draw this view
   void RenderScene ();
-
+  void ReSetAll();
 
 protected:
 	virtual BOOL OnPreparePrinting(CPrintInfo* pInfo);

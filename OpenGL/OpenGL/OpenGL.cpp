@@ -20,9 +20,7 @@
 #define ID_FILE_MRU_FILE20 ID_FILE_MRU_FILE19 + 1
 
 
-Triangle GLPoint ;
-long unsigned int num=0;
-
+  Triangle GLPoint ;
 
 BEGIN_MESSAGE_MAP(COpenGLApp, CWinApp)
 	ON_COMMAND(ID_APP_ABOUT, &COpenGLApp::OnAppAbout)
@@ -41,6 +39,7 @@ END_MESSAGE_MAP()
 COpenGLApp::COpenGLApp()
 {
 	m_bDrawData = FALSE ;
+  number8 = 0;
 	// TODO: add construction code here,
 	// Place all significant initialization in InitInstance
 }
@@ -171,29 +170,29 @@ void COpenGLApp::OnFileOpen()
 	wcstombs(FileName,File_Name,nsize+1);
 	// Thu hien doc va xu ly file
 	FILE *pFile ;
-	pFile=fopen(FileName,"rt");
+	pFile=fopen(FileName,"r");
 	while(!feof(pFile))
 	{
 		fscanf(pFile,"%s",str);
-		if(strcmp(str,"VERTEX")==0){
-			num=num+1;
+		if(strcmp(str,"vertex")==0){
+			number8 = number8 +1;
 		}
 	}
 	fclose(pFile);
 
-	pFile=fopen(FileName,"rt");
+	pFile=fopen(FileName,"r");
 	fgets(str,50,pFile);
 	while(!feof(pFile))
 	{
 		fscanf(pFile,"%s%s%lf%lf%lf",str,str,&nor[0],&nor[1],&nor[2]);
 		fgets(str,100,pFile);
 		fgets(str,100,pFile);
-		for(i=0;i<num;i++){
+		for(unsigned long int i = 0;i < number8; i++){
 			fscanf(pFile,"%s%lf%lf%lf",str,&value[i][0],&value[i][1],&value[i][2]);
 			GLPoint.Vertex[i][0]=value[i][0];
 			GLPoint.Vertex[i][1]=value[i][1];
 			GLPoint.Vertex[i][2]=value[i][2];
-			if((i+1)%3 == 0){
+			if((i+1)%3 == 0) {
 				fgets(str,100,pFile);
 				fgets(str,100,pFile);
 				fgets(str,100,pFile);

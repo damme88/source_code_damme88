@@ -36,6 +36,7 @@ public:
 	virtual void LoadCustomState();
 	virtual void SaveCustomState();
   virtual BOOL PreTranslateMessage(MSG* pMsg) ;
+  //virtual BOOL LoadState(LPCTSTR lpszSectionName = NULL, CFrameImpl *pFrameImpl = NULL);
 	afx_msg void OnAppAbout();
   afx_msg void OnAppTextEditor();
   afx_msg void OnAppContextDialog();

@@ -7,7 +7,7 @@
 #endif
 
 #include "resource.h"       // main symbols
-
+#include "Struct.h"
 
 // COpenGLApp:
 // See OpenGL.cpp for the implementation of this class
@@ -18,6 +18,9 @@ class COpenGLApp : public CWinApp
 public:
 	COpenGLApp();
 // Overrides
+
+private:
+  unsigned long int number8;
 public:
 	BOOL m_bDrawData ;
 public:

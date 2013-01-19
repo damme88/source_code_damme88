@@ -106,6 +106,7 @@
 #define ID_DRAW_3DTEXT                  32868
 #define ID_COORDINATE_FULL              32884
 #define ID_BUTTON32885                  32885
+#define ID_RESET_ALL                    32885
 #define ID_2DOBJECT_POINTS              35001
 #define ID_2DOBJECT_LINES               35002
 #define ID_2DOBJECT_RECTANG             35003

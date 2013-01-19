@@ -190,7 +190,9 @@ void CSimple_DrawApp::SaveCustomState()
 {
 }
 
-
+//BOOL CSimple_DrawApp::LoadState(LPCTSTR lpszSectionName, CFrameImpl *pFrameImpl) {
+//  return TRUE;
+//}
 
 void CSimple_DrawApp::OnFileOpen() {
  CFileDialog dlg(TRUE, NULL, L"", OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT, 

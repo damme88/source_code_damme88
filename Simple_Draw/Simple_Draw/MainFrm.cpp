@@ -104,16 +104,6 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	}
    m_wndToolBar.SetWindowText(__T("File Toolbar"));
    m_wndToolBar.EnableCustomizeButton(TRUE, ID_VIEW_CUSTOMIZE, __T("Customize..."));
-   m_wndToolBar.EnableDocking(CBRS_ALIGN_ANY);
-   EnableDocking(CBRS_ALIGN_ANY);
-   DockPane(&m_wndToolBar);
-//	CString strToolBarName;
-//	bNameValid = strToolBarName.LoadString(IDS_TOOLBAR_STANDARD);
-	//ASSERT(bNameValid);
-	//CString strCustomize;
-	//bNameValid = strCustomize.LoadString(IDS_TOOLBAR_CUSTOMIZE);
-	//ASSERT(bNameValid);
-
 
 /************************Create File Toolbar*********************************/
 
@@ -131,9 +121,11 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	}
   m_wndToolBar_Direct.SetWindowText(__T("Direction Toolbar"));
   m_wndToolBar_Direct.EnableCustomizeButton(TRUE, ID_VIEW_CUSTOMIZE, __T("Customize"));
+  m_wndToolBar.EnableDocking(CBRS_ALIGN_ANY);
   m_wndToolBar_Direct.EnableDocking(CBRS_ALIGN_ANY);
   EnableDocking(CBRS_ALIGN_ANY);
   DockPane(&m_wndToolBar_Direct);
+  DockPaneLeftOf(&m_wndToolBar, &m_wndToolBar_Direct);
 
 /************************Create Office Toolbar********************************/
   if (! m_wndToolBar_Office.Create(this, WS_CHILD | WS_VISIBLE 
@@ -146,9 +138,6 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	}
   m_wndToolBar_Office.SetWindowText(__T("Office ToolBar"));
   m_wndToolBar_Office.EnableCustomizeButton(TRUE, ID_VIEW_CUSTOMIZE, __T("Customize..."));
-  m_wndToolBar_Office.EnableDocking(CBRS_ALIGN_ANY);
-  EnableDocking(CBRS_ALIGN_ANY);
-  DockPane(&m_wndToolBar_Office);
 
 /************************Create Draw Toolbar********************************/
 
@@ -163,8 +152,10 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
   m_wndToolBar_Draw.SetWindowText(__T("Draw Toolbar"));
   m_wndToolBar_Draw.EnableCustomizeButton(TRUE, ID_VIEW_CUSTOMIZE, __T("Customize..."));
   m_wndToolBar_Draw.EnableDocking(CBRS_ALIGN_ANY);
+  m_wndToolBar_Office.EnableDocking(CBRS_ALIGN_ANY);
   EnableDocking(CBRS_ALIGN_ANY);
   DockPane(&m_wndToolBar_Draw);
+  DockPaneLeftOf(&m_wndToolBar_Office, &m_wndToolBar_Draw);
 
 /************************Create Workspace Bar********************************/
 	if (!m_wndWorkSpace.Create (_T("Workspace"), this, CSize (200, 200),
@@ -319,7 +310,7 @@ BOOL CMainFrame::LoadFrame(UINT nIDResource, DWORD dwDefaultStyle,
 LRESULT CMainFrame::OnToolbarReset(WPARAM wParam, LPARAM lParam) {
   UINT id = (UINT)wParam;
   if (id == IDR_TOOLBAR_OFFICE) {
-    CMFCToolBarComboBoxButton combo(ID_SELECT, 
+    /*CMFCToolBarComboBoxButton combo(ID_SELECT, 
       GetCmdMgr()->GetCmdImage(ID_SELECT), 
       CBS_DROPDOWNLIST );
     combo.OnSize(80);
@@ -333,7 +324,7 @@ LRESULT CMainFrame::OnToolbarReset(WPARAM wParam, LPARAM lParam) {
     int index = m_wndToolBar_Direct.CommandToIndex(ID_SELECT);
     check_one_ = reinterpret_cast<CMFCToolBarComboBoxButton*>
                  (m_wndToolBar_Direct.GetButton(index));
-    CustomCombo* combo1 = reinterpret_cast<CustomCombo*>(check_one_->GetComboBox());
+    CustomCombo* combo1 = reinterpret_cast<CustomCombo*>(check_one_->GetComboBox());*/
 
     //CustomComboButton combo_color(ID_SELECT, GetCmdMgr()->GetCmdImage(ID_SELECT), 
     //  CBS_DROPDOWNLIST| CBS_OWNERDRAWVARIABLE);
