@@ -1,0 +1,39 @@
+
+// App_Extension_Dll.h : main header file for the App_Extension_Dll application
+//
+#pragma once
+
+#ifndef __AFXWIN_H__
+	#error "include 'stdafx.h' before including this file for PCH"
+#endif
+
+#include "resource.h"       // main symbols
+
+
+// CApp_Extension_DllApp:
+// See App_Extension_Dll.cpp for the implementation of this class
+//
+
+class CApp_Extension_DllApp : public CWinAppEx
+{
+public:
+	CApp_Extension_DllApp();
+
+
+// Overrides
+public:
+	virtual BOOL InitInstance();
+	virtual int ExitInstance();
+
+// Implementation
+	BOOL  m_bHiColorIcons;
+
+	virtual void PreLoadState();
+	virtual void LoadCustomState();
+	virtual void SaveCustomState();
+
+	afx_msg void OnAppAbout();
+	DECLARE_MESSAGE_MAP()
+};
+
+extern CApp_Extension_DllApp theApp;
