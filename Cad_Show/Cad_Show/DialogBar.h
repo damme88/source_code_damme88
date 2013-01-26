@@ -1,4 +1,6 @@
 #pragma once
+#include "afxwin.h"
+#include "afxcmn.h"
 
 
 
@@ -28,12 +30,26 @@ protected:
 // add new variable and function 
 private:
   
-protected:
-  
+private:
+  CButton solid_radio_button_;
+  CButton checkbox_rotate_;
+  bool is_check_rotate_;
+  CSliderCtrl speed_rotate_;
+  CStatic background_color_;
+
 public:
   CDialogBar *GetDocument();
-  CView *GetDialogBarView();
+  CView *GetCadShowView();
   virtual void OnInitialUpdate();
+  void SetStatusSpeedBar();
+protected:
+  afx_msg void OnPaint();
+  afx_msg void OnLButtonUp(UINT nFlags, CPoint point);
+  afx_msg void OnBnClickedRadioLineCad();
+  afx_msg void OnBnClickedRadioWireFrameCad();
+  afx_msg void OnBnClickedRadioSolidCad();
+  afx_msg void OnBnClickeCheckboxRotation();
+  afx_msg void OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar);
 };
 
 

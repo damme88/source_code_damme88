@@ -77,6 +77,15 @@ private:
   // Variable for rotate button
   BOOL rotate_left_;
   BOOL rotate_righit_;
+  unsigned int mode_cad_;
+  // Variable for setting background color
+  float red_color_;
+  float green_color_;
+  float blue_color_;
+  // varialbe for speed rotate
+  float speed_rotate_;
+public:
+  enum ModelCad {SOLID_MODE_CAD, WIRE_FRAME_MODE_CAD, POINT_MODE_CAD};
 public: 
   void OnMouseMove(UINT nFlags, CPoint point);
   BOOL OnMouseWheel(UINT nFlags, short zDelta, CPoint pt);
@@ -90,8 +99,15 @@ public:
   void PrepareAxisLabel();
   void OnMButtonDown(UINT nFlags, CPoint point);
   void OnMButtonUp(UINT nFlags, CPoint point);
+  void SetModeCad(unsigned int mode_cad) {mode_cad_ = mode_cad;}
+  void SetColorForBackGround(float red_value, float green_value, float blue_value);
+  void DeleteCad();
+  void SetSpeedRotate(float speed_value) {speed_rotate_ = speed_value;}
+
 public:
   void OnHandleViewButton(UINT nID); 
+  void OnHandleMoveButton(UINT nID);
+  void OnHandleRotateButton(UINT nID);
 };
 
 #ifndef _DEBUG  // debug version in Cad_ShowView.cpp

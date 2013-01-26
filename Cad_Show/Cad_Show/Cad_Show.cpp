@@ -286,8 +286,12 @@ void CCad_ShowApp::OnFileOpen() {
 }
 
 void CCad_ShowApp::FreePoint() {
-  if (gl_point_ != NULL)
+  if (gl_point_ != NULL) {
     delete [] gl_point_;
-  if (normal_vector_ != NULL)
+    gl_point_ = NULL;
+  }
+  if (normal_vector_ != NULL) {
     delete [] normal_vector_;
+    normal_vector_ = NULL;
+  }
 }

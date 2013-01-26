@@ -41,9 +41,12 @@ private:
   Triangle *gl_point_;
   Vector *normal_vector_;
 public:
+	COLORREF option_color_glback;
+public:
   void OnFileOpen();
   long GetNumberOfPoint() { return number_of_point_;}
   BOOL GetStateDrawStl() {return allow_draw_data_;}
+  void SetStatusDrawCad(bool is_draw) {allow_draw_data_ = is_draw;}
   Triangle* GetTrianglePoint() {return gl_point_;}
   void FreePoint();
   Vector* GetNormalVector () {return normal_vector_;} 

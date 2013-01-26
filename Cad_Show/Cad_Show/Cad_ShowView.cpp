@@ -19,10 +19,6 @@
 extern Triangle GLPoint ;
 // CCad_ShowView
 
-#define ID_VIEW_CMD_START   ID_VIEW_TOP
-#define ID_VIEW_CMD_END     ID_ROTATE_RIGHT
-
-
 IMPLEMENT_DYNCREATE(CCad_ShowView, CView)
 
 BEGIN_MESSAGE_MAP(CCad_ShowView, CView)
@@ -34,6 +30,7 @@ BEGIN_MESSAGE_MAP(CCad_ShowView, CView)
   ON_WM_CREATE()
 	ON_WM_SIZE()
 	ON_WM_ERASEBKGND()
+  ON_WM_TIMER()
 	ON_WM_DESTROY()
 	ON_WM_RBUTTONUP()
   ON_WM_MOUSEWHEEL()
@@ -43,7 +40,10 @@ BEGIN_MESSAGE_MAP(CCad_ShowView, CView)
   ON_WM_KEYDOWN()
   ON_WM_RBUTTONDOWN()
 	ON_WM_RBUTTONUP()
-  ON_COMMAND_RANGE(ID_VIEW_CMD_START, ID_VIEW_CMD_END, OnHandleViewButton)
+  ON_COMMAND_RANGE(ID_VIEW_HANDLE_START, ID_VIEW_ZOOM_OUT, OnHandleViewButton)
+  ON_COMMAND_RANGE(ID_VIEW_HANDLE_MOVE_START, ID_VIEW_MOVE_RIGHT, OnHandleMoveButton)
+  ON_COMMAND_RANGE(ID_VIEW_HANDLE_ROTATE_START, ID_ROTATE_RIGHT, OnHandleRotateButton)
+  ON_COMMAND(ID_EDIT_DELETE, DeleteCad)
 
 END_MESSAGE_MAP()
 
@@ -58,7 +58,12 @@ CCad_ShowView::CCad_ShowView() :
   m_nFontOffset(0),
   rotate_left_(FALSE),
   rotate_righit_(FALSE),
-  middle_down_(FALSE)
+  middle_down_(FALSE),
+  mode_cad_(0),
+  red_color_(0.0f),
+  green_color_(0.0f),
+  blue_color_(0.0f),
+  speed_rotate_(0.0f)
 {
 }
 
@@ -102,7 +107,7 @@ BOOL CCad_ShowView::InitializeOpenGL() {
     return FALSE;
   }
   //Specify Black as the clear color
-  ::glClearColor(0.0f,0.0f,0.0f,0.0f);
+  ::glClearColor(0.0, 0.0f, 0.0f, 0.0f);
 
   //Specify the back of the buffer as clear depth
   ::glClearDepth(1.0f);
@@ -110,6 +115,7 @@ BOOL CCad_ShowView::InitializeOpenGL() {
   //Enable Depth Testing
   ::glEnable(GL_DEPTH_TEST);
 }
+
 
 BOOL CCad_ShowView::SetupPixelFormat() {
 	static PIXELFORMATDESCRIPTOR pfd = 
@@ -186,6 +192,8 @@ void CCad_ShowView::OnDraw(CDC* /*pDC*/)
 		return;
   // Clear out the color & depth buffers
   ::glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
+	 glClearColor(red_color_, green_color_, blue_color_, 1.0f);
+	
 	// TODO: add draw code for native data here
   RenderScene();
 	// Tell OpenGL to flush its pipeline
@@ -195,6 +203,60 @@ void CCad_ShowView::OnDraw(CDC* /*pDC*/)
 	// TODO: add draw code for native data here
 	// TODO: add draw code for native data here
 }
+
+// CCad_ShowView printing
+void CCad_ShowView::OnFilePrintPreview()
+{
+#ifndef SHARED_HANDLERS
+	AFXPrintPreview(this);
+#endif
+}
+
+BOOL CCad_ShowView::OnPreparePrinting(CPrintInfo* pInfo)
+{
+	// default preparation
+	return DoPreparePrinting(pInfo);
+}
+
+void CCad_ShowView::OnBeginPrinting(CDC* /*pDC*/, CPrintInfo* /*pInfo*/)
+{
+	// TODO: add extra initialization before printing
+}
+
+void CCad_ShowView::OnEndPrinting(CDC* /*pDC*/, CPrintInfo* /*pInfo*/)
+{
+	// TODO: add cleanup after printing
+}
+
+void CCad_ShowView::OnContextMenu(CWnd* /* pWnd */, CPoint point)
+{
+#ifndef SHARED_HANDLERS
+	theApp.GetContextMenuManager()->ShowPopupMenu(IDR_POPUP_EDIT, point.x, point.y, this, TRUE);
+#endif
+}
+
+
+// CCad_ShowView diagnostics
+
+#ifdef _DEBUG
+void CCad_ShowView::AssertValid() const
+{
+	CView::AssertValid();
+}
+
+void CCad_ShowView::Dump(CDumpContext& dc) const
+{
+	CView::Dump(dc);
+}
+
+CCad_ShowDoc* CCad_ShowView::GetDocument() const // non-debug version is inline
+{
+	ASSERT(m_pDocument->IsKindOf(RUNTIME_CLASS(CCad_ShowDoc)));
+	return (CCad_ShowDoc*)m_pDocument;
+}
+#endif //_DEBUG
+
+
 
 void CCad_ShowView::OnMouseMove(UINT nFlags, CPoint point) 
 {
@@ -288,7 +350,9 @@ void CCad_ShowView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 }
 
 void CCad_ShowView::RenderScene () {
+  //glMatrixMode(GL_MODELVIEW);
   glLoadIdentity();
+  //glMatrixMode(GL_PROJECTION);
 	// Do xa gan 
   glTranslatef(x_position_, y_position_, value_zoom_ - 10.0f);
 	// Do nghieng
@@ -311,7 +375,16 @@ void CCad_ShowView::DrawCad() {
 	 {
 		 long unsigned int i = 0;
 		 glColor3f(1.0f, 0.0f, 1.0f);
-     //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+     if (mode_cad_ == POINT_MODE_CAD) {
+       glPolygonMode(GL_FRONT_AND_BACK, GL_POINT);
+       glPointSize(4.0f);
+     } else if (mode_cad_ == WIRE_FRAME_MODE_CAD){
+        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+        glLineWidth(2.0f);
+     }
+     else {
+       glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+     }
      for (i = 0; i<theApp.GetNumberOfPoint(); i = i+3) {
 		 glBegin(GL_POLYGON);
      glNormal3f(theApp.GetNormalVector()[i/3][0], theApp.GetNormalVector()[i/3][1], theApp.GetNormalVector()[i/3][2]); 
@@ -321,6 +394,12 @@ void CCad_ShowView::DrawCad() {
 		 glEnd();
 		 }
 	 }
+}
+
+void CCad_ShowView::DeleteCad() {
+  theApp.SetStatusDrawCad(FALSE);
+  theApp.FreePoint();
+  InvalidateRect(NULL, FALSE);
 }
 
 // draw label "X" "Y" "Z"
@@ -460,11 +539,11 @@ void CCad_ShowView::SetUpLight() {
 	glEnable(GL_POINT_SMOOTH);
 	glHint(GL_POINT_SMOOTH_HINT, GL_NICEST);
 
-	glEnable(GL_LINE_SMOOTH); // loc cac line cho min mang hon tranh bi rang cua
+	glEnable(GL_LINE_SMOOTH);                         // loc cac line cho min mang hon tranh bi rang cua
 	glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
-	glEnable(GL_BLEND);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); // giam hieu ung rang cua 
-  glEnable(GL_CULL_FACE);  // giam hieu ung back face
+	glEnable(GL_BLEND);                                 // enalbe blend mode
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);  // giam hieu ung rang cua 
+  glEnable(GL_CULL_FACE);                             // giam hieu ung back face
 }
 
 
@@ -540,7 +619,12 @@ void CCad_ShowView::PrintAxisLabel(const char* str)
   glPopAttrib();
 }
 
-
+void CCad_ShowView::SetColorForBackGround(float red_value, float green_value, float blue_value) {
+  red_color_ = red_value;
+  green_color_ = green_value;
+  blue_color_ = blue_value;
+  InvalidateRect(NULL, FALSE);
+}
 
 
 void CCad_ShowView::OnDestroy() {
@@ -560,84 +644,55 @@ void CCad_ShowView::OnDestroy() {
   m_pDC = NULL;
 }
 
+void CCad_ShowView::OnTimer(UINT_PTR nIDEvent) {
+  switch(nIDEvent) {
+  case 0:
+    break;
+  case 1:
+    angle_x_ += speed_rotate_  + 0.5f;
+    angle_y_ += speed_rotate_  + 0.5f;
+    if (angle_x_ >= 360.0f) {
+      angle_x_ = 0.0f;
+    } 
+    if (angle_y_ >= 360.0f) {
+      angle_y_ = 0.0f;
+    }
+    break;
+  default: {}
+  }
+  //CView::OnTimer(nIDEvent);
+  InvalidateRect(NULL, FALSE);
+}
 
 void CCad_ShowView::OnHandleViewButton(UINT nID) {
-  if (nID == ID_ROTATE_LEFT) {
-    rotate_left_ = TRUE;
-    rotate_righit_ = FALSE;
+  if (nID == ID_VIEW_ZOOM_IN) {
+    value_zoom_ += 0.5f;
   }
-  if (nID == ID_ROTATE_RIGHT) {
-    rotate_left_ = FALSE;
-    rotate_righit_ = TRUE;
+  if (nID == ID_VIEW_ZOOM_OUT) {
+    value_zoom_ -= 0.5f;
   }
   InvalidateRect(NULL, FALSE);
 }
 
-void CCad_ShowView::OnTimer(UINT_PTR nIDEvent) {
-  if (rotate_left_) {
-    if ( (angle_x_ + 1.0) > -200.0 && (angle_x_ + 1.0) < 200.0)
-		  angle_x_ += 1.0;
+void CCad_ShowView::OnHandleMoveButton(UINT nID) {
+  if (nID == ID_VIEW_MOVE_DOWN) {
+    y_position_ -= 0.5f;
   }
-  if (rotate_righit_) {
-    if ( (angle_x_ - 1.0) > -200.0 && (angle_x_ - 1.0) < 200.0)
-		  angle_x_ -= 1.0;
+  if (nID ==ID_VIEW_MOVE_UP) {
+    y_position_ += 0.5f;
   }
-  CView::OnTimer(nIDEvent);
+  if (nID == ID_VIEW_MOVE_LEFT) {
+    x_position_ -= 0.5f;
+  }
+  if (nID == ID_VIEW_MOVE_RIGHT) {
+    x_position_ += 0.5f;
+  }
   InvalidateRect(NULL, FALSE);
 }
 
-
-// CCad_ShowView printing
-void CCad_ShowView::OnFilePrintPreview()
-{
-#ifndef SHARED_HANDLERS
-	AFXPrintPreview(this);
-#endif
+void CCad_ShowView::OnHandleRotateButton(UINT nID) {
+  
 }
-
-BOOL CCad_ShowView::OnPreparePrinting(CPrintInfo* pInfo)
-{
-	// default preparation
-	return DoPreparePrinting(pInfo);
-}
-
-void CCad_ShowView::OnBeginPrinting(CDC* /*pDC*/, CPrintInfo* /*pInfo*/)
-{
-	// TODO: add extra initialization before printing
-}
-
-void CCad_ShowView::OnEndPrinting(CDC* /*pDC*/, CPrintInfo* /*pInfo*/)
-{
-	// TODO: add cleanup after printing
-}
-
-void CCad_ShowView::OnContextMenu(CWnd* /* pWnd */, CPoint point)
-{
-#ifndef SHARED_HANDLERS
-	theApp.GetContextMenuManager()->ShowPopupMenu(IDR_POPUP_EDIT, point.x, point.y, this, TRUE);
-#endif
-}
-
-
-// CCad_ShowView diagnostics
-
-#ifdef _DEBUG
-void CCad_ShowView::AssertValid() const
-{
-	CView::AssertValid();
-}
-
-void CCad_ShowView::Dump(CDumpContext& dc) const
-{
-	CView::Dump(dc);
-}
-
-CCad_ShowDoc* CCad_ShowView::GetDocument() const // non-debug version is inline
-{
-	ASSERT(m_pDocument->IsKindOf(RUNTIME_CLASS(CCad_ShowDoc)));
-	return (CCad_ShowDoc*)m_pDocument;
-}
-#endif //_DEBUG
 
 
 // CCad_ShowView message handlers
