@@ -29,7 +29,7 @@ public:
   CString GetMoudlePath();
   char * CStringToChar(CString str);
   void OnDestroy();
-
+  void OnDrawCoordinate();
 // Overrides
 public:
 	virtual void OnDraw(CDC* pDC);  // overridden to draw this view

@@ -386,6 +386,9 @@ void COpenGL_MFCView::RenderScene () {
   glTranslatef(x_position_, y_position_, value_zoom_ - 10.0f);
   glRotatef(m_angle_x_, 1.0f, 0.0f, 0.0f);
   glRotatef(m_angle_y_, 0.0f, 1.0f, 0.0f);
+
+  OnDrawCoordinate();
+
   if (m_useList) {
     // use the existing list if there is one
     if (m_list) {
@@ -441,6 +444,53 @@ void COpenGL_MFCView::DrawReflection()
   glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
   glDisable(GL_STENCIL_TEST);
   glLightfv(GL_LIGHT0, GL_POSITION, LIGHT_POSITION);
+}
+
+void COpenGL_MFCView::OnDrawCoordinate() {
+  glPointSize(5.0);
+  glColor3f(1.0f, 1.0f, 0.0f);
+  glBegin(GL_POINTS);
+  glVertex3f(0.0f, 0.0f, 0.0f);
+  glEnd();
+
+	glLineWidth(4.0f);
+  // truc OX +
+  glColor3f(1.0f, 0.0f, 0.0f);
+	glBegin(GL_LINES);
+	glVertex3f(0.0f, 0.0f, 0.0f);
+	glVertex3f(10000.0f, 0.0f, 0.0f);
+	glEnd();
+
+  // truc OX -
+	glBegin(GL_LINES);
+	glVertex3f(-10000.0f, 0.0f, 0.0f);
+  glVertex3f(0.0f, 0.0f, 0.0f);
+	glEnd();
+
+
+  // truc OY +
+  glColor3f(0.0f, 1.0f, 0.0f);
+	glBegin(GL_LINES);
+	glVertex3f(0.0f, 0.0f, 0.0f);
+	glVertex3f(0.0f, 10000.0f, 0.0f);
+	glEnd();
+      // truc OY -
+	glBegin(GL_LINES);
+	glVertex3f(0.0f, -10000.0f, 0.0f);
+  glVertex3f(0.0f, 0.0f, 0.0f);
+	glEnd();
+
+  // truc OZ +
+  glColor3f(0.0f, 0.0f, 1.0f);
+	glBegin(GL_LINES);
+	glVertex3f(0.0f, 0.0f, 0.0f);
+	glVertex3f(0.0f, 0.0f, 10000.0f);
+	glEnd();
+    // truc OZ -
+	glBegin(GL_LINES);
+  glVertex3f(0.0f, 0.0f, -10000.0f);
+	glVertex3f(0.0f, 0.0f, 0.0f);
+	glEnd();
 }
 
 CString COpenGL_MFCView::GetMoudlePath() {
