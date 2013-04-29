@@ -15,6 +15,9 @@ DialogBar::DialogBar()
 	: CFormView(DialogBar::IDD)
 {
   is_check_rotate_ = false;
+  is_rot_x_ = false;
+  is_rot_y_ = false;
+  is_rot_z_ = false;
 }
 
 DialogBar::~DialogBar()
@@ -28,6 +31,9 @@ void DialogBar::DoDataExchange(CDataExchange* pDX)
   DDX_Control(pDX, IDC_BACKGROUND_COLOR, background_color_);
   DDX_Control(pDX, IDC_ROTATE, checkbox_rotate_);
   DDX_Control(pDX, IDC_SPEED_ROTATE, speed_rotate_);
+  DDX_Control(pDX, IDC_ROTATE_X, cb_rot_x_);
+  DDX_Control(pDX, IDC_ROTATE_Y, cb_rot_y_);
+  DDX_Control(pDX, IDC_ROTATE_Z, cb_rot_z_);
 }
 
 BEGIN_MESSAGE_MAP(DialogBar, CFormView)
@@ -38,6 +44,9 @@ BEGIN_MESSAGE_MAP(DialogBar, CFormView)
   ON_WM_PAINT()
   ON_WM_LBUTTONUP()
 	ON_WM_HSCROLL()
+  ON_BN_CLICKED(IDC_ROTATE_X, &DialogBar::OnBnClickedRotateX)
+  ON_BN_CLICKED(IDC_ROTATE_Y, &DialogBar::OnBnClickedRotateY)
+  ON_BN_CLICKED(IDC_ROTATE_Z, &DialogBar::OnBnClickedRotateZ)
 END_MESSAGE_MAP()
 
 
@@ -61,11 +70,21 @@ void DialogBar::Dump(CDumpContext& dc) const
 // DialogBar message handlers
 void DialogBar::OnInitialUpdate() {
   CFormView::OnInitialUpdate();
-
+  cb_rot_x_.SetCheck(0);
+  cb_rot_y_.SetCheck(0);
+  cb_rot_z_.SetCheck(0);
+  GetCadShowView()->IsRotX(is_rot_x_);
+  GetCadShowView()->IsRotY(is_rot_y_);
+  GetCadShowView()->IsRotZ(is_rot_z_);
   solid_radio_button_.SetCheck(BST_CHECKED);
   // set checkbox is not checked at first time
   checkbox_rotate_.SetCheck(is_check_rotate_ ? 1 : 0);
   speed_rotate_.EnableWindow(is_check_rotate_);
+  cb_rot_x_.EnableWindow(is_check_rotate_);
+  cb_rot_y_.EnableWindow(is_check_rotate_);
+  cb_rot_z_.EnableWindow(is_check_rotate_);
+  is_rot_x_ = is_rot_y_ = is_rot_z_ = is_check_rotate_;
+
 }
 
 void DialogBar::OnPaint() {
@@ -106,10 +125,10 @@ void DialogBar::OnLButtonUp(UINT nFlags, CPoint point) {
 }
 
 
-CView *DialogBar::GetCadShowView() {
+CCad_ShowView *DialogBar::GetCadShowView() {
   CCad_ShowApp *pApp= (CCad_ShowApp*)AfxGetApp();
   CMainFrame *pMainFrame = (CMainFrame*)pApp->m_pMainWnd;
-  CView *pView = (CView*)pMainFrame->m_wndSplitter.GetPane(0, 1);
+  CCad_ShowView *pView = reinterpret_cast<CCad_ShowView*>(pMainFrame->m_wndSplitter.GetPane(0, 1));
   return pView;
 }
 
@@ -136,11 +155,31 @@ void DialogBar::OnBnClickeCheckboxRotation() {
   CCad_ShowView *pView = reinterpret_cast<CCad_ShowView*>(GetCadShowView());
   is_check_rotate_ = !is_check_rotate_;
   if (is_check_rotate_) {
-    speed_rotate_.EnableWindow(is_check_rotate_);
+    cb_rot_x_.EnableWindow(true);
+    cb_rot_y_.EnableWindow(true);
+    cb_rot_z_.EnableWindow(true);
+    cb_rot_x_.SetCheck(1);
+    cb_rot_y_.SetCheck(0);
+    cb_rot_z_.SetCheck(0);
+    is_rot_x_ = true;
+    is_rot_y_ = false;
+    is_rot_z_ = false;
+    GetCadShowView()->IsRotX(is_rot_x_);
+    GetCadShowView()->IsRotY(is_rot_y_);
+    GetCadShowView()->IsRotZ(is_rot_z_);
+    speed_rotate_.EnableWindow(true);
+    pView->SetStateCheckboxRotate(TRUE);
     SetStatusSpeedBar();
-    pView->SetTimer(1, 10, NULL);
+    pView->SetTimer(1, 10, NULL); // use when rotate by OnTimer
   } else {
-    speed_rotate_.EnableWindow(is_check_rotate_);
+    cb_rot_x_.SetCheck(0);
+    cb_rot_y_.SetCheck(0);
+    cb_rot_z_.SetCheck(0);
+    cb_rot_x_.EnableWindow(false);
+    cb_rot_y_.EnableWindow(false);
+    cb_rot_z_.EnableWindow(false);
+    pView->SetStateCheckboxRotate(FALSE);
+    speed_rotate_.EnableWindow(false);
     pView->KillTimer(1);
   }
 }
@@ -157,4 +196,24 @@ void DialogBar::OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar) {
   float speed_value = pos/10.0;
   pView->SetSpeedRotate(speed_value);
   pView->InvalidateRect(NULL, FALSE);
+}
+
+void DialogBar::OnBnClickedRotateX()
+{
+  is_rot_x_ = cb_rot_x_.GetCheck() ? true : false;
+  GetCadShowView()->IsRotX(is_rot_x_);
+}
+
+
+void DialogBar::OnBnClickedRotateY()
+{
+  is_rot_y_ = cb_rot_y_.GetCheck() ? true : false;
+  GetCadShowView()->IsRotY(is_rot_y_);
+}
+
+
+void DialogBar::OnBnClickedRotateZ()
+{
+  is_rot_z_ = cb_rot_z_.GetCheck() ? true : false;
+  GetCadShowView()->IsRotZ(is_rot_z_);
 }

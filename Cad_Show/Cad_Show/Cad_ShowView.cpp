@@ -29,8 +29,8 @@ BEGIN_MESSAGE_MAP(CCad_ShowView, CView)
 	ON_WM_CONTEXTMENU()
   ON_WM_CREATE()
 	ON_WM_SIZE()
-	ON_WM_ERASEBKGND()
   ON_WM_TIMER()
+	ON_WM_ERASEBKGND()
 	ON_WM_DESTROY()
 	ON_WM_RBUTTONUP()
   ON_WM_MOUSEWHEEL()
@@ -43,6 +43,9 @@ BEGIN_MESSAGE_MAP(CCad_ShowView, CView)
   ON_COMMAND_RANGE(ID_VIEW_HANDLE_START, ID_VIEW_ZOOM_OUT, OnHandleViewButton)
   ON_COMMAND_RANGE(ID_VIEW_HANDLE_MOVE_START, ID_VIEW_MOVE_RIGHT, OnHandleMoveButton)
   ON_COMMAND_RANGE(ID_VIEW_HANDLE_ROTATE_START, ID_ROTATE_RIGHT, OnHandleRotateButton)
+  ON_COMMAND(ID_SHOW_BIG_COORDINATE, EnableShowBigCoordinate)
+  ON_UPDATE_COMMAND_UI(ID_SHOW_BIG_COORDINATE, SetCheckBigCoordinate)
+  ON_COMMAND(ID_RESET_CAD, OnHandleResetCad)
   ON_COMMAND(ID_EDIT_DELETE, DeleteCad)
 
 END_MESSAGE_MAP()
@@ -52,6 +55,9 @@ END_MESSAGE_MAP()
 CCad_ShowView::CCad_ShowView() :
   angle_x_(0.0),
   angle_y_(0.0),
+  angle_x_cad_(0.0),
+  angle_y_cad_(0.0),
+  angle_z_cad_(0.0),
   value_zoom_(0.0),
   x_position_(0.0),
   y_position_(0.0),
@@ -63,7 +69,13 @@ CCad_ShowView::CCad_ShowView() :
   red_color_(0.0f),
   green_color_(0.0f),
   blue_color_(0.0f),
-  speed_rotate_(0.0f)
+  speed_rotate_(0.0f),
+  is_check_rotate_(0.0),
+  is_rot_x_(false),
+  is_rot_y_(false),
+  is_rot_z_(false),
+  enable_big_coordinate_(false),
+  is_check_coordiante_button_(false)
 {
 }
 
@@ -169,7 +181,7 @@ void CCad_ShowView::OnSize(UINT nType, int cx, int cy) {
   // switch back to the modelview matrix and clear it
   ::glMatrixMode(GL_MODELVIEW);
   ::glLoadIdentity();
-  gluLookAt (0.0, 0.0, 10.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
+  //gluLookAt (0.0, 0.0, 10.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
 }
 
 
@@ -267,6 +279,8 @@ void CCad_ShowView::OnMouseMove(UINT nFlags, CPoint point)
     //Increment the object rotation angles
     angle_x_ += (point.y - mouse_down_point_.y)/3.6;
     angle_y_ += (point.x - mouse_down_point_.x)/3.6;
+    angle_x_cad_ += (point.y - mouse_down_point_.y)/3.6;
+    angle_y_cad_ += (point.x - mouse_down_point_.x)/3.6;
       //Redraw the view
     InvalidateRect(NULL, FALSE);
       //Set the mouse point
@@ -336,13 +350,13 @@ void CCad_ShowView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
         // TODO: Add your message handler code here and/or call default
         switch (nChar)
         {
-            case VK_UP:        y_position_ = y_position_ + 0.5f;
+            case VK_UP:        y_position_ = y_position_ + 1.5f;
                                           break;
-            case VK_DOWN:      y_position_ = y_position_ - 0.5f;
+            case VK_DOWN:      y_position_ = y_position_ - 1.5f;
                                           break;
-            case VK_LEFT:      x_position_ = x_position_ - 0.5f;
+            case VK_LEFT:      x_position_ = x_position_ - 1.5f;
                                           break;
-            case VK_RIGHT:     x_position_ = x_position_ + 0.5f;
+            case VK_RIGHT:     x_position_ = x_position_ + 1.5f;
                                           break;
         } 
         InvalidateRect(NULL,FALSE);
@@ -350,22 +364,31 @@ void CCad_ShowView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 }
 
 void CCad_ShowView::RenderScene () {
-  //glMatrixMode(GL_MODELVIEW);
+  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
   glLoadIdentity();
-  //glMatrixMode(GL_PROJECTION);
-	// Do xa gan 
-  glTranslatef(x_position_, y_position_, value_zoom_ - 10.0f);
-	// Do nghieng
- // glRotatef(angle_x_ + 45.0f, 1.0f, 0.0f, 0.0f);
-	//glRotatef(angle_y_ - 45.0f, 0.0f, 1.0f, 0.0f);
+  glPushMatrix();
+  glTranslatef(x_position_, y_position_, value_zoom_ - 50.0f);
+  glRotatef(angle_x_ + 45.0f, 1.0f, 0.0f, 0.0f); // angle_x dai dien cho mat phang yoz quay quanh truc x
+                                                 // 1 goc ?. (Note: mat phang quay theo truc chu ko phai truc tu quay)
+	glRotatef(angle_y_ - 45.0f, 0.0f, 1.0f, 0.0f); // angle_y dai dien cho mat phang xoz quay
+                                                 // quanh truc y 1 goc bao nhieu ?
 
-    // dua truc z thanh truc y
-  glRotatef(angle_x_ - 60.0f, 1.0f, 0.0f, 0.0f);
-	glRotatef(angle_y_ - 135.0f, 0.0f, 0.0f, 1.0f);
+  //glRotatef(angle_x_ - 60.0f, 1.0f, 0.0f, 0.0f);
+	//glRotatef(angle_y_ - 135.0f, 0.0f, 0.0f, 1.0f);
 
-  PrepareAxisLabel();
+  //PrepareAxisLabel();
+  OnDrawCoordinateBig();
+  glScalef(5.0f, 5.0f, 5.0f);
   BuildAxisesList();
+  glPopMatrix();
+
+  //OnAnimation(); 
   SetUpLight();
+  glLoadIdentity();
+  glTranslatef(x_position_, y_position_, value_zoom_ - 50.0f);
+  glRotatef(angle_x_cad_ + 45.0f, 1.0f, 0.0f, 0.0f);
+	glRotatef(angle_y_cad_ - 45.0f, 0.0f, 1.0f, 0.0f);
+  //glRotatef(angle_z_cad_ + 0.0f, 0.0f, 0.0f, 1.0f);
   DrawCad();
   DisableSetupLigting();
 }
@@ -517,7 +540,7 @@ void CCad_ShowView::PrepareAxisLabel()
 void CCad_ShowView::SetUpLight() {
 
   glEnable(GL_DEPTH_TEST); // khởi động chế độ chiều sâu
-  glDepthFunc(GL_LESS);   // thiết lập loại chiều sâu là less
+  //glDepthFunc(GL_LESS);   // thiết lập loại chiều sâu là less
 
 	// prepare light source
 	GLfloat ambient[]  = {0.7f, 0.7f, 0.7f, 1.0f};
@@ -556,6 +579,45 @@ void CCad_ShowView::DisableSetupLigting() {
   glDisable(GL_LIGHTING);
 }
 
+void CCad_ShowView::OnDrawCoordinateBig() {
+  if (enable_big_coordinate_ == true) {
+    glLineWidth(1.0f);
+    glBegin(GL_LINES);
+    glColor3f(1.0f, 0.0f, 0.0f);
+    glVertex3f(-100.0f, 0.0f, 0.0f);
+    glVertex3f(100.0f, 0.0f, 0.0f);
+
+    glColor3f(0.0f, 1.0f, 0.0f);
+    glVertex3f(0.0f, 100.0f, 0.0f);
+    glVertex3f(0.0f, -100.0f, 0.0f);
+
+    glColor3f(0.0f, 0.0f, 1.0f);
+    glVertex3f(0.0f, 0.0f, 100.0f);
+    glVertex3f(0.0f, 0.0f, -100.0f);
+    glEnd();
+  }
+}
+
+void CCad_ShowView::EnableShowBigCoordinate() {
+  if (is_check_coordiante_button_ == false) {
+    enable_big_coordinate_ = true;
+    is_check_coordiante_button_ = true;
+  } else {
+    enable_big_coordinate_ = false;
+    is_check_coordiante_button_ = false;
+  }
+  InvalidateRect(NULL, FALSE);
+}
+
+void CCad_ShowView::SetCheckBigCoordinate(CCmdUI* cmd) {
+  if (is_check_coordiante_button_ == false) {
+    cmd->SetCheck(false);
+  } else {
+    cmd->SetCheck(true);
+  }
+  InvalidateRect(NULL, FALSE);
+}
+
 // hàm thực hiện vẽ ra trục tọa độ oxyz 
 void CCad_ShowView::BuildAxisesList()
 {
@@ -566,15 +628,15 @@ void CCad_ShowView::BuildAxisesList()
 	glBegin(GL_LINES);
 	glColor3ub(255, 0, 0);  // màu đỏ cho trục tọa độ x
 	glVertex3f(0.0, 0.0, 0.0);
-	glVertex3f(1, 0.0, 0.0);
+	glVertex3f(1.0, 0.0, 0.0);
 
 	glColor3ub(0, 255, 0);  // màu xánh lá cây cho trục tọa độ y
 	glVertex3f(0.0, 0.0, 0.0);
-	glVertex3f(0.0, 1, 0.0);
+	glVertex3f(0.0, 1.0, 0.0);
 			
 	glColor3ub(0, 0, 255);  // màu xanh da trời cho trục tọa độ z
 	glVertex3f(0.0, 0.0, 0.0);
-	glVertex3f(0.0, 0.0, 1);
+	glVertex3f(0.0, 0.0, 1.0);
 	glEnd();
 	
   // cho phép tạo ra 3 ký tự X Y Z ngày đầu mũi tên 3 trục tọa độ
@@ -644,27 +706,112 @@ void CCad_ShowView::OnDestroy() {
   m_pDC = NULL;
 }
 
+// if don't use OnTime so can this use to replace
+void CCad_ShowView::OnAnimation() {
+  //return;
+  if (is_check_rotate_ == TRUE) {
+    angle_x_cad_ += speed_rotate_  + 0.5f;
+    angle_z_cad_ += speed_rotate_  + 0.5f;
+    if (angle_x_cad_ >= 360.0f) {
+      angle_x_cad_ = 0.0f;
+    } 
+    if (angle_x_cad_ >= 360.0f) {
+      angle_z_cad_ = 0.0f;
+    }
+  }
+}
+
 void CCad_ShowView::OnTimer(UINT_PTR nIDEvent) {
-  switch(nIDEvent) {
+  //return ; // do not use Ontimer to make rotation for cad
+  switch (nIDEvent) {
   case 0:
     break;
-  case 1:
-    angle_x_ += speed_rotate_  + 0.5f;
-    angle_y_ += speed_rotate_  + 0.5f;
-    if (angle_x_ >= 360.0f) {
-      angle_x_ = 0.0f;
-    } 
-    if (angle_y_ >= 360.0f) {
-      angle_y_ = 0.0f;
-    }
+  case 1: {   // use when SetTime(1,...) is called
+    SetRotateForCad();
+   }
     break;
-  default: {}
+  default: break;
   }
   //CView::OnTimer(nIDEvent);
   InvalidateRect(NULL, FALSE);
 }
 
+void CCad_ShowView::SetRotateForCad() {
+  if (theApp.GetTrianglePoint() != NULL ) {
+    if (is_rot_x_ == true) {
+      angle_x_cad_ += speed_rotate_ + 0.5f;
+    }
+    if (is_rot_y_ == true) {
+      angle_y_cad_ += speed_rotate_ + 0.5f;
+    }
+    if (is_rot_z_ == true) {
+      angle_z_cad_ += speed_rotate_ + 0.5f;
+    }
+    if (angle_x_cad_ >= 360.0f) {
+      angle_x_cad_ = 0.0f;
+    }
+    if (angle_y_cad_ >= 360.0f) {
+      angle_y_cad_ = 0.0f;
+    }
+    if (angle_z_cad_ >= 360.0f) {
+      angle_z_cad_ = 0.0f;
+    }
+  }
+}
+
 void CCad_ShowView::OnHandleViewButton(UINT nID) {
+  if (nID == ID_VIEW_TOP) {
+    angle_x_ = 45.0f;
+    angle_y_ = 45.0f;
+    angle_x_cad_ = 45.0f;
+    angle_y_cad_ = 45.0f;
+    angle_z_cad_ = 0.0f;
+  }
+
+  if (nID == ID_VIEW_BOTTOM) {
+    angle_x_ = -135.0f;
+    angle_y_ = 45.0f;
+    angle_x_cad_ = -135.0f;
+    angle_y_cad_ = 45.0f;
+    angle_z_cad_ = 0.0f;
+  }
+
+  if (nID == ID_VIEW_LEFT) {
+    angle_x_ = -45.0f;
+    angle_y_ = 135.0f;
+    angle_x_cad_ = -45.0f;
+    angle_y_cad_ = 135.0f;
+    angle_z_cad_ = 0.0f;
+  }
+
+  if (nID == ID_VIEW_RIGHT) {
+    angle_x_ = -45.0f;
+    angle_y_ = -45.0f;
+    angle_x_cad_ = -45.0f;
+    angle_y_cad_ = -45.0f;
+    angle_z_cad_ = 0.0f;
+  }
+
+  if (nID == ID_VIEW_BACK) {
+    angle_x_ = -45.0f;
+    angle_y_ = 180 + 45.0f;
+    angle_x_cad_ = -45.0f;
+    angle_y_cad_ = 180 + 45.0f;
+    angle_z_cad_ = 0.0f;
+  }
+
+  if (nID == ID_VIEW_FRONT) {
+    angle_x_ = -45.0f;
+    angle_y_ = 45.0f;
+    angle_x_cad_ = -45.0f;
+    angle_y_cad_ = 45.0f;
+    angle_z_cad_ = 0.0f;
+  }
+
+  if (nID == ID_VIEW_ISO) {
+    OnHandleResetCad();
+  }
+
   if (nID == ID_VIEW_ZOOM_IN) {
     value_zoom_ += 0.5f;
   }
@@ -694,5 +841,16 @@ void CCad_ShowView::OnHandleRotateButton(UINT nID) {
   
 }
 
+void CCad_ShowView::OnHandleResetCad() {
+  angle_x_ = 0.0f;
+  angle_y_ = 0.0f;
+  angle_x_cad_ = 0.0f;
+  angle_y_cad_ = 0.0f;
+  angle_z_cad_ = 0.0f;
+  x_position_ = 0.0f;
+  y_position_ = 0.0f;
+  value_zoom_ = 0.0f;
+  InvalidateRect(NULL, FALSE);
+}
 
 // CCad_ShowView message handlers

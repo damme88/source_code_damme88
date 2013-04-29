@@ -3,7 +3,8 @@
 //
 
 #pragma once
-
+#include "DialogBar.h"
+#include "Cad_ShowView.h"
 class CMainFrame : public CFrameWndEx
 {
 	
@@ -38,6 +39,8 @@ protected:  // control bar embedded members
 	CMFCStatusBar     m_wndStatusBar;
 	CMFCToolBarImages m_UserImages;
 
+  CCad_ShowView *cad_show_view_;
+  DialogBar *dialog_view_;
 // Generated message map functions
 protected:
 	afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);

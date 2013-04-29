@@ -32,6 +32,7 @@ END_MESSAGE_MAP()
 
 CCad_ShowApp::CCad_ShowApp()
 {
+  gl_point_ = NULL;
 	m_bHiColorIcons = TRUE;
   number_of_point_ = 0;
 	// support Restart Manager

@@ -3,7 +3,7 @@
 //
 
 #pragma once
-
+#include "DialogBar.h"
 class CCad_ShowView : public CView
 {
 protected: // create from serialization only
@@ -53,13 +53,15 @@ protected:
 	afx_msg void OnRButtonUp(UINT nFlags, CPoint point);
 	afx_msg void OnContextMenu(CWnd* pWnd, CPoint point);
   afx_msg void OnKeyDown(UINT nchar , UINT nRepCnt, UINT nFlas);
-  afx_msg void OnTimer(UINT_PTR nIDEvent);
 	DECLARE_MESSAGE_MAP()
 
 private:
   //variable for rotatef and zoom for cad object
   GLfloat angle_x_;
 	GLfloat angle_y_;
+  GLfloat angle_x_cad_;
+  GLfloat angle_y_cad_;
+  GLfloat angle_z_cad_;
   GLfloat value_zoom_;
   CPoint mouse_down_point_;
 
@@ -84,13 +86,30 @@ private:
   float blue_color_;
   // varialbe for speed rotate
   float speed_rotate_;
+  bool is_check_rotate_;
+
+  // variable status checbox rotate on DialogBar
+  bool is_rot_x_;
+  bool is_rot_y_;
+  bool is_rot_z_;
+
+  bool enable_big_coordinate_;
+  bool is_check_coordiante_button_;
+public:
+  void IsRotX(bool val_x) {is_rot_x_ = val_x; InvalidateRect(NULL, FALSE);}
+  void IsRotY(bool val_y) {is_rot_y_ = val_y; InvalidateRect(NULL, FALSE);}
+  void IsRotZ(bool val_z) {is_rot_z_ = val_z; InvalidateRect(NULL, FALSE);}
+  
 public:
   enum ModelCad {SOLID_MODE_CAD, WIRE_FRAME_MODE_CAD, POINT_MODE_CAD};
 public: 
   void OnMouseMove(UINT nFlags, CPoint point);
   BOOL OnMouseWheel(UINT nFlags, short zDelta, CPoint pt);
   void OnRButtonDown(UINT nFlags, CPoint point);
-  void BuildAxisesList();
+  void BuildAxisesList();  // draw sub coordinate
+  void OnDrawCoordinateBig();  // draw big coordinate
+  void EnableShowBigCoordinate(); 
+  void SetCheckBigCoordinate(CCmdUI * cmd);
   void PrintAxisLabel(const char* str);
   void SetUpLight();
   void DisableSetupLigting();
@@ -103,11 +122,15 @@ public:
   void SetColorForBackGround(float red_value, float green_value, float blue_value);
   void DeleteCad();
   void SetSpeedRotate(float speed_value) {speed_rotate_ = speed_value;}
-
+  void OnAnimation();
+  void OnTimer(UINT_PTR nIDEvent);
+  void SetRotateForCad();
+  void SetStateCheckboxRotate(bool state) {is_check_rotate_ = state; InvalidateRect(NULL, FALSE);}
 public:
   void OnHandleViewButton(UINT nID); 
   void OnHandleMoveButton(UINT nID);
   void OnHandleRotateButton(UINT nID);
+  void OnHandleResetCad();
 };
 
 #ifndef _DEBUG  // debug version in Cad_ShowView.cpp

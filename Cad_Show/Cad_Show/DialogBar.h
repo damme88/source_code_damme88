@@ -6,6 +6,7 @@
 
 // DialogBar form view
 class CCad_ShowDoc;
+class CCad_ShowView;
 class DialogBar : public CFormView
 {
 	DECLARE_DYNCREATE(DialogBar)
@@ -29,17 +30,24 @@ protected:
 	DECLARE_MESSAGE_MAP()
 // add new variable and function 
 private:
-  
-private:
   CButton solid_radio_button_;
   CButton checkbox_rotate_;
   bool is_check_rotate_;
   CSliderCtrl speed_rotate_;
   CStatic background_color_;
 
+  // variable for checkbox rotate
+  bool is_rot_x_;
+  bool is_rot_y_;
+  bool is_rot_z_;
+
+private:
+  CButton cb_rot_x_;
+  CButton cb_rot_y_;
+  CButton cb_rot_z_;
 public:
   CDialogBar *GetDocument();
-  CView *GetCadShowView();
+  CCad_ShowView *GetCadShowView();
   virtual void OnInitialUpdate();
   void SetStatusSpeedBar();
 protected:
@@ -50,6 +58,11 @@ protected:
   afx_msg void OnBnClickedRadioSolidCad();
   afx_msg void OnBnClickeCheckboxRotation();
   afx_msg void OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar);
+public:
+  afx_msg void OnBnClickedRotateX();
+  afx_msg void OnBnClickedRotateY();
+  afx_msg void OnBnClickedRotateZ();
+
 };
 
 

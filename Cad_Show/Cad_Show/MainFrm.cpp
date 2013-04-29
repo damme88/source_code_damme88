@@ -4,9 +4,7 @@
 
 #include "stdafx.h"
 #include "Cad_Show.h"
-#include "DialogBar.h"
 #include "MainFrm.h"
-#include "Cad_ShowView.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -38,6 +36,8 @@ static UINT indicators[] =
 
 CMainFrame::CMainFrame()
 {
+  dialog_view_ = NULL;
+  cad_show_view_ = NULL;
 	// TODO: add member initialization code here
 }
 
@@ -153,6 +153,9 @@ BOOL CMainFrame::OnCreateClient(LPCREATESTRUCT lp, CCreateContext* pContext) {
     TRACE("Failed to create preview pane\n");
     return FALSE;
   }
+
+  dialog_view_ = reinterpret_cast<DialogBar*>(m_wndSplitter.GetPane(0, 0));
+  cad_show_view_ = reinterpret_cast<CCad_ShowView*>(m_wndSplitter.GetPane(0, 1));
 }
 BOOL CMainFrame::PreCreateWindow(CREATESTRUCT& cs)
 {
