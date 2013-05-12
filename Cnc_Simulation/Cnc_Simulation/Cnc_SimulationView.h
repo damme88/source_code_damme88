@@ -3,9 +3,8 @@
 //
 
 #pragma once
-
-
-class Cnc_SimulationView : public CView
+#include "..\OpenGLView\OpenGL_View.h"
+class Cnc_SimulationView : public OpenGL_View
 {
 protected: // create from serialization only
 	Cnc_SimulationView();
@@ -42,6 +41,7 @@ protected:
 	afx_msg void OnFilePrintPreview();
 	afx_msg void OnRButtonUp(UINT nFlags, CPoint point);
 	afx_msg void OnContextMenu(CWnd* pWnd, CPoint point);
+  afx_msg void OnSize(UINT nType, int cx, int cy);
 	DECLARE_MESSAGE_MAP()
 };
 

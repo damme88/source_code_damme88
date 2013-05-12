@@ -43,6 +43,7 @@ BEGIN_MESSAGE_MAP(DialogBar, CFormView)
   ON_BN_CLICKED(IDC_ROTATE, &DialogBar::OnBnClickeCheckboxRotation)
   ON_WM_PAINT()
   ON_WM_LBUTTONUP()
+  ON_WM_SIZE()
 	ON_WM_HSCROLL()
   ON_BN_CLICKED(IDC_ROTATE_X, &DialogBar::OnBnClickedRotateX)
   ON_BN_CLICKED(IDC_ROTATE_Y, &DialogBar::OnBnClickedRotateY)
@@ -84,8 +85,13 @@ void DialogBar::OnInitialUpdate() {
   cb_rot_y_.EnableWindow(is_check_rotate_);
   cb_rot_z_.EnableWindow(is_check_rotate_);
   is_rot_x_ = is_rot_y_ = is_rot_z_ = is_check_rotate_;
-
+  EnableScrollBarCtrl(SB_BOTH, FALSE);
 }
+
+void DialogBar::OnSize(UINT nType, int cx, int cy) {
+  EnableScrollBarCtrl(SB_BOTH, FALSE);
+}
+
 
 void DialogBar::OnPaint() {
   CPaintDC dc(this);

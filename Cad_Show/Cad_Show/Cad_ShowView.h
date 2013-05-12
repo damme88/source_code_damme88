@@ -4,6 +4,9 @@
 
 #pragma once
 #include "DialogBar.h"
+
+const double VALUE_AXIS = 10000.0;
+
 class CCad_ShowView : public CView
 {
 protected: // create from serialization only
@@ -56,13 +59,22 @@ protected:
 	DECLARE_MESSAGE_MAP()
 
 private:
+
+  GLfloat m_OrthoRangeLeft;
+	GLfloat m_OrthoRangeRight;
+	GLfloat m_OrthoRangeTop;
+	GLfloat m_OrthoRangeBottom;
+	GLfloat m_OrthoRangeNear;
+	GLfloat m_OrthoRangeFar;
+
   //variable for rotatef and zoom for cad object
   GLfloat angle_x_;
 	GLfloat angle_y_;
+  GLfloat angle_z_;
   GLfloat angle_x_cad_;
   GLfloat angle_y_cad_;
   GLfloat angle_z_cad_;
-  GLfloat value_zoom_;
+  GLfloat m_scaling;
   CPoint mouse_down_point_;
 
   GLfloat x_position_ ;

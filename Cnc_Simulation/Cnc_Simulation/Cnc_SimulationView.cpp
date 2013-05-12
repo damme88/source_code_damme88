@@ -19,15 +19,16 @@
 
 // Cnc_SimulationView
 
-IMPLEMENT_DYNCREATE(Cnc_SimulationView, CView)
+IMPLEMENT_DYNCREATE(Cnc_SimulationView, OpenGL_View)
 
-BEGIN_MESSAGE_MAP(Cnc_SimulationView, CView)
+BEGIN_MESSAGE_MAP(Cnc_SimulationView, OpenGL_View)
 	// Standard printing commands
 	ON_COMMAND(ID_FILE_PRINT, &CView::OnFilePrint)
 	ON_COMMAND(ID_FILE_PRINT_DIRECT, &CView::OnFilePrint)
 	ON_COMMAND(ID_FILE_PRINT_PREVIEW, &Cnc_SimulationView::OnFilePrintPreview)
 	ON_WM_CONTEXTMENU()
 	ON_WM_RBUTTONUP()
+  ON_WM_SIZE()
 END_MESSAGE_MAP()
 
 // Cnc_SimulationView construction/destruction
@@ -47,18 +48,18 @@ BOOL Cnc_SimulationView::PreCreateWindow(CREATESTRUCT& cs)
 	// TODO: Modify the Window class or styles here by modifying
 	//  the CREATESTRUCT cs
 
-	return CView::PreCreateWindow(cs);
+	return OpenGL_View::PreCreateWindow(cs);
 }
 
 // Cnc_SimulationView drawing
 
-void Cnc_SimulationView::OnDraw(CDC* /*pDC*/)
+void Cnc_SimulationView::OnDraw(CDC* pDC)
 {
 	Cnc_SimulationDoc* pDoc = GetDocument();
 	ASSERT_VALID(pDoc);
 	if (!pDoc)
 		return;
-
+  	OpenGL_View::OnDraw(pDC);
 	// TODO: add draw code for native data here
 }
 
@@ -108,12 +109,12 @@ void Cnc_SimulationView::OnContextMenu(CWnd* /* pWnd */, CPoint point)
 #ifdef _DEBUG
 void Cnc_SimulationView::AssertValid() const
 {
-	CView::AssertValid();
+	OpenGL_View::AssertValid();
 }
 
 void Cnc_SimulationView::Dump(CDumpContext& dc) const
 {
-	CView::Dump(dc);
+	OpenGL_View::Dump(dc);
 }
 
 Cnc_SimulationDoc* Cnc_SimulationView::GetDocument() const // non-debug version is inline
@@ -125,3 +126,7 @@ Cnc_SimulationDoc* Cnc_SimulationView::GetDocument() const // non-debug version 
 
 
 // Cnc_SimulationView message handlers
+
+void Cnc_SimulationView::OnSize(UINT nType, int cx, int cy) {
+  OpenGL_View::OnSize(nType, cx, cy);
+}

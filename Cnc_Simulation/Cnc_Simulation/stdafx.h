@@ -37,13 +37,18 @@
 
 #include <afxcontrolbars.h>     // MFC support for ribbons and control bars
 
+// library for opengl 
+#include <gl\glut.h>
+#include <gl\GLU.h>
+#include <gl\GL.h>
 
+#include <Windows.h>
+#include <iostream>
+#include <string.h>
+#include <vector.h>
+#include <math.h>
 
-
-
-
-
-
+using namespace std;
 
 #ifdef _UNICODE
 #if defined _M_IX86

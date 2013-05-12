@@ -3,6 +3,8 @@ Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Cnc_Simulation", "Cnc_Simulation\Cnc_Simulation.vcxproj", "{82AFFECE-7348-432E-A46B-0BA5591A4AA7}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "OpenGLView", "OpenGLView\OpenGLView.vcxproj", "{8846B4EC-1E36-483A-AC44-74EF7BCEAEA3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -13,6 +15,10 @@ Global
 		{82AFFECE-7348-432E-A46B-0BA5591A4AA7}.Debug|Win32.Build.0 = Debug|Win32
 		{82AFFECE-7348-432E-A46B-0BA5591A4AA7}.Release|Win32.ActiveCfg = Release|Win32
 		{82AFFECE-7348-432E-A46B-0BA5591A4AA7}.Release|Win32.Build.0 = Release|Win32
+		{8846B4EC-1E36-483A-AC44-74EF7BCEAEA3}.Debug|Win32.ActiveCfg = Debug|Win32
+		{8846B4EC-1E36-483A-AC44-74EF7BCEAEA3}.Debug|Win32.Build.0 = Debug|Win32
+		{8846B4EC-1E36-483A-AC44-74EF7BCEAEA3}.Release|Win32.ActiveCfg = Release|Win32
+		{8846B4EC-1E36-483A-AC44-74EF7BCEAEA3}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -244,6 +244,11 @@ void CCad_ShowApp::OnFileOpen() {
   }
   fclose(pFile);
 
+  if (number_of_point_ == 0) {
+    ::MessageBox(NULL, L"Can not read STL file", L"Inform", MB_OK | MB_ICONWARNING);
+    return;
+  }
+
   static long count_normal_vector = 0;
 
   if (gl_point_ != NULL) {

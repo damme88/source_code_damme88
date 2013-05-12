@@ -54,14 +54,26 @@ int MainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 
 	// set the visual manager used to draw all user interface elements
 	CMFCVisualManager::SetDefaultManager(RUNTIME_CLASS(CMFCVisualManagerVS2008));
+  
+  // set mdi tab for application
+  CMDITabInfo mdi_tab;
+  mdi_tab.m_style = CMFCTabCtrl::STYLE_3D_ONENOTE;
+  mdi_tab.m_bActiveTabCloseButton = TRUE;
+  mdi_tab.m_bTabIcons = FALSE;
+  mdi_tab.m_bAutoColor = TRUE;
+  mdi_tab.m_bDocumentMenu = TRUE;
+  EnableMDITabbedGroups(TRUE, mdi_tab);
+  
+	//if (!m_wndMenuBar.Create(this))
+	//{
+	//	TRACE0("Failed to create menubar\n");
+	//	return -1;      // fail to create
+	//}
 
-	if (!m_wndMenuBar.Create(this))
-	{
-		TRACE0("Failed to create menubar\n");
-		return -1;      // fail to create
-	}
-
-	m_wndMenuBar.SetPaneStyle(m_wndMenuBar.GetPaneStyle() | CBRS_SIZE_DYNAMIC | CBRS_TOOLTIPS | CBRS_FLYBY);
+	//m_wndMenuBar.SetPaneStyle(m_wndMenuBar.GetPaneStyle() | CBRS_SIZE_DYNAMIC | CBRS_TOOLTIPS | CBRS_FLYBY);
+ // m_wndMenuBar.EnableDocking(CBRS_ALIGN_ANY);
+ // EnableDocking(CBRS_ALIGN_ANY);
+ // DockPane(&m_wndMenuBar);
 
 	// prevent the menu bar from taking the focus on activation
 	CMFCPopupMenu::SetForceMenuFocus(FALSE);
@@ -94,10 +106,9 @@ int MainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	m_wndStatusBar.SetIndicators(indicators, sizeof(indicators)/sizeof(UINT));
 
 	// TODO: Delete these five lines if you don't want the toolbar and menubar to be dockable
-	m_wndMenuBar.EnableDocking(CBRS_ALIGN_ANY);
+
 	m_wndToolBar.EnableDocking(CBRS_ALIGN_ANY);
 	EnableDocking(CBRS_ALIGN_ANY);
-	DockPane(&m_wndMenuBar);
 	DockPane(&m_wndToolBar);
 
 
@@ -115,14 +126,14 @@ int MainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	// enable quick (Alt+drag) toolbar customization
 	CMFCToolBar::EnableQuickCustomization();
 
-	if (CMFCToolBar::GetUserImages() == NULL)
-	{
-		// load user-defined toolbar images
-		if (m_UserImages.Load(_T(".\\UserImages.bmp")))
-		{
-			CMFCToolBar::SetUserImages(&m_UserImages);
-		}
-	}
+	//if (CMFCToolBar::GetUserImages() == NULL)
+	//{
+	//	// load user-defined toolbar images
+	//	if (m_UserImages.Load(_T(".\\UserImages.bmp")))
+	//	{
+	//		CMFCToolBar::SetUserImages(&m_UserImages);
+	//	}
+	//}
 
 	// enable menu personalization (most-recently used commands)
 	// TODO: define your own basic commands, ensuring that each pulldown menu has at least one basic command.
