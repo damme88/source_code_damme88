@@ -430,7 +430,6 @@ void CCad_ShowView::RenderScene () {
 void CCad_ShowView::DrawCad() {
    if(theApp.GetStateDrawStl() == TRUE)
 	 {
-		 long unsigned int i = 0;
 		 glColor3f(1.0f, 0.0f, 1.0f);
      if (mode_cad_ == POINT_MODE_CAD) {
        glPolygonMode(GL_FRONT_AND_BACK, GL_POINT);
@@ -442,8 +441,9 @@ void CCad_ShowView::DrawCad() {
      else {
        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
      }
-     for (i = 0; i<theApp.GetNumberOfPoint(); i = i+3) {
-		 glBegin(GL_POLYGON);
+     int a = theApp.GetNumberOfPoint();
+     for (unsigned long i = 0; i < theApp.GetNumberOfPoint(); i = i+3) {
+     glBegin(GL_POLYGON);
      glNormal3f(theApp.GetNormalVector()[i/3][0], theApp.GetNormalVector()[i/3][1], theApp.GetNormalVector()[i/3][2]); 
 		 glVertex3f(theApp.GetTrianglePoint()->Vertex[i][0], theApp.GetTrianglePoint()->Vertex[i][1], theApp.GetTrianglePoint()->Vertex[i][2]);
 		 glVertex3f(theApp.GetTrianglePoint()->Vertex[i+1][0], theApp.GetTrianglePoint()->Vertex[i+1][1], theApp.GetTrianglePoint()->Vertex[i+1][2]);
@@ -815,7 +815,7 @@ void CCad_ShowView::OnHandleViewButton(UINT nID) {
     angle_z_cad_ = 0.0f;
   }
 
-  if (nID == ID_VIEW_LEFT) {
+  if (nID == ID_VIEW_BACK) {
     angle_x_ = -90.0f;
     angle_y_ = 0.0f;
     angle_z_ = 90.0f;
@@ -824,7 +824,7 @@ void CCad_ShowView::OnHandleViewButton(UINT nID) {
     angle_z_cad_ = 90.0f;
   }
 
-  if (nID == ID_VIEW_RIGHT) {
+  if (nID == ID_VIEW_FRONT) {
     angle_x_ = -90.0f;
     angle_y_ = 0.0f;
     angle_z_ = -90.0f;
@@ -833,7 +833,7 @@ void CCad_ShowView::OnHandleViewButton(UINT nID) {
     angle_z_cad_ = -90.0f;
   }
 
-  if (nID == ID_VIEW_BACK) {
+  if (nID == ID_VIEW_RIGHT) {
     angle_x_ = -90.0f;
     angle_y_ = 0.0f;
     angle_z_ = -180.0f;
@@ -842,7 +842,7 @@ void CCad_ShowView::OnHandleViewButton(UINT nID) {
     angle_z_cad_ = -180.0f;
   }
 
-  if (nID == ID_VIEW_FRONT) {
+  if (nID == ID_VIEW_LEFT) {
     angle_x_ = -90.0f;
     angle_y_ = 0.0f;
     angle_z_ = 0.0f;

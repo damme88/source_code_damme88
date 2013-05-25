@@ -50,6 +50,11 @@ public:
   Triangle* GetTrianglePoint() {return gl_point_;}
   void FreePoint();
   Vector* GetNormalVector () {return normal_vector_;} 
+
+  bool IsAssciiFormat(const char * path_file); 
+  // handle recent file 
+  //virtual void OnUpdateFileMruFile1(CCmdUI * pcmd);
+  //void OnRencentFile();
 };
 
 extern CCad_ShowApp theApp;

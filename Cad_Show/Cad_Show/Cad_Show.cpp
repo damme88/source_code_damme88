@@ -25,6 +25,7 @@ BEGIN_MESSAGE_MAP(CCad_ShowApp, CWinAppEx)
 	ON_COMMAND(ID_FILE_OPEN, &CCad_ShowApp::OnFileOpen)
 	// Standard print setup command
 	ON_COMMAND(ID_FILE_PRINT_SETUP, &CWinAppEx::OnFilePrintSetup)
+  ///ON_UPDATE_COMMAND_UI(ID_FILE_MRU_FILE1, &CCad_ShowApp::OnUpdateFileMruFile1)
 END_MESSAGE_MAP()
 
 
@@ -33,6 +34,7 @@ END_MESSAGE_MAP()
 CCad_ShowApp::CCad_ShowApp()
 {
   gl_point_ = NULL;
+  normal_vector_ = NULL;
 	m_bHiColorIcons = TRUE;
   number_of_point_ = 0;
 	// support Restart Manager
@@ -96,7 +98,7 @@ BOOL CCad_ShowApp::InitInstance()
 	// TODO: You should modify this string to be something appropriate
 	// such as the name of your company or organization
 	SetRegistryKey(_T("Local AppWizard-Generated Applications"));
-	LoadStdProfileSettings(4);  // Load standard INI file options (including MRU)
+	LoadStdProfileSettings(10);  // Load standard INI file options (including MRU)
 
 
 	InitContextMenuManager();
@@ -217,78 +219,147 @@ BOOL CCad_ShowApp::LoadState(LPCTSTR lpszSectionName, CFrameImpl *pFrameImpl) {
 void CCad_ShowApp::OnFileOpen() {
   UINT n_size = 0;
   char str[MAX_PATH];
-  Point *value_stl;
+  FILE *pFile = NULL;
+  Point *value_stl = NULL;
+  Point *asscii_value_stl = NULL;
   CFileDialog Dlg(TRUE);
   CString file_name_stl = L"";
   // Get file name 
   if (IDOK == Dlg.DoModal()) {
     file_name_stl = Dlg.GetPathName();
   }
-  
   // convert CString to char*
   char file_name[MAX_PATH];
   n_size = file_name_stl.GetLength();
   memset(file_name, 0, n_size + 1);
   wcstombs(file_name, file_name_stl, n_size);
 
-  //get numbar of point in slt file
-  FILE *pFile;
   pFile = fopen(file_name, "r");
   if (pFile == NULL)
     return;
-  while(!feof(pFile)) {
-    fscanf(pFile, "%s", str);
-    if (strcmp(str, "vertex") == 0 || strcmp(str, "VERTEX") == 0) {
-      number_of_point_ += 1;
-    }
-  }
   fclose(pFile);
+  bool is_asscii = IsAssciiFormat(file_name);
+  if (is_asscii == true) {  // check format file stl. Is binary or Asscii
+    pFile = fopen(file_name, "r");
+    if (pFile == NULL)
+      return;
+    while(!feof(pFile)) {
+      fscanf(pFile, "%s", str);
+      if (strcmp(str, "vertex") == 0 || strcmp(str, "VERTEX") == 0) {
+        number_of_point_ += 1;
+      }
+    }
+    fclose(pFile);
+    // check number_of_point
+    if (number_of_point_ == 0) {
+      ::MessageBox(NULL, L"Can not read STL file", L"Inform", MB_OK | MB_ICONWARNING);
+      return;
+    }
 
-  if (number_of_point_ == 0) {
-    ::MessageBox(NULL, L"Can not read STL file", L"Inform", MB_OK | MB_ICONWARNING);
-    return;
-  }
-
-  static long count_normal_vector = 0;
-
-  if (gl_point_ != NULL) {
-    delete [] gl_point_;
-  }
-  if (normal_vector_ != NULL) {
-    delete [] normal_vector_;
-    count_normal_vector = 0;
-  }
-  gl_point_ = new Triangle[number_of_point_];
-  value_stl = new Point[number_of_point_];
-  normal_vector_ = new Vector[number_of_point_ /3];
-  // read data form stl file
-  pFile = fopen(file_name, "r");
-  fgets(str, MAX_PATH, pFile);
-  while(!feof(pFile)) {
-    fscanf(pFile, "%s%s%lf%lf%lf", str, str, &normal_vector_[count_normal_vector][0], &normal_vector_[count_normal_vector][1], &normal_vector_[count_normal_vector][2]);
-    count_normal_vector = 1;
+    static long count_normal_vector = 0;
+    if (gl_point_ != NULL) {
+      delete [] gl_point_;
+      gl_point_ = NULL;
+    }
+    if (normal_vector_ != NULL) {
+      delete [] normal_vector_;
+      count_normal_vector = 0;
+      normal_vector_ = NULL;
+    }
+    gl_point_ = new Triangle[number_of_point_];
+    value_stl = new Point[number_of_point_];
+    normal_vector_ = new Vector[number_of_point_ /3];
+    // read data form stl file
+    pFile = fopen(file_name, "r");
     fgets(str, MAX_PATH, pFile);
-    fgets(str, MAX_PATH, pFile);
-    for (long i = 0; i< number_of_point_; i++) {
-      fscanf(pFile,"%s%lf%lf%lf",str, &value_stl[i][0], &value_stl[i][1], &value_stl[i][2]);
-      gl_point_->Vertex[i][0] = value_stl[i][0];
-      gl_point_->Vertex[i][1] = value_stl[i][1];
-			gl_point_->Vertex[i][2] = value_stl[i][2];
+    while(!feof(pFile)) {
+      fscanf(pFile, "%s%s%f%f%f", str, str,
+             &normal_vector_[count_normal_vector][0],
+             &normal_vector_[count_normal_vector][1],
+             &normal_vector_[count_normal_vector][2]);
+      count_normal_vector = 1;
+      fgets(str, MAX_PATH, pFile);
+      fgets(str, MAX_PATH, pFile);
+      for (long i = 0; i< number_of_point_; i++) {
+        fscanf(pFile,"%s%f%f%f",str, &value_stl[i][0],
+              &value_stl[i][1],
+              &value_stl[i][2]);
+        gl_point_->Vertex[i][0] = value_stl[i][0];
+        gl_point_->Vertex[i][1] = value_stl[i][1];
+			  gl_point_->Vertex[i][2] = value_stl[i][2];
 			  if((i+1)%3 == 0) {
 				  fgets(str,100,pFile);
 				  fgets(str,100,pFile);
 				  fgets(str,100,pFile);
-				  fscanf(pFile,"%s%s%lf%lf%lf",str,str,&normal_vector_[count_normal_vector][0], &normal_vector_[count_normal_vector][1], &normal_vector_[count_normal_vector][2]);
+				  fscanf(pFile,"%s%s%f%f%f", str, str,
+                 &normal_vector_[count_normal_vector][0],
+                 &normal_vector_[count_normal_vector][1],
+                 &normal_vector_[count_normal_vector][2]);
           count_normal_vector ++;
 				  fgets(str,100,pFile);
 				  fgets(str,100,pFile);
         }
+      }
     }
     allow_draw_data_ = TRUE ;
 	  InvalidateRect(NULL,NULL,FALSE);
+    if (value_stl != NULL) {
+      delete [] value_stl;
+      value_stl = NULL;
+    }
+	  fclose(pFile);
+  } else {
+    // Is binary
+    pFile = fopen(file_name, "rb");
+    rewind(pFile); // reposition file pointer at begin file
+    const char *str_header= new char [100];
+    unsigned long triangle_count = 0;
+    fread((void*)str_header, 80, 1, pFile);
+    fread(&triangle_count, 4, 1, pFile); 
+    number_of_point_ = 3*triangle_count;
+    if (number_of_point_ <= 0) {
+      ::MessageBox(NULL, L"Can not read STL file", L"Inform", MB_OK | MB_ICONWARNING);
+      return;
+    }
+    if (gl_point_ != NULL) {
+      delete [] gl_point_;
+      gl_point_ = NULL;
+    }
+
+    if (normal_vector_ != NULL) {
+      delete [] normal_vector_;
+      normal_vector_ = NULL;
+    }
+
+    value_stl = new Point[number_of_point_];
+    gl_point_ = new Triangle[triangle_count];
+    normal_vector_ = new Vector[triangle_count];
+    int k = 0;
+    for (long i = 0; i< triangle_count; i++) {
+      fread(&normal_vector_[i][0], 1, sizeof(float), pFile);  // get data of normal vector
+      fread(&normal_vector_[i][1], 1, sizeof(float), pFile);
+      fread(&normal_vector_[i][2], 1, sizeof(float), pFile);
+      for(int j = 0; j<= 2; j++) {
+        fread(&value_stl[k][0], 1, sizeof(float), pFile);  // get vertext
+        fread(&value_stl[k][1], 1, sizeof(float), pFile);
+        fread(&value_stl[k][2], 1, sizeof(float), pFile);
+
+        gl_point_->Vertex[k][0] =  value_stl[k][0];  // assign for gl_point
+        gl_point_->Vertex[k][1] =  value_stl[k][1];
+        gl_point_->Vertex[k][2] =  value_stl[k][2];
+        k = k+1;
+      }
+      float value = 0.0;
+      fread(&value, 1, 2, pFile);  //get data of 2 byte which don't use
+    }
+    allow_draw_data_ = TRUE ;
+	  InvalidateRect(NULL,NULL,FALSE);
+    if (value_stl != NULL) { 
+      delete [] value_stl;
+      value_stl = NULL; // free value_stl
+    }
+    fclose(pFile);
   }
-  delete [] value_stl;
-	fclose(pFile);
 }
 
 void CCad_ShowApp::FreePoint() {
@@ -300,4 +371,24 @@ void CCad_ShowApp::FreePoint() {
     delete [] normal_vector_;
     normal_vector_ = NULL;
   }
+}
+
+
+//void CCad_ShowApp::OnUpdateFileMruFile1(CCmdUI *pcmd) {
+//  if (pcmd->m_nIndex == 0) {
+//    OnUpdateRecentFileMenu(pcmd);
+//  }
+//}
+
+bool CCad_ShowApp::IsAssciiFormat(const char * path_file) {
+  FILE *pFile = fopen(path_file, "rb");
+  assert(pFile != NULL);
+  char buff[MAX_PATH];
+  int rc = fread(buff, 1, sizeof(buff), pFile);
+  for(int i = 0; i< rc; i++) {
+    if(!__isascii(buff[i])) {
+      return false;
+    }
+  }
+  return true;
 }

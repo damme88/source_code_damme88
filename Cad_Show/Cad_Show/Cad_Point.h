@@ -1,7 +1,7 @@
 #ifndef CAD_POINT_H_
 #define CAD_POINT_H_
 
-typedef double Point[3];
+typedef float Point[3];
 typedef Point Vector;
 
 typedef struct _Triangle {
