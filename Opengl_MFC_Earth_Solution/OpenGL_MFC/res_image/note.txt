@@ -1,0 +1,1 @@
+copy bitmaps into folder release or debug
