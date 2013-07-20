@@ -9,24 +9,17 @@ const double VALUE_AXIS = 10000.0;
 
 class CCad_ShowView : public CView
 {
-protected: // create from serialization only
+public: // create from serialization only
 	CCad_ShowView();
 	DECLARE_DYNCREATE(CCad_ShowView)
 
 // Attributes
-public:
 	CCad_ShowDoc* GetDocument() const;
 
-// Operations
-private:
-  HGLRC m_hRC; //Rendering Context
-  CDC* m_pDC; //Device Context
 // Overrides
-public:
 	virtual void OnDraw(CDC* pDC);  // overridden to draw this view
 	virtual BOOL PreCreateWindow(CREATESTRUCT& cs);
 
-public:
   int OnCreate(LPCREATESTRUCT lpCreateStruct);
   BOOL InitializeOpenGL();
   BOOL SetupPixelFormat();
@@ -35,23 +28,53 @@ public:
   BOOL OnEraseBkgnd(CDC* pDC);
   void OnDestroy();
 
-protected:
-	virtual BOOL OnPreparePrinting(CPrintInfo* pInfo);
-	virtual void OnBeginPrinting(CDC* pDC, CPrintInfo* pInfo);
-	virtual void OnEndPrinting(CDC* pDC, CPrintInfo* pInfo);
-
 // Implementation
-public:
 	virtual ~CCad_ShowView();
 #ifdef _DEBUG
 	virtual void AssertValid() const;
 	virtual void Dump(CDumpContext& dc) const;
 #endif
 
-protected:
+  enum ModelCad {SOLID_MODE_CAD, WIRE_FRAME_MODE_CAD, POINT_MODE_CAD};
 
+  void IsRotX(bool val_x) {is_rot_x_ = val_x; InvalidateRect(NULL, FALSE);}
+  void IsRotY(bool val_y) {is_rot_y_ = val_y; InvalidateRect(NULL, FALSE);}
+  void IsRotZ(bool val_z) {is_rot_z_ = val_z; InvalidateRect(NULL, FALSE);}
+
+  void OnMouseMove(UINT nFlags, CPoint point);
+  BOOL OnMouseWheel(UINT nFlags, short zDelta, CPoint pt);
+  void OnRButtonDown(UINT nFlags, CPoint point);
+  void BuildAxisesList();  // draw sub coordinate
+  void OnDrawCoordinateBig();  // draw big coordinate
+  void EnableShowBigCoordinate(); 
+  void SetCheckBigCoordinate(CCmdUI * cmd);
+  void SetUpLight();
+  void DisableSetupLigting();
+  // functions for drawing
+  void DrawCad();
+  void OnMButtonDown(UINT nFlags, CPoint point);
+  void OnMButtonUp(UINT nFlags, CPoint point);
+  void SetModeCad(unsigned int mode_cad) {mode_cad_ = mode_cad;}
+  void SetColorForBackGround(float red_value, float green_value, float blue_value);
+  void DeleteCad();
+  void SetSpeedRotate(float speed_value) {speed_rotate_ = speed_value;}
+  void OnAnimation();
+  void OnTimer(UINT_PTR nIDEvent);
+  void SetRotateForCad();
+  void SetStateCheckboxRotate(bool state) {is_check_rotate_ = state; InvalidateRect(NULL, FALSE);}
+
+  void OnHandleViewButton(UINT nID); 
+  void OnHandleMoveButton(UINT nID);
+  void OnHandleRotateButton(UINT nID);
+  void OnHandleResetCad();
+  void DrawStringAt(double x, double y, double z, char* s);
+  void CreateOpenGLFont();
 // Generated message map functions
 protected:
+	virtual BOOL OnPreparePrinting(CPrintInfo* pInfo);
+	virtual void OnBeginPrinting(CDC* pDC, CPrintInfo* pInfo);
+	virtual void OnEndPrinting(CDC* pDC, CPrintInfo* pInfo);
+
 	afx_msg void OnFilePrintPreview();
 	afx_msg void OnRButtonUp(UINT nFlags, CPoint point);
 	afx_msg void OnContextMenu(CWnd* pWnd, CPoint point);
@@ -59,7 +82,10 @@ protected:
 	DECLARE_MESSAGE_MAP()
 
 private:
-
+  HGLRC m_hRC; //Rendering Context
+  CDC* m_pDC; //Device Context
+  GLuint m_editCLTip;
+  GLuint m_textTip;
   GLfloat m_OrthoRangeLeft;
 	GLfloat m_OrthoRangeRight;
 	GLfloat m_OrthoRangeTop;
@@ -107,42 +133,6 @@ private:
 
   bool enable_big_coordinate_;
   bool is_check_coordiante_button_;
-public:
-  void IsRotX(bool val_x) {is_rot_x_ = val_x; InvalidateRect(NULL, FALSE);}
-  void IsRotY(bool val_y) {is_rot_y_ = val_y; InvalidateRect(NULL, FALSE);}
-  void IsRotZ(bool val_z) {is_rot_z_ = val_z; InvalidateRect(NULL, FALSE);}
-  
-public:
-  enum ModelCad {SOLID_MODE_CAD, WIRE_FRAME_MODE_CAD, POINT_MODE_CAD};
-public: 
-  void OnMouseMove(UINT nFlags, CPoint point);
-  BOOL OnMouseWheel(UINT nFlags, short zDelta, CPoint pt);
-  void OnRButtonDown(UINT nFlags, CPoint point);
-  void BuildAxisesList();  // draw sub coordinate
-  void OnDrawCoordinateBig();  // draw big coordinate
-  void EnableShowBigCoordinate(); 
-  void SetCheckBigCoordinate(CCmdUI * cmd);
-  void PrintAxisLabel(const char* str);
-  void SetUpLight();
-  void DisableSetupLigting();
-  // functions for drawing
-  void DrawCad();
-  void PrepareAxisLabel();
-  void OnMButtonDown(UINT nFlags, CPoint point);
-  void OnMButtonUp(UINT nFlags, CPoint point);
-  void SetModeCad(unsigned int mode_cad) {mode_cad_ = mode_cad;}
-  void SetColorForBackGround(float red_value, float green_value, float blue_value);
-  void DeleteCad();
-  void SetSpeedRotate(float speed_value) {speed_rotate_ = speed_value;}
-  void OnAnimation();
-  void OnTimer(UINT_PTR nIDEvent);
-  void SetRotateForCad();
-  void SetStateCheckboxRotate(bool state) {is_check_rotate_ = state; InvalidateRect(NULL, FALSE);}
-public:
-  void OnHandleViewButton(UINT nID); 
-  void OnHandleMoveButton(UINT nID);
-  void OnHandleRotateButton(UINT nID);
-  void OnHandleResetCad();
 };
 
 #ifndef _DEBUG  // debug version in Cad_ShowView.cpp

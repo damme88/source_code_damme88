@@ -11,11 +11,9 @@ class DialogBar : public CFormView
 {
 	DECLARE_DYNCREATE(DialogBar)
 
-protected:
+public:
 	DialogBar();           // protected constructor used by dynamic creation
 	virtual ~DialogBar();
-
-public:
 	enum { IDD = IDD_DIALOGBAR };
 #ifdef _DEBUG
 	virtual void AssertValid() const;
@@ -24,8 +22,24 @@ public:
 #endif
 #endif
 
+  CDialogBar *GetDocument();
+  CCad_ShowView *GetCadShowView();
+  virtual void OnInitialUpdate();
+  void SetStatusSpeedBar();
+
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
+  afx_msg void OnSize(UINT nType, int cx, int cy);
+  afx_msg void OnPaint();
+  afx_msg void OnLButtonUp(UINT nFlags, CPoint point);
+  afx_msg void OnBnClickedRadioLineCad();
+  afx_msg void OnBnClickedRadioWireFrameCad();
+  afx_msg void OnBnClickedRadioSolidCad();
+  afx_msg void OnBnClickeCheckboxRotation();
+  afx_msg void OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar);
+  afx_msg void OnBnClickedRotateX();
+  afx_msg void OnBnClickedRotateY();
+  afx_msg void OnBnClickedRotateZ();
 
 	DECLARE_MESSAGE_MAP()
 // add new variable and function 
@@ -41,29 +55,9 @@ private:
   bool is_rot_y_;
   bool is_rot_z_;
 
-private:
   CButton cb_rot_x_;
   CButton cb_rot_y_;
   CButton cb_rot_z_;
-public:
-  CDialogBar *GetDocument();
-  CCad_ShowView *GetCadShowView();
-  virtual void OnInitialUpdate();
-  void SetStatusSpeedBar();
-protected:
-  afx_msg void OnSize(UINT nType, int cx, int cy);
-  afx_msg void OnPaint();
-  afx_msg void OnLButtonUp(UINT nFlags, CPoint point);
-  afx_msg void OnBnClickedRadioLineCad();
-  afx_msg void OnBnClickedRadioWireFrameCad();
-  afx_msg void OnBnClickedRadioSolidCad();
-  afx_msg void OnBnClickeCheckboxRotation();
-  afx_msg void OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar);
-public:
-  afx_msg void OnBnClickedRotateX();
-  afx_msg void OnBnClickedRotateY();
-  afx_msg void OnBnClickedRotateZ();
-
 };
 
 
