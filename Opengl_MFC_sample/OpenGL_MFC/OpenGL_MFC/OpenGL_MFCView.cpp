@@ -17,6 +17,8 @@
 #endif
 
 
+#define LENGTH_AXIS 100000
+
 // COpenGL_MFCView
 
 IMPLEMENT_DYNCREATE(COpenGL_MFCView, CView)
@@ -45,12 +47,21 @@ END_MESSAGE_MAP()
 COpenGL_MFCView::COpenGL_MFCView():
   x_position_(0.0f),
   y_position_(0.0f),
-  value_zoom_(0.0f),
-  angle_x_(0.0f),
-  angle_y_(0.0f)
+  angle_x_(-60.0f),
+  angle_y_(0.0f),
+  angle_z_(-135.0f),
+  angle_x_ob_(-60.0f),
+  angle_y_ob_(0.0f),
+  angle_z_ob_(-135.0f)
 {
 	// TODO: add construction code here
-
+  m_OrthoRangeLeft = -1.5f;
+	m_OrthoRangeRight = 1.5f;
+	m_OrthoRangeBottom = -1.5f;
+	m_OrthoRangeTop = 1.5f;
+	m_OrthoRangeNear = -50.0f;
+	m_OrthoRangeFar = 50.0f;
+  m_scaling = 0.25f;
 }
 
 COpenGL_MFCView::~COpenGL_MFCView()
@@ -100,6 +111,8 @@ BOOL COpenGL_MFCView::InitializeOpenGL() {
 
   //Enable Depth Testing
   ::glEnable(GL_DEPTH_TEST);
+
+  listId_ = MakeObject();
 }
 
 BOOL COpenGL_MFCView::SetupPixelFormat() {
@@ -150,11 +163,15 @@ void COpenGL_MFCView::OnSize(UINT nType, int cx, int cy) {
   ::glMatrixMode(GL_PROJECTION);
   ::glLoadIdentity();
   // select the viewing volume
-  ::gluPerspective(45.0f, aspect_ratio, .01f, 200.0f);
+  //::gluPerspective(45.0f, aspect_ratio, .01f, 200.0f);
+    glOrtho(m_OrthoRangeLeft * aspect_ratio,
+            m_OrthoRangeRight * aspect_ratio,
+		        m_OrthoRangeBottom, m_OrthoRangeTop,
+		        m_OrthoRangeNear, m_OrthoRangeFar);
+
   // switch back to the modelview matrix and clear it
   ::glMatrixMode(GL_MODELVIEW);
   ::glLoadIdentity();
-  gluLookAt (0.0, 0.0, 10.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
 }
 
 
@@ -211,22 +228,24 @@ void COpenGL_MFCView::OnFilePrintPreview()
 	AFXPrintPreview(this);
 #endif
 }
+#ifdef USE_FUNCTION_PRINT
+BOOL COpenGL_MFCView::OnPreparePrinting(CPrintInfo* pInfo)
+{
+	// default preparation
+	return DoPreparePrinting(pInfo);
+}
 
-//BOOL COpenGL_MFCView::OnPreparePrinting(CPrintInfo* pInfo)
-//{
-//	// default preparation
-//	return DoPreparePrinting(pInfo);
-//}
+void COpenGL_MFCView::OnBeginPrinting(CDC* /*pDC*/, CPrintInfo* /*pInfo*/)
+{
+	// TODO: add extra initialization before printing
+}
 
-//void COpenGL_MFCView::OnBeginPrinting(CDC* /*pDC*/, CPrintInfo* /*pInfo*/)
-//{
-//	// TODO: add extra initialization before printing
-//}
-//
-//void COpenGL_MFCView::OnEndPrinting(CDC* /*pDC*/, CPrintInfo* /*pInfo*/)
-//{
-//	// TODO: add cleanup after printing
-//}
+void COpenGL_MFCView::OnEndPrinting(CDC* /*pDC*/, CPrintInfo* /*pInfo*/)
+{
+	// TODO: add cleanup after printing
+}
+
+#endif //USE_FUNCTION_PRINT
 
 void COpenGL_MFCView::OnContextMenu(CWnd* /* pWnd */, CPoint point)
 {
@@ -258,7 +277,7 @@ COpenGL_MFCDoc* COpenGL_MFCView::GetDocument() const // non-debug version is inl
 
 // COpenGL_MFCView message handlers
 
-/*************************************************** new implement***************************************************************/
+/*************************************************** new implement************/
 
 void COpenGL_MFCView::OnRButtonUp(UINT nFlags, CPoint point)
 {
@@ -290,7 +309,9 @@ void COpenGL_MFCView::OnMouseMove(UINT nFlags, CPoint point) {
   if (GetCapture() == this) {
     //Increment the object rotation angles
     angle_x_ += (point.y - mouse_down_point_.y)/3.6;
-    angle_y_ += (point.x - mouse_down_point_.x)/3.6;
+    angle_z_ += (point.x - mouse_down_point_.x)/3.6;
+    angle_x_ob_ = angle_x_;
+    angle_z_ob_ = angle_z_;
       //Redraw the view
     InvalidateRect(NULL, FALSE);
       //Set the mouse point
@@ -301,11 +322,11 @@ void COpenGL_MFCView::OnMouseMove(UINT nFlags, CPoint point) {
 BOOL COpenGL_MFCView::OnMouseWheel(UINT nFlags, short zDetal, CPoint point) {
   BOOL ret = FALSE ;
   if (zDetal >=0) {
-    value_zoom_ = value_zoom_ + 0.5f;
+    m_scaling *= 1.15f;;
     ret = TRUE ;
   }
   else {
-    value_zoom_ = value_zoom_ - 0.5f;
+    m_scaling /= 1.15f;
     ret = TRUE ;
   }
   InvalidateRect(NULL,FALSE);
@@ -320,32 +341,94 @@ void COpenGL_MFCView::RenderScene () {
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
   // lay ve ma tran thuc
   glLoadIdentity();
-  gluLookAt(0.0, 1.0f, 10.0f, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
+  //gluLookAt(0.0, 1.0f, 10.0f, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
+  glPushMatrix();
+  glTranslatef(-2.75, -1.25, 0.0f);
+  glRotatef(angle_x_, 1.0f, 0.0f, 0.0f);
+  glRotatef(angle_y_, 0.0f, 1.0f, 0.0f);
+  glRotatef(angle_z_, 0.0f, 0.0f, 1.0f);
+  DrawCoordinate();
+  glPopMatrix();
 
-  glTranslatef(x_position_, y_position_, value_zoom_ - 10.0f);
-  glRotatef(angle_x_ + 45.0f, 1.0f, 0.0f, 0.0f);
-  glRotatef(angle_y_ - 45.0f, 0.0f, 1.0f, 0.0f);
-  
+  glTranslatef(x_position_, y_position_, 0.0f);
+  glRotatef(angle_x_ob_, 1.0f, 0.0f, 0.0f);
+  glRotatef(angle_y_ob_, 0.0f, 1.0f, 0.0f);
+  glRotatef(angle_z_ob_, 0.0f, 0.0f, 1.0f);
+
+  glScalef(m_scaling, m_scaling, m_scaling);
+
+  OnEnableLight();      // implement lighting 
+  glCallList(listId_);  // sphere is create and is called at OnCreate
+  OnDisableLight();     // disable lighting
+  glPopMatrix();        // come back first postion
+}
+
+void COpenGL_MFCView::DrawCoordinate() {
   // Draw coordinate
   glColor3f(1.0f, 0.0f, 0.0f);
   glLineWidth(2.0f);
   glBegin(GL_LINES);
-  glVertex3f(10.0f, 0.0f, 0.0f);
-  glVertex3f(0.0f, 0.0f, 0.0f);
+  glVertex3f(LENGTH_AXIS, 0.0f, 0.0f);
+  glVertex3f(-1*LENGTH_AXIS, 0.0f, 0.0f);
   glEnd();
 
   glColor3f(0.0f, 1.0f, 0.0f);
   glLineWidth(2.0f);
   glBegin(GL_LINES);
-  glVertex3f(0.0f, 0.0f, 0.0f);
-  glVertex3f(0.0f, 10.0f, 0.0f);
+  glVertex3f(0.0f, LENGTH_AXIS, 0.0f);
+  glVertex3f(0.0f, -1*LENGTH_AXIS, 0.0f);
   glEnd();
 
   glColor3f(0.0f, 0.0f, 1.0f);
   glLineWidth(2.0f);
   glBegin(GL_LINES);
-  glVertex3f(0.0f, 0.0f, 0.0f);
-  glVertex3f(0.0f, 0.0f, 10.0f);
+  glVertex3f(0.0f, 0.0, LENGTH_AXIS);
+  glVertex3f(0.0f, 0.0f, -1*LENGTH_AXIS);
   glEnd();
 }
 
+void COpenGL_MFCView::OnEnableLight() {
+  GLfloat light_ambient[] = {5.0f, 5.0f, 5.0f, 0.0f};
+  glLightfv(GL_LIGHT0, GL_POSITION, light_ambient);
+
+#ifdef DONT_USE_LIGHT_diff_SPEC
+  GLfloat light_diff[] = {.9f, .9f, .9f, 1.0f};
+  GLfloat lightK_specular[] = {1, 1, 1, 1};
+  glLightfv(GL_LIGHT0, GL_DIFFUSE, light_diff);
+  glLightfv(GL_LIGHT0, GL_SPECULAR, lightK_specular);
+#endif //DONT_USE_LIGHT_diff_SPEC
+
+  //glShadeModel(GL_SMOOTH);
+  glEnable(GL_LIGHTING);
+  glEnable(GL_LIGHT0); 
+  glEnable(GL_CULL_FACE);
+  glEnable(GL_NORMALIZE);
+  glEnable(GL_DEPTH_TEST);
+  // set material for sphere
+  GLfloat mat_ambient [] = {0.8, 0.8, 0.0, 1.0};
+  glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, mat_ambient);
+
+#ifdef DONT_USE_DIF_SPEC_SHI
+  GLfloat mat_diffuse [] = {1.0, 1.0, 1.0, 1.0};
+  GLfloat mat_specular [] = {1.0, 1.0, 1.0, 1.0};
+  GLfloat mat_shininess [] = {50.0};
+  glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, mat_diffuse);
+  glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, mat_specular);
+  glMaterialfv(GL_FRONT_AND_BACK, GL_SHININESS, mat_shininess);
+#endif //DONT_USE_DIF_SPEC_SHI
+}
+
+void COpenGL_MFCView::OnDisableLight() {
+  glDisable(GL_LIGHTING);
+  glDisable(GL_DEPTH_TEST);
+  glDisable(GL_CULL_FACE);
+}
+
+int COpenGL_MFCView::MakeObject() {
+  GLuint id = glGenLists(1);  // make list to use CallList
+  glNewList(id, GL_COMPILE);
+  // Function draw object is called at here
+  glutSolidCone(1.0, 5.0, 16, 100);
+  glEndList();
+  return id;
+}

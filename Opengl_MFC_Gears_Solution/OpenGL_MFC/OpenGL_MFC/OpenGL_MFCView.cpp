@@ -446,8 +446,6 @@ int COpenGL_MFCView::OnCreateGears() {
   GLuint id = glGenLists(1);  // make list to use CallList
   glNewList(id, GL_COMPILE);
   //glBindTexture(GL_TEXTURE_2D, sphere_tex);
-  glRotatef(-90.0f, 1.0f, 0.0f, 0.0f);
-  glRotatef(0.0f, 0.0f, 1.0f, 0.0f);
   DrawGears(1.0, 4.0, 1.0, 20, 0.7);
   glEndList();
   return id;
