@@ -49,12 +49,12 @@ COpenGL_MFCView::COpenGL_MFCView():
   x_position_(0.0f),
   y_position_(0.0f),
   value_zoom_(0.0f),
-  angle_x_(0.0f),
+  angle_x_(-60.0f),
   angle_y_(0.0f),
-  angle_z_(0.0f),
-  angle_x_ea_(0.0f),
+  angle_z_(-135.0f),
+  angle_x_ea_(-60.0f),
   angle_y_ea_(0.0f),
-  angle_z_ea_(0.0f)
+  angle_z_ea_(-135.0f)
 {
 	// TODO: add construction code here
   m_OrthoRangeLeft = -1.5f;
@@ -312,9 +312,9 @@ void COpenGL_MFCView::OnMouseMove(UINT nFlags, CPoint point) {
   if (GetCapture() == this) {
     //Increment the object rotation angles
     angle_x_ += (point.y - mouse_down_point_.y)/3.6;
-    angle_y_ += (point.x - mouse_down_point_.x)/3.6;
+    angle_z_ += (point.x - mouse_down_point_.x)/3.6;
     angle_x_ea_ += (point.y - mouse_down_point_.y)/3.6;
-    angle_y_ea_ += (point.x - mouse_down_point_.x)/3.6;
+    angle_z_ea_ += (point.x - mouse_down_point_.x)/3.6;
       //Redraw the view
     InvalidateRect(NULL, FALSE);
       //Set the mouse point
@@ -354,7 +354,7 @@ void COpenGL_MFCView::OnEnableLight() {
   glEnable(GL_NORMALIZE);
   glEnable(GL_DEPTH_TEST);
   // set material for sphere
-  GLfloat mat_ambient [] = {0.8, 0.1, 0.8, 1.0};
+  GLfloat mat_ambient [] = {0.8, 0.8, 0.0, 1.0};
   GLfloat mat_diffuse [] = {1.0, 1.0, 1.0, 1.0};
   GLfloat mat_specular [] = {1.0, 1.0, 1.0, 1.0};
   GLfloat mat_shininess [] = {50.0};
@@ -397,9 +397,9 @@ void COpenGL_MFCView::RenderScene () {
   glPopMatrix();        // come back first postion
 
   // create animation rotate for earth
-  angle_y_ea_ += 0.1;
-  if (angle_y_ea_ >= 360.0f) {
-    angle_y_ea_ = 0.0;
+  angle_x_ea_ += 0.1;
+  if (angle_x_ea_ >= 360.0f) {
+    angle_x_ea_ = 0.0;
   }
   InvalidateRect(FALSE);
 }
