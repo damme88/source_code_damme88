@@ -11,13 +11,11 @@
 
 #include "OpenGL_MFCDoc.h"
 #include "OpenGL_MFCView.h"
-
+#include "HandleBitmap.h"
+#include <math.h>
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
-
-
-#define LENGTH_AXIS 100000
 
 // COpenGL_MFCView
 
@@ -47,21 +45,21 @@ END_MESSAGE_MAP()
 COpenGL_MFCView::COpenGL_MFCView():
   x_position_(0.0f),
   y_position_(0.0f),
-  angle_x_(-60.0f),
-  angle_y_(0.0f),
-  angle_z_(-135.0f),
-  angle_x_ob_(-60.0f),
-  angle_y_ob_(0.0f),
-  angle_z_ob_(-135.0f)
+  angle_x_(30.0f),
+  angle_y_(-30.0f),
+  angle_z_(0.0f),
+  angle_x_ob_(30.0f),
+  angle_y_ob_(-30.0f),
+  angle_z_ob_(0.0f),
+  m_OrthoRangeLeft(-1.5f),
+	m_OrthoRangeRight(1.5f),
+	m_OrthoRangeBottom(-1.5f),
+	m_OrthoRangeTop(1.5f),
+	m_OrthoRangeNear(-50.0f),
+	m_OrthoRangeFar(50.0f),
+  m_scaling(0.05f)
 {
-	// TODO: add construction code here
-  m_OrthoRangeLeft = -1.5f;
-	m_OrthoRangeRight = 1.5f;
-	m_OrthoRangeBottom = -1.5f;
-	m_OrthoRangeTop = 1.5f;
-	m_OrthoRangeNear = -50.0f;
-	m_OrthoRangeFar = 50.0f;
-  m_scaling = 0.25f;
+
 }
 
 COpenGL_MFCView::~COpenGL_MFCView()
@@ -111,7 +109,8 @@ BOOL COpenGL_MFCView::InitializeOpenGL() {
 
   //Enable Depth Testing
   ::glEnable(GL_DEPTH_TEST);
-
+  image_data_ = LoadBitmapFile("terrain2.bmp", &bitmap_info_header_);
+  InitTerrain();
   listId_ = MakeObject();
 }
 
@@ -164,7 +163,7 @@ void COpenGL_MFCView::OnSize(UINT nType, int cx, int cy) {
   ::glLoadIdentity();
   // select the viewing volume
   //::gluPerspective(45.0f, aspect_ratio, .01f, 200.0f);
-    glOrtho(m_OrthoRangeLeft * aspect_ratio,
+   glOrtho(m_OrthoRangeLeft * aspect_ratio,
             m_OrthoRangeRight * aspect_ratio,
 		        m_OrthoRangeBottom, m_OrthoRangeTop,
 		        m_OrthoRangeNear, m_OrthoRangeFar);
@@ -309,24 +308,42 @@ void COpenGL_MFCView::OnMouseMove(UINT nFlags, CPoint point) {
   if (GetCapture() == this) {
     //Increment the object rotation angles
     angle_x_ += (point.y - mouse_down_point_.y)/3.6;
-    angle_z_ += (point.x - mouse_down_point_.x)/3.6;
-    angle_x_ob_ = angle_x_;
-    angle_z_ob_ = angle_z_;
+    angle_y_ += (point.x - mouse_down_point_.x)/3.6;
+    angle_x_ob_ += (point.y - mouse_down_point_.y)/3.6;;
+    angle_y_ob_ += (point.x - mouse_down_point_.x)/3.6;;
       //Redraw the view
     InvalidateRect(NULL, FALSE);
       //Set the mouse point
     mouse_down_point_ = point;
-  }
+#if 0
+  old_mouse_x_ = mouse_x_;
+  old_mouse_y_ = mouse_y_;
+  mouse_x_ = point.x;
+  mouse_y_ = point.y;
+
+  		if (mouse_y_ < 800)
+				mouse_y_ = 800;
+			if (mouse_y_ > 900)
+				mouse_y_ = 900;
+
+  if ((mouse_x_ - old_mouse_x_) > 0)
+    angle_ += 0.3f;
+  else
+    angle_ -= 0.3f;
+#else
+  int a = 5;
+#endif
+    }
+
 }
 
 BOOL COpenGL_MFCView::OnMouseWheel(UINT nFlags, short zDetal, CPoint point) {
   BOOL ret = FALSE ;
   if (zDetal >=0) {
-    m_scaling *= 1.15f;;
+    m_scaling *= 1.05f;;
     ret = TRUE ;
-  }
-  else {
-    m_scaling /= 1.15f;
+  } else {
+    m_scaling /= 1.05f;
     ret = TRUE ;
   }
   InvalidateRect(NULL,FALSE);
@@ -338,10 +355,8 @@ BOOL COpenGL_MFCView::OnMouseWheel(UINT nFlags, short zDetal, CPoint point) {
 
 void COpenGL_MFCView::RenderScene () {
    // clear hoan toan bo dem
-  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
-  // lay ve ma tran thuc
+  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
   glLoadIdentity();
-  //gluLookAt(0.0, 1.0f, 10.0f, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
   glPushMatrix();
   glTranslatef(-2.75, -1.25, 0.0f);
   glRotatef(angle_x_, 1.0f, 0.0f, 0.0f);
@@ -350,16 +365,16 @@ void COpenGL_MFCView::RenderScene () {
   DrawCoordinate();
   glPopMatrix();
 
-  glTranslatef(x_position_, y_position_, 0.0f);
+  glPushMatrix();
+  //gluLookAt(1.0, 0.0, 10.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
+  glTranslatef(x_position_ , y_position_ , 0.0f);
   glRotatef(angle_x_ob_, 1.0f, 0.0f, 0.0f);
   glRotatef(angle_y_ob_, 0.0f, 1.0f, 0.0f);
   glRotatef(angle_z_ob_, 0.0f, 0.0f, 1.0f);
-
   glScalef(m_scaling, m_scaling, m_scaling);
-
-  OnEnableLight();      // implement lighting 
+  //OnEnableLight();      // implement lighting 
   glCallList(listId_);  // sphere is create and is called at OnCreate
-  OnDisableLight();     // disable lighting
+  //OnDisableLight();     // disable lighting
   glPopMatrix();        // come back first postion
 }
 
@@ -404,9 +419,10 @@ void COpenGL_MFCView::OnEnableLight() {
   glEnable(GL_CULL_FACE);
   glEnable(GL_NORMALIZE);
   glEnable(GL_DEPTH_TEST);
+
   // set material for sphere
-  GLfloat mat_ambient [] = {0.8, 0.8, 0.0, 1.0};
-  glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, mat_ambient);
+  //GLfloat mat_ambient [] = {1.0, 1.0, 1.0, 1.0};
+  //glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, mat_ambient);
 
 #ifdef DONT_USE_DIF_SPEC_SHI
   GLfloat mat_diffuse [] = {1.0, 1.0, 1.0, 1.0};
@@ -428,7 +444,48 @@ int COpenGL_MFCView::MakeObject() {
   GLuint id = glGenLists(1);  // make list to use CallList
   glNewList(id, GL_COMPILE);
   // Function draw object is called at here
-  glutSolidCone(1.0, 5.0, 16, 100);
+  //glutSolidCone(1.0, 5.0, 16, 100);
+  DrawTerrain();
   glEndList();
   return id;
+}
+
+
+void COpenGL_MFCView::InitTerrain() {
+  for (int z = 0; z < MAP_LIMIT_Z; ++z) {
+    for (int x = 0; x < MAP_LIMIT_X; ++x) {
+      data_terrain_[x][z][0] = (float)x * MAP_SCALE;
+      data_terrain_[x][z][1] = (float)image_data_[(z * MAP_LIMIT_Z + x) * 3];
+      data_terrain_[x][z][2] = (float)z * MAP_SCALE;
+    }
+  }
+}
+
+void COpenGL_MFCView::DrawTerrain() {
+  for (int z = 0; z < MAP_LIMIT_Z - 1; ++z) {
+    glBegin(GL_TRIANGLE_STRIP);
+    for (int x = 0; x < MAP_LIMIT_X -1; ++x) {
+      glColor3f(data_terrain_[x][z][1]/255.0f, data_terrain_[x][z][1]/255.0f, data_terrain_[x][z][1]/255.0f);
+			glTexCoord2f(0.0f, 0.0f);
+			glVertex3f(data_terrain_[x][z][0], data_terrain_[x][z][1], data_terrain_[x][z][2]);
+
+			// draw vertex 1
+			glTexCoord2f(1.0f, 0.0f);
+			glColor3f(data_terrain_[x+1][z][1]/255.0f, data_terrain_[x+1][z][1]/255.0f, data_terrain_[x+1][z][1]/255.0f);
+			glVertex3f(data_terrain_[x+1][z][0], data_terrain_[x+1][z][1], data_terrain_[x+1][z][2]);
+
+			// draw vertex 2
+			glTexCoord2f(0.0f, 1.0f);
+			glColor3f(data_terrain_[x][z+1][1]/255.0f, data_terrain_[x][z+1][1]/255.0f, data_terrain_[x][z+1][1]/255.0f);
+			glVertex3f(data_terrain_[x][z+1][0], data_terrain_[x][z+1][1], data_terrain_[x][z+1][2]);
+
+			// draw vertex 3
+			glColor3f(data_terrain_[x+1][z+1][1]/255.0f, data_terrain_[x+1][z+1][1]/255.0f, data_terrain_[x+1][z+1][1]/255.0f);
+			glTexCoord2f(1.0f, 1.0f);
+			glVertex3f(data_terrain_[x+1][z+1][0], data_terrain_[x+1][z+1][1], data_terrain_[x+1][z+1][2]);
+    }
+    glEnd();
+  }
+  glFlush();
+	//SwapBuffers(g_HDC);			// bring backbuffer to foreground
 }

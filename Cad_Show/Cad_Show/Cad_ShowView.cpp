@@ -411,8 +411,6 @@ void CCad_ShowView::RenderScene () {
 	glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-  OnDrawCoordinateBig();
   glPopMatrix();
 
   glLoadIdentity();
@@ -420,9 +418,8 @@ void CCad_ShowView::RenderScene () {
   glRotatef(angle_x_cad_, 1.0f, 0.0f, 0.0f);
 	glRotatef(angle_y_cad_, 0.0f, 1.0f, 0.0f);
   glRotatef(angle_z_cad_, 0.0f, 0.0f, 1.0f);
-
   glScalef(m_scaling, m_scaling, m_scaling);
-
+  OnDrawCoordinateBig();
   SetUpLight();
   DrawCad();
   DisableSetupLigting();

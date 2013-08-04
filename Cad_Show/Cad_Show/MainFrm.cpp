@@ -142,14 +142,14 @@ BOOL CMainFrame::OnCreateClient(LPCREATESTRUCT lp, CCreateContext* pContext) {
 
     // First splitter pane
   if (!m_wndSplitter.CreateView(0, 0,
-    RUNTIME_CLASS(DialogBar), CSize(230, 500), pContext))
+    RUNTIME_CLASS(DialogBar), CSize(300, 500), pContext))
   {
 		TRACE("Failed to create command view pane\n");
     return FALSE;
   }
 
   if (!m_wndSplitter.CreateView(0, 1,
-      RUNTIME_CLASS(CCad_ShowView), CSize(280, 500), pContext)) {
+      RUNTIME_CLASS(CCad_ShowView), CSize(300, 500), pContext)) {
     TRACE("Failed to create preview pane\n");
     return FALSE;
   }

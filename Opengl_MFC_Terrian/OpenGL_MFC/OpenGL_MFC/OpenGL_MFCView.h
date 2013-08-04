@@ -3,6 +3,14 @@
 //
 
 #pragma once
+#include "Resource.h"
+
+#define BITMAP_ID 0x4D42
+#define LENGTH_AXIS 100000
+#define MAP_LIMIT_X 32
+#define MAP_LIMIT_Z 32
+#define MAP_SCALE 15.0f
+#define PI 3.14
 
 
 class COpenGL_MFCView : public CView
@@ -28,6 +36,8 @@ public:
   void OnEnableLight();
   void OnDisableLight();
   int MakeObject();
+  void DrawTerrain();
+  void InitTerrain();
 // Overrides
 public:
 	virtual void OnDraw(CDC* pDC);  // overridden to draw this view
@@ -70,7 +80,6 @@ private:
   GLfloat angle_x_ob_;
 	GLfloat angle_y_ob_;
   GLfloat angle_z_ob_;
-
   GLuint listId_;
 
   GLfloat m_OrthoRangeLeft;
@@ -81,6 +90,11 @@ private:
 	GLfloat m_OrthoRangeFar;
 
   GLfloat m_scaling;
+
+  // array with three direct which store data to render terrain
+  GLfloat data_terrain_[MAP_LIMIT_X][MAP_LIMIT_Z][3];
+  unsigned char* image_data_;
+  BITMAPINFOHEADER	bitmap_info_header_;
 };
 
 #ifndef _DEBUG  // debug version in OpenGL_MFCView.cpp
