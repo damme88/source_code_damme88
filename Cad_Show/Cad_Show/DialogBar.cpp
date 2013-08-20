@@ -134,7 +134,7 @@ void DialogBar::OnLButtonUp(UINT nFlags, CPoint point) {
 CCad_ShowView *DialogBar::GetCadShowView() {
   CCad_ShowApp *pApp= (CCad_ShowApp*)AfxGetApp();
   CMainFrame *pMainFrame = (CMainFrame*)pApp->m_pMainWnd;
-  CCad_ShowView *pView = reinterpret_cast<CCad_ShowView*>(pMainFrame->m_wndSplitter.GetPane(0, 1));
+  CCad_ShowView *pView = reinterpret_cast<CCad_ShowView*>(pMainFrame->info_splitter_.GetPane(0, 0));
   return pView;
 }
 

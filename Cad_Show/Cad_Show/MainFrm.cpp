@@ -57,7 +57,7 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 
 	//if (!m_wndMenuBar.Create(this))
 	//{
-	//	TRACE0("Failed to create menubar\n");
+	//	TRACE0("Failed to create menu bar\n");
 	//	return -1;      // fail to create
 	//}
 	//m_wndMenuBar.SetPaneStyle(m_wndMenuBar.GetPaneStyle() | CBRS_SIZE_DYNAMIC | CBRS_TOOLTIPS | CBRS_FLYBY);
@@ -81,7 +81,7 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	EnableDocking(CBRS_ALIGN_ANY);
 	DockPane(&m_wndToolBar);
 
-	// Allow user-defined toolbars operations:
+	// Allow user-defined tool bars operations:
 	InitUserToolbars(NULL, uiFirstUserToolBarId, uiLastUserToolBarId);
 
   if (!view_toolbar_.CreateEx(this, TBSTYLE_FLAT, WS_CHILD | WS_VISIBLE |
@@ -135,27 +135,45 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 }
 
 BOOL CMainFrame::OnCreateClient(LPCREATESTRUCT lp, CCreateContext* pContext) {
-  if (!m_wndSplitter.CreateStatic(this, 1, 2,WS_CHILD | WS_VISIBLE)) {
+  if (!m_wndSplitter.CreateStatic(this, 1, 2, WS_CHILD | WS_VISIBLE)) {
 		TRACE("Failed to CreateStaticSplitter\n");
 		return FALSE;
 	}
 
-    // First splitter pane
+ // CRect rect;
+ // GetClientRect(rect);
+ // m_wndSplitter.SetColumnInfo(0, rect.Width()*1/4, 0);
+
   if (!m_wndSplitter.CreateView(0, 0,
-    RUNTIME_CLASS(DialogBar), CSize(300, 500), pContext))
+    RUNTIME_CLASS(DialogBar), CSize(200, 500), pContext))
   {
 		TRACE("Failed to create command view pane\n");
     return FALSE;
   }
 
-  if (!m_wndSplitter.CreateView(0, 1,
-      RUNTIME_CLASS(CCad_ShowView), CSize(300, 500), pContext)) {
+  //m_wndSplitter.SetColumnInfo(1, rect.Width()*3/4, 0);
+  if(!info_splitter_.CreateStatic(&m_wndSplitter, 2, 1, WS_CHILD | WS_VISIBLE,
+                                    m_wndSplitter.IdFromRowCol(0, 1))) {
+    TRACE0("Failed to create static for info bar");
+    return FALSE;
+  }
+  if (!info_splitter_.CreateView(0, 0,
+                                 RUNTIME_CLASS(CCad_ShowView),
+                                 CSize(800, 500), pContext)) {
     TRACE("Failed to create preview pane\n");
+    return FALSE;
+  }
+  if (!info_splitter_.CreateView(1, 0,
+                                 RUNTIME_CLASS(InfoBar),
+                                 CSize(150, 500), pContext)) {
+    TRACE0("Failed to create view infor");
     return FALSE;
   }
 
   dialog_view_ = reinterpret_cast<DialogBar*>(m_wndSplitter.GetPane(0, 0));
-  cad_show_view_ = reinterpret_cast<CCad_ShowView*>(m_wndSplitter.GetPane(0, 1));
+  cad_show_view_ = reinterpret_cast<CCad_ShowView*>(info_splitter_.GetPane(0, 0));
+  info_view_ = reinterpret_cast<InfoBar*>(info_splitter_.GetPane(1, 0));
+  cad_show_view_->SetInforViewHandle(info_view_);
   return TRUE;
 }
 BOOL CMainFrame::PreCreateWindow(CREATESTRUCT& cs)

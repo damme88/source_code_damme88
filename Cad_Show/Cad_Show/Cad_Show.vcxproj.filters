@@ -16,6 +16,9 @@
     <Filter Include="Source Files\Dialog_Bar">
       <UniqueIdentifier>{9fb8d8b1-ac20-49aa-b1ea-7cdff4b5c17d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\InfoBar">
+      <UniqueIdentifier>{6e163501-2375-444f-9333-59dbbfe2b90f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="ReadMe.txt" />
@@ -69,6 +72,9 @@
     <ClInclude Include="DialogBar.h">
       <Filter>Source Files\Dialog_Bar</Filter>
     </ClInclude>
+    <ClInclude Include="InforBar.h">
+      <Filter>Source Files\InfoBar</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Cad_Show.cpp">
@@ -88,6 +94,9 @@
     </ClCompile>
     <ClCompile Include="DialogBar.cpp">
       <Filter>Source Files\Dialog_Bar</Filter>
+    </ClCompile>
+    <ClCompile Include="InforBar.cpp">
+      <Filter>Source Files\InfoBar</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

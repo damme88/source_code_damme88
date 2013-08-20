@@ -16,6 +16,8 @@
 #define new DEBUG_NEW
 #endif
 
+#define M_PI 3.14
+
 extern Triangle GLPoint ;
 // CCad_ShowView
 
@@ -53,13 +55,16 @@ END_MESSAGE_MAP()
 // CCad_ShowView construction/destruction
 
 CCad_ShowView::CCad_ShowView() :
-  angle_x_(-60.0),
+  angle_x_(0.0),
   angle_y_(0.0),
-  angle_z_(-135.0),
+  angle_z_(0.0),
   m_scaling(1.0),
-  angle_x_cad_(-60.0),
+  angle_x_cad_(0.0),
   angle_y_cad_(0.0),
-  angle_z_cad_(-135.0),
+  angle_z_cad_(0.0),
+  angle_x_big_cdn_(0.0),
+  angle_y_big_cdn_(0.0),
+  angle_z_big_cdn_(0.0),
   x_position_(0.0),
   y_position_(0.0),
   m_nFontOffset(0),
@@ -75,15 +80,25 @@ CCad_ShowView::CCad_ShowView() :
   is_rot_x_(false),
   is_rot_y_(false),
   is_rot_z_(false),
+  eye_x_ (0.0f),
+  eye_y_(0.0f),
+  eye_z_(0.0f),
+  cen_x_(0.0f),
+  cen_y_(0.0f),
+  cen_z_(0.0f),
+  up_x_(0.0f),
+  up_y_(0.0f),
+  up_z_(1.0f),
+  lx_(0.0f),
+  ly_(0.0f),
+  lz_(0.0),
   enable_big_coordinate_(false),
   is_check_coordiante_button_(false)
 {
-  m_OrthoRangeLeft = -1.5f;
-	m_OrthoRangeRight = 1.5f;
-	m_OrthoRangeBottom = -1.5f;
-	m_OrthoRangeTop = 1.5f;
-	m_OrthoRangeNear = -50.0f;
-	m_OrthoRangeFar = 50.0f;
+  rendering_rate_ = 2.0f;
+  theta_ = 135.0f;
+  phi_ = 45.0f;
+  infor_view_ = NULL;
 }
 
 CCad_ShowView::~CCad_ShowView()
@@ -139,66 +154,99 @@ BOOL CCad_ShowView::InitializeOpenGL() {
 
 
 BOOL CCad_ShowView::SetupPixelFormat() {
-	static PIXELFORMATDESCRIPTOR pfd = 
-    {
-		sizeof(PIXELFORMATDESCRIPTOR),    // size of this pfd
-		1,                                // version number
-		PFD_DRAW_TO_WINDOW |              // support window
-		PFD_SUPPORT_OPENGL |              // support OpenGL
-		PFD_DOUBLEBUFFER,                 // double buffered
-		PFD_TYPE_RGBA,                    // RGBA type
-		32,                               // 32-bit color depth
-		8, 16, 8, 8, 8, 0,                 // color bits ignored
-		0,                                // no alpha buffer
-		0,                                // shift bit ignored
-		64,                                // no accumulation buffer
-		16, 16, 16, 0,                       // accumulation bits ignored
-		32,                               // 32-bit z-buffer
-		8,
-		0,                                // no auxiliary buffer
-		PFD_MAIN_PLANE,                   // main layer
-		0,                                // reserved
-		0, 0, 0                           // layer masks ignored
-    };
-	int m_nPixelFormat = ::ChoosePixelFormat(m_pDC->GetSafeHdc(), &pfd);
-  if (m_nPixelFormat == 0) {
-        return FALSE;
-  }
-	if (::SetPixelFormat(m_pDC->GetSafeHdc(), m_nPixelFormat, &pfd) == FALSE) {
-    return FALSE;
-  }
-  return TRUE;
+  int nPixelFormat;
+  CDC *dc = GetDC();
+  DWORD dwflag;
+  dwflag = PFD_DRAW_TO_WINDOW |           // Draw to window (not to bitmap)
+    PFD_SUPPORT_OPENGL |           // Support OpenGL calls in window
+    PFD_GENERIC_ACCELERATED|
+    /* PFD_GENERIC_FORMAT|*/
+    /*PFD_DEPTH_DONTCARE|*/
+    PFD_DOUBLEBUFFER,              // Double-buffered mode
+    PFD_TYPE_RGBA;                 // RGBA color mode
+
+  PIXELFORMATDESCRIPTOR pfd = {
+    sizeof(PIXELFORMATDESCRIPTOR), // Size of this structure
+    1,                             // Version of this structure
+    dwflag,
+    32,                            // Want 32-bit color
+    0,0,0,0,0,0,0,0,               // Ignore color bits setting
+    32,                            // Accum bits
+    0,0,0,0,                       // Ignore accum bits setting
+    32,                            // Size of depth buffer
+    0,                             // Not used here
+    0,                             // Not used here
+    PFD_MAIN_PLANE,                // Main Drawing Layer
+    0,                             // Not used here
+    0,0,0 };                       // Not used here
+
+    // Choose a pixel format that best matches that described in pfd
+    if( 0 == ( nPixelFormat = ::ChoosePixelFormat(dc->m_hDC, &pfd) ) ) {
+      //CommonUtils::Alert(IDS_CHOOSEPIXELFORMATFAILED);
+      AfxMessageBox(L"Choose pixel formal is failed");
+      return false;
+    }
+
+#ifdef _DEBUG
+    bool accel1 = false;
+    bool accel2 = false;
+    if(pfd.dwFlags & PFD_GENERIC_FORMAT){
+      accel1 = true;
+    }
+    if(pfd.dwFlags & PFD_GENERIC_ACCELERATED){
+      accel2 = true;
+    }
+    if(pfd.dwFlags & PFD_DEPTH_DONTCARE){
+      accel1 = true;
+    }
+#endif
+
+    // Set the pixel format for the device context
+    if( TRUE != ::SetPixelFormat(dc->m_hDC, nPixelFormat, &pfd) ) {
+      //CommonUtils::Alert(IDS_SETUPPIXELFORMATFAILED);
+      AfxMessageBox(L"Choose pixel formal is failed");
+      return false;
+    }
+    return true;
 }
 
 void CCad_ShowView::OnSize(UINT nType, int cx, int cy) {
   CView::OnSize(nType, cx, cy);
-	GLdouble aspect_ratio; 
+	GLdouble aspect_ratio;
 	if ( 0 >= cx || 0 >= cy ) 
     return;
 
-  //::gluOrtho2D(-10.0f, 10.0f, -10.0f, 10.0f); 
-  // select the full client area
+  //glViewport allow to select the full client area of window for opengl
   ::glViewport(0, 0, cx, cy);
+
   // compute the aspect ratio
   // this will keep all dimension scales equal
   aspect_ratio = (GLdouble)cx/(GLdouble)cy;
+  cx_ = cx;
+  cy_ = cy;
 
   // select the projection matrix and clear it
   ::glMatrixMode(GL_PROJECTION);
   ::glLoadIdentity();
   // select the viewing volume
   //::gluPerspective(45.0f, aspect_ratio, .01f, 200.0f);
-
-  glOrtho(m_OrthoRangeLeft * aspect_ratio, m_OrthoRangeRight * aspect_ratio,
-		m_OrthoRangeBottom, m_OrthoRangeTop,
-		m_OrthoRangeNear, m_OrthoRangeFar);
-
-  // switch back to the modelview matrix and clear it
+  SetViewFrustum();
+  // switch back to the model view matrix and clear it
   ::glMatrixMode(GL_MODELVIEW);
   ::glLoadIdentity();
-  //gluLookAt (0.0, 0.0, 10.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
 }
 
+
+void CCad_ShowView::SetViewFrustum() {
+  double left_ = -(double)cx_ *0.5/ rendering_rate_;
+  double right_ = (double)cx_ *0.5/ rendering_rate_;
+  double top_ = (double)cy_ *0.5/ rendering_rate_;
+  double bottom_ = -(double)cy_ *0.5/ rendering_rate_;
+
+  double zfar = 2000/rendering_rate_;
+  zfar = max(2000, rendering_rate_);
+  glOrtho(left_, right_, bottom_, top_, -zfar, zfar);
+}
 
 BOOL CCad_ShowView::OnEraseBkgnd(CDC* pDC) {
     // TODO: Add your message handler code here and/or call default
@@ -224,6 +272,7 @@ void CCad_ShowView::OnDraw(CDC* /*pDC*/)
 	// TODO: add draw code for native data here
   RenderScene();
 	// Tell OpenGL to flush its pipeline
+   UpdateInfoToOutput();
   ::glFinish();
 	// Now Swap the buffers
   ::SwapBuffers( m_pDC->GetSafeHdc() );
@@ -289,22 +338,27 @@ void CCad_ShowView::OnMouseMove(UINT nFlags, CPoint point)
 {
   // TODO: Add your message handler code here and/or call default
   // Check if we have captured the mouse
+  CRect rect;
+  GetClientRect(rect);
   CView::OnMouseMove(nFlags, point);
   if (GetCapture() == this) {
     //Increment the object rotation angles
+#if 0
     angle_x_ += (point.y - mouse_down_point_.y)/3.6;
     angle_z_ += (point.x - mouse_down_point_.x)/3.6;
+
     angle_x_cad_ += (point.y - mouse_down_point_.y)/3.6;
     angle_z_cad_ += (point.x - mouse_down_point_.x)/3.6;
-      //Redraw the view
-    InvalidateRect(NULL, FALSE);
-      //Set the mouse point
-    mouse_down_point_ = point;
-  }
 
+    angle_x_big_cdn_ += (point.y - mouse_down_point_.y)/3.6;
+    angle_z_big_cdn_ += (point.x - mouse_down_point_.x)/3.6;
+#endif
+    CalculateRotatefAngle(point);
+  }
+  mouse_down_point_ = point;
   if (middle_down_) {
-    x_position_ -= (float)(middle_down_pos_.x -point.x)/100; 
-    y_position_ += (float)(middle_down_pos_.y -point.y)/100;
+    x_position_ -= (float)(middle_down_pos_.x -point.x); 
+    y_position_ += (float)(middle_down_pos_.y -point.y);
     middle_down_pos_.x = point.x;
     middle_down_pos_.y = point.y;
     SendMessage(WM_PAINT, 0, 0);
@@ -312,15 +366,36 @@ void CCad_ShowView::OnMouseMove(UINT nFlags, CPoint point)
   }
 }
 
+void CCad_ShowView::CalculateRotatefAngle(CPoint point) {
+  int ix = point.x - mouse_down_point_.x;
+  int iy = point.y - mouse_down_point_.y;
+  float fAngle;
+  if(abs(ix) > abs(iy)) {
+    fAngle = ix * 180.0f / cx_;
+    theta_ += fAngle;
+    for(;theta_ > 180; theta_ -= 360);
+    for(;theta_ < -180; theta_ += 360);
+  } else {
+    fAngle = iy * 180.0f / cy_;
+    phi_ += fAngle;
+    if(phi_ > 360)  phi_ -= 360;
+    if(phi_ < -360) phi_ += 360;
+  }
+  ::glMatrixMode( GL_MODELVIEW );
+  ::glLoadIdentity();
+}
+
+
+
 BOOL CCad_ShowView::OnMouseWheel(UINT nFlags, short zDelta, CPoint point)
 {
   BOOL ret = FALSE ;
   if (zDelta >=0) {
-    m_scaling *= 1.05f;
+    m_scaling *= 1.5f;
     ret = TRUE ;
   }
   else {
-    m_scaling /= 1.05f;
+    m_scaling /= 1.5f;
     ret = TRUE ;
   }
   InvalidateRect(NULL,FALSE);
@@ -365,13 +440,13 @@ void CCad_ShowView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
         // TODO: Add your message handler code here and/or call default
         switch (nChar)
         {
-            case VK_UP:        y_position_ = y_position_ + 0.05f;
+            case VK_UP:        y_position_ = y_position_ + 5.0f;
                                           break;
-            case VK_DOWN:      y_position_ = y_position_ - 0.05f;
+            case VK_DOWN:      y_position_ = y_position_ - 5.0f;
                                           break;
-            case VK_LEFT:      x_position_ = x_position_ - 0.05f;
+            case VK_LEFT:      x_position_ = x_position_ - 5.0f;
                                           break;
-            case VK_RIGHT:     x_position_ = x_position_ + 0.05f;
+            case VK_RIGHT:     x_position_ = x_position_ + 5.0f;
                                           break;
         } 
         InvalidateRect(NULL,FALSE);
@@ -381,8 +456,12 @@ void CCad_ShowView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 void CCad_ShowView::RenderScene () {
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
   glLoadIdentity();
-  glPushMatrix();
 
+  gluLookAt(eye_x_ + sin((theta_*M_PI)/180.0)*cos((phi_*M_PI)/180.0),
+    eye_y_ + cos((theta_*M_PI)/180.0)*cos((phi_*M_PI)/180.0),
+    eye_z_ + sin((phi_*M_PI)/180.0),
+    eye_x_, eye_y_, eye_z_,
+    up_x_, up_y_, up_z_);
   // clear AntiAliasing
   glEnable(GL_POINT_SMOOTH);
 	glHint(GL_POINT_SMOOTH_HINT, GL_NICEST);
@@ -391,50 +470,51 @@ void CCad_ShowView::RenderScene () {
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-  glTranslatef(-2.25, -1.25, 0.0f);
-  glRotatef(angle_x_, 1.0f, 0.0f, 0.0f); 
-	glRotatef(angle_y_, 0.0f, 1.0f, 0.0f); 
-  glRotatef(angle_z_, 0.0f, 0.0f, 1.0f);
-  //PrepareAxisLabel();  // don't use draw Label Axis
-  glCallList(m_nAxisesList);
-  glPopMatrix();
+  RenderSmallCoordinate();
  
   glPushMatrix();
-  glRotatef(angle_x_, 1.0f, 0.0f, 0.0f); 
-	glRotatef(angle_y_, 0.0f, 1.0f, 0.0f); 
-  glRotatef(angle_z_, 0.0f, 0.0f, 1.0f);
+  glTranslatef(x_position_, 0.0f, y_position_);
+  glScalef(m_scaling, m_scaling, m_scaling);
 
-    // clear AntiAliasing
-  glEnable(GL_POINT_SMOOTH);
-	glHint(GL_POINT_SMOOTH_HINT, GL_NICEST);
-	glEnable(GL_LINE_SMOOTH);
-	glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
-	glEnable(GL_BLEND);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+  glRotatef(angle_x_big_cdn_, 1.0f, 0.0f, 0.0f);
+  glRotatef(angle_y_big_cdn_, 0.0f, 1.0f, 0.0f);
+  glRotatef(angle_z_big_cdn_, 0.0f, 0.0f, 1.0f);
+  OnDrawCoordinateBig();
   glPopMatrix();
-
-  glLoadIdentity();
-  glTranslatef(x_position_, y_position_, 0.0f);
+  
+  glPushMatrix();
+  glTranslatef(x_position_, 0.0, y_position_);
+  glScalef(m_scaling, m_scaling, m_scaling);
   glRotatef(angle_x_cad_, 1.0f, 0.0f, 0.0f);
 	glRotatef(angle_y_cad_, 0.0f, 1.0f, 0.0f);
   glRotatef(angle_z_cad_, 0.0f, 0.0f, 1.0f);
-  glScalef(m_scaling, m_scaling, m_scaling);
-  OnDrawCoordinateBig();
   SetUpLight();
   DrawCad();
   DisableSetupLigting();
+  glPopMatrix();
+}
+
+void CCad_ShowView::UpdateInfoToOutput() {
+  infor_view_->OnUpdateAngleAxis(theta_, phi_, 0.0);
+  infor_view_->OnUpdateValueCam(eye_x_ + sin((theta_*M_PI)/180.0)*cos((phi_*M_PI)/180.0),
+                                eye_y_ + cos((theta_*M_PI)/180.0)*cos((phi_*M_PI)/180.0),
+                                eye_z_ + sin((phi_*M_PI)/180.0),
+                                eye_x_, eye_y_, eye_z_,
+                                up_x_, up_y_, up_z_);
 }
 
 void CCad_ShowView::DrawCad() {
    if(theApp.GetStateDrawStl() == TRUE)
 	 {
-		 glColor3f(1.0f, 0.0f, 1.0f);
+		 glColor3f(1.0f, 1.0f, 1.0f);
      if (mode_cad_ == POINT_MODE_CAD) {
        glPolygonMode(GL_FRONT_AND_BACK, GL_POINT);
        glPointSize(4.0f);
+       DisableSetupLigting();
      } else if (mode_cad_ == WIRE_FRAME_MODE_CAD){
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
         glLineWidth(2.0f);
+        DisableSetupLigting();
      }
      else {
        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
@@ -537,6 +617,39 @@ void CCad_ShowView::DisableSetupLigting() {
   glDisable(GL_LIGHTING);
 }
 
+void CCad_ShowView::RenderSmallCoordinate() {
+
+  CRect rect;
+  GetClientRect(rect);
+  CPoint pt;
+  pt.x = 66;
+  pt.y = rect.Height() - 66;
+
+  GLdouble model_view[16];
+  GLdouble projection[16];
+  GLint viewport[4];
+  glGetDoublev(GL_MODELVIEW_MATRIX, model_view);
+  glGetDoublev(GL_PROJECTION_MATRIX, projection);
+  glGetIntegerv(GL_VIEWPORT, viewport);
+
+  GLfloat winx = (float)pt.x;
+  GLfloat winy = (float)viewport[3] - (float)pt.y;
+  GLfloat winz = 0.01;
+  //glReadPixels(pt.x, int(winy), 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT, &winz);
+
+  GLdouble glpt[3] = {0.0, 0.0, 0.0};
+  gluUnProject(winx, winy, winz,
+               model_view, projection, viewport,
+               glpt, glpt + 1, glpt + 2);
+  glPushMatrix();
+  glTranslatef(glpt[0], glpt[1], glpt[2]);
+  glRotatef(angle_x_, 1.0f, 0.0f, 0.0f); 
+  glRotatef(angle_y_, 0.0f, 1.0f, 0.0f);
+  glRotatef(angle_z_, 0.0f, 0.0f, 1.0f);
+  glCallList(m_nAxisesList);
+  glPopMatrix();
+}
+
 void CCad_ShowView::OnDrawCoordinateBig() {
   if (enable_big_coordinate_ == true) {
     glLineWidth(1.0f);
@@ -586,44 +699,44 @@ void CCad_ShowView::BuildAxisesList()
 	glBegin(GL_LINES);
 	glColor3ub(255, 0, 0);
 	glVertex3f(0.0, 0.0, 0.0);
-	glVertex3f(0.3, 0.0, 0.0);
+	glVertex3f(30.0, 0.0, 0.0);
 
 	glColor3ub(0, 255, 0);      // make OY axis
 	glVertex3f(0.0, 0.0, 0.0);
-	glVertex3f(0.0, 0.3, 0.0);
+	glVertex3f(0.0, 30.0, 0.0);
 			
 	glColor3ub(0, 0, 255);     // make OZ axis
 	glVertex3f(0.0, 0.0, 0.0);
-	glVertex3f(0.0, 0.0, 0.3);
+	glVertex3f(0.0, 0.0, 30.0);
 	glEnd();
 	
 
 	glColor3ub(255, 255, 255);
-  DrawStringAt(0.4, 0.0, 0.0, "X");
-	DrawStringAt(0.0, 0.4, 0.0, "Y");
-	DrawStringAt(0.0, 0.0, 0.4, "Z");
+  DrawStringAt(40, 0.0, 0.0, "X");
+	DrawStringAt(0.0, 40, 0.0, "Y");
+	DrawStringAt(0.0, 0.0, 40, "Z");
 
   // make X Arrow 
 	glPushMatrix();
 	glColor3ub(255, 0, 0);
-	glTranslatef(0.3, 0.0, 0.0);
+	glTranslatef(30.0, 0.0, 0.0);
 	glRotatef(90.0, 0.0, 1.0, 0.0);
-	glutSolidCone(0.02, 0.08, 10, 10);
+	glutSolidCone(2, 10, 10, 10);
 	glPopMatrix();
 
   // Make Y Arrow
 	glPushMatrix();
 	glColor3ub(0, 255, 0);
-	glTranslatef(0.0, 0.3, 0.0);
+	glTranslatef(0.0, 30.0, 0.0);
 	glRotatef(-90.0, 1.0, 0.0, 0.0);
-	glutSolidCone(0.02, 0.08, 10, 10);
+	glutSolidCone(2, 10, 10, 10);
 	glPopMatrix();
 
 	//Make Z Arrow
 	glPushMatrix();
 	glColor3ub(0, 0, 255);
-	glTranslatef(0.0, 0.0, 0.3);
-	glutSolidCone(0.02, 0.08, 10, 10);
+	glTranslatef(0.0, 0.0, 30);
+	glutSolidCone(2, 10, 10, 10);
 	glPopMatrix();
  glEndList();
 }
@@ -708,60 +821,133 @@ void CCad_ShowView::SetRotateForCad() {
 
 void CCad_ShowView::OnHandleViewButton(UINT nID) {
   if (nID == ID_VIEW_TOP) {
+#if 0       
     angle_x_ = 0.0f;
     angle_y_ = 0.0f;
     angle_z_ = 0.0f;
+
     angle_x_cad_ = 0.0f;
     angle_y_cad_ = 0.0f;
     angle_z_cad_ = 0.0f;
+
+    angle_x_big_cdn_ = 0.0f;
+    angle_y_big_cdn_ = 0.0f;
+    angle_z_big_cdn_ = 0.0f;
+#else
+    phi_ = 90.0;
+    theta_ = 180.0;
+    ::glMatrixMode( GL_MODELVIEW );
+    ::glLoadIdentity();
+#endif
   }
 
   if (nID == ID_VIEW_BOTTOM) {
+#if 0
     angle_x_ = -180.0f;
     angle_y_ = 0.0f;
     angle_z_ = 0.0f;
+
     angle_x_cad_ = -180.0f;
     angle_y_cad_ = 0.0f;
     angle_z_cad_ = 0.0f;
+
+    angle_x_big_cdn_ = -180.0f;
+    angle_y_big_cdn_ = 0.0f;
+    angle_z_big_cdn_ = 0.0f;
+#else
+    phi_ = 270.0;
+    theta_ = 180.0;
+    ::glMatrixMode( GL_MODELVIEW );
+    ::glLoadIdentity();
+#endif
   }
 
   if (nID == ID_VIEW_BACK) {
+#if 0
     angle_x_ = -90.0f;
     angle_y_ = 0.0f;
     angle_z_ = 90.0f;
+
     angle_x_cad_ = -90.0f;
     angle_y_cad_ = 0.0f;
     angle_z_cad_ = 90.0f;
+
+    angle_x_big_cdn_ = -90.0f;
+    angle_y_big_cdn_ = 0.0f;
+    angle_z_big_cdn_ = 90.0f;
+#else
+    phi_ = 0.0;
+    theta_ = 0.0;
+    ::glMatrixMode( GL_MODELVIEW );
+    ::glLoadIdentity();
+#endif
   }
 
   if (nID == ID_VIEW_FRONT) {
+#if 0
     angle_x_ = -90.0f;
     angle_y_ = 0.0f;
     angle_z_ = -90.0f;
+
     angle_x_cad_ = -90.0f;
     angle_y_cad_ = 0.0f;
     angle_z_cad_ = -90.0f;
+
+    angle_x_big_cdn_ = -90.0f;
+    angle_y_big_cdn_ = 0.0f;
+    angle_z_big_cdn_ = -90.0f;
+#else
+    phi_ = 0.0;
+    theta_ = - 180.0;
+    ::glMatrixMode( GL_MODELVIEW );
+    ::glLoadIdentity();
+#endif
   }
 
   if (nID == ID_VIEW_RIGHT) {
+#if 0
     angle_x_ = -90.0f;
     angle_y_ = 0.0f;
     angle_z_ = -180.0f;
+
     angle_x_cad_ = -90.0f;
     angle_y_cad_ = 0.0f;
     angle_z_cad_ = -180.0f;
+
+    angle_x_big_cdn_ = -90.0f;
+    angle_y_big_cdn_ = 0.0f;
+    angle_z_big_cdn_ = -180.0f;
+#else
+    phi_ = 0.0;
+    theta_ = 90.0;
+    ::glMatrixMode( GL_MODELVIEW );
+    ::glLoadIdentity();
+#endif
   }
 
   if (nID == ID_VIEW_LEFT) {
+#if 0
     angle_x_ = -90.0f;
     angle_y_ = 0.0f;
     angle_z_ = 0.0f;
+
     angle_x_cad_ = -90.0f;
     angle_y_cad_ = 0.0f;
     angle_z_cad_ = 0.0f;
+
+    angle_x_big_cdn_ = -90.0f;
+    angle_y_big_cdn_ = 0.0f;
+    angle_z_big_cdn_ = 0.0f;
+#else
+    phi_ = 0.0;
+    theta_ = -90.0;
+    ::glMatrixMode( GL_MODELVIEW );
+    ::glLoadIdentity();
+#endif
   }
 
   if (nID == ID_VIEW_ISO) {
+#if 0
     angle_x_ = -60.0f;
     angle_y_ = 0.0f;
     angle_z_ = -135.0f;
@@ -769,6 +955,16 @@ void CCad_ShowView::OnHandleViewButton(UINT nID) {
     angle_x_cad_ = -60.0f;
     angle_y_cad_ = 0.0f;
     angle_z_cad_ = -135.0f;
+
+    angle_x_big_cdn_ = -60.0f;
+    angle_y_big_cdn_ = 0.0f;
+    angle_z_big_cdn_ = -135.0f;
+#else
+  theta_ = 45.0f;
+  phi_ = 135.0f;
+  ::glMatrixMode( GL_MODELVIEW );
+  ::glLoadIdentity();
+#endif
   }
 
   if (nID == ID_VIEW_ZOOM_IN) {
@@ -803,14 +999,19 @@ void CCad_ShowView::OnHandleRotateButton(UINT nID) {
 }
 
 void CCad_ShowView::OnHandleResetCad() {
-  angle_x_ = -60.0f;
+  angle_x_ = 0.0f;
   angle_y_ = 0.0f;
-  angle_z_ = -135.0f;
+  angle_z_ = .0f;
 
-  angle_x_cad_ = -60.0f;
+  angle_x_cad_ = 0.0f;
   angle_y_cad_ = 0.0f;
-  angle_z_cad_ = -135.0f;
+  angle_z_cad_ = 0.0f;
 
+  angle_x_big_cdn_ = 0.0f;
+  angle_y_big_cdn_ = 0.0f;
+  angle_z_big_cdn_ = 0.0f;
+  theta_ = 45.0f;
+  phi_ = 135.0f;
   x_position_ = 0.0f;
   y_position_ = 0.0f;
   InvalidateRect(NULL, FALSE);

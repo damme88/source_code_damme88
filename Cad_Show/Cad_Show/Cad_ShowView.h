@@ -4,6 +4,7 @@
 
 #pragma once
 #include "DialogBar.h"
+#include "InforBar.h"
 
 const double VALUE_AXIS = 10000.0;
 
@@ -45,6 +46,7 @@ public: // create from serialization only
   BOOL OnMouseWheel(UINT nFlags, short zDelta, CPoint pt);
   void OnRButtonDown(UINT nFlags, CPoint point);
   void BuildAxisesList();  // draw sub coordinate
+  void RenderSmallCoordinate();
   void OnDrawCoordinateBig();  // draw big coordinate
   void EnableShowBigCoordinate(); 
   void SetCheckBigCoordinate(CCmdUI * cmd);
@@ -69,6 +71,23 @@ public: // create from serialization only
   void OnHandleResetCad();
   void DrawStringAt(double x, double y, double z, char* s);
   void CreateOpenGLFont();
+  void UpdateInfoToOutput();
+  void SetInforViewHandle(InfoBar * infor_view) {infor_view_ = infor_view;}
+
+  void SetEyeXCam(double eye_x) {eye_x_ = eye_x; InvalidateRect(NULL, FALSE);}
+  void SetEyeYCam(double eye_y) {eye_y_ = eye_y; InvalidateRect(NULL, FALSE);}
+  void SetEyeZCam(double eye_z) {eye_z_ = eye_z; InvalidateRect(NULL, FALSE);}
+
+  void SetCenXCam(double cen_x) {cen_x_ = cen_x; InvalidateRect(NULL, FALSE);}
+  void SetCenYCam(double cen_y) {cen_y_ = cen_y; InvalidateRect(NULL, FALSE);}
+  void SetCenZCam(double cen_z) {cen_z_ = cen_z; InvalidateRect(NULL, FALSE);}
+
+  void SetUpXCam(double up_x) {up_x_ = up_x; InvalidateRect(NULL, FALSE);}
+  void SetUpYCam(double up_y) {up_y_ = up_y; InvalidateRect(NULL, FALSE);}
+  void SetUpZCam(double up_z) {up_z_ = up_z; InvalidateRect(NULL, FALSE);}
+
+  void SetViewFrustum();
+  void CalculateRotatefAngle(CPoint point);
 // Generated message map functions
 protected:
 	virtual BOOL OnPreparePrinting(CPrintInfo* pInfo);
@@ -86,17 +105,19 @@ private:
   CDC* m_pDC; //Device Context
   GLuint m_editCLTip;
   GLuint m_textTip;
-  GLfloat m_OrthoRangeLeft;
-	GLfloat m_OrthoRangeRight;
-	GLfloat m_OrthoRangeTop;
-	GLfloat m_OrthoRangeBottom;
-	GLfloat m_OrthoRangeNear;
-	GLfloat m_OrthoRangeFar;
 
-  //variable for rotatef and zoom for cad object
+  GLfloat rendering_rate_;
+  int cx_; // size of window
+  int cy_; 
+  //variable for rotate and zoom for cad object
   GLfloat angle_x_;
 	GLfloat angle_y_;
   GLfloat angle_z_;
+
+  GLfloat angle_x_big_cdn_;
+  GLfloat angle_y_big_cdn_;
+  GLfloat angle_z_big_cdn_;
+
   GLfloat angle_x_cad_;
   GLfloat angle_y_cad_;
   GLfloat angle_z_cad_;
@@ -122,17 +143,36 @@ private:
   float red_color_;
   float green_color_;
   float blue_color_;
-  // varialbe for speed rotate
+  // variable for speed rotate
   float speed_rotate_;
   bool is_check_rotate_;
 
-  // variable status checbox rotate on DialogBar
+  // variable status checkbox rotate on DialogBar
   bool is_rot_x_;
   bool is_rot_y_;
   bool is_rot_z_;
 
   bool enable_big_coordinate_;
   bool is_check_coordiante_button_;
+
+  InfoBar *infor_view_;
+
+  double eye_x_;
+  double eye_y_;
+  double eye_z_;
+  double lx_;
+  double ly_;
+  double lz_;
+  double cen_x_;
+  double cen_y_;
+  double cen_z_;
+
+  double up_x_;
+  double up_y_;
+  double up_z_;
+
+  GLdouble theta_;  // angle x
+  GLdouble phi_;    // angle y
 };
 
 #ifndef _DEBUG  // debug version in Cad_ShowView.cpp
