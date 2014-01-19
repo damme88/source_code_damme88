@@ -95,7 +95,7 @@ CCad_ShowView::CCad_ShowView() :
   enable_big_coordinate_(false),
   is_check_coordiante_button_(false)
 {
-  rendering_rate_ = 2.0f;
+  rendering_rate_ = 1.0f;
   theta_ = 135.0f;
   phi_ = 45.0f;
   infor_view_ = NULL;
@@ -243,8 +243,8 @@ void CCad_ShowView::SetViewFrustum() {
   double top_ = (double)cy_ *0.5/ rendering_rate_;
   double bottom_ = -(double)cy_ *0.5/ rendering_rate_;
 
-  double zfar = 2000/rendering_rate_;
-  zfar = max(2000, rendering_rate_);
+  double zfar = 20000/rendering_rate_;
+  zfar = max(20000, rendering_rate_);
   glOrtho(left_, right_, bottom_, top_, -zfar, zfar);
 }
 
@@ -373,13 +373,17 @@ void CCad_ShowView::CalculateRotatefAngle(CPoint point) {
   if(abs(ix) > abs(iy)) {
     fAngle = ix * 180.0f / cx_;
     theta_ += fAngle;
-    for(;theta_ > 180; theta_ -= 360);
-    for(;theta_ < -180; theta_ += 360);
+    if (theta_ > 360)
+			theta_ -= 360;
+    if (theta_ < 360);
+			theta_ += 360;
   } else {
     fAngle = iy * 180.0f / cy_;
     phi_ += fAngle;
-    if(phi_ > 360)  phi_ -= 360;
-    if(phi_ < -360) phi_ += 360;
+    if(phi_ > 360)  
+			phi_ -= 360;
+    if(phi_ < -360) 
+			phi_ += 360;
   }
   ::glMatrixMode( GL_MODELVIEW );
   ::glLoadIdentity();
@@ -457,11 +461,13 @@ void CCad_ShowView::RenderScene () {
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
   glLoadIdentity();
 
-  gluLookAt(eye_x_ + sin((theta_*M_PI)/180.0)*cos((phi_*M_PI)/180.0),
-    eye_y_ + cos((theta_*M_PI)/180.0)*cos((phi_*M_PI)/180.0),
-    eye_z_ + sin((phi_*M_PI)/180.0),
-    eye_x_, eye_y_, eye_z_,
-    up_x_, up_y_, up_z_);
+	gluLookAt(cen_x_ + sin((theta_*M_PI)/180.0)*cos((phi_*M_PI)/180.0),
+		cen_y_ + cos((theta_*M_PI)/180.0)*cos((phi_*M_PI)/180.0),
+		cen_z_ + sin((phi_*M_PI)/180.0),
+		cen_x_, cen_y_, cen_z_,
+		up_x_,
+		up_y_,
+		up_z_*cos(phi_*M_PI/180.0f));
   // clear AntiAliasing
   glEnable(GL_POINT_SMOOTH);
 	glHint(GL_POINT_SMOOTH_HINT, GL_NICEST);
@@ -496,11 +502,13 @@ void CCad_ShowView::RenderScene () {
 
 void CCad_ShowView::UpdateInfoToOutput() {
   infor_view_->OnUpdateAngleAxis(theta_, phi_, 0.0);
-  infor_view_->OnUpdateValueCam(eye_x_ + sin((theta_*M_PI)/180.0)*cos((phi_*M_PI)/180.0),
-                                eye_y_ + cos((theta_*M_PI)/180.0)*cos((phi_*M_PI)/180.0),
-                                eye_z_ + sin((phi_*M_PI)/180.0),
-                                eye_x_, eye_y_, eye_z_,
-                                up_x_, up_y_, up_z_);
+	infor_view_->OnUpdateValueCam(cen_x_ + sin((theta_*M_PI)/180.0)*cos((phi_*M_PI)/180.0),
+																cen_y_ + cos((theta_*M_PI)/180.0)*cos((phi_*M_PI)/180.0),
+																cen_z_ + sin((phi_*M_PI)/180.0),
+																cen_x_, cen_y_, cen_z_,
+																up_x_,
+																up_y_,
+																up_z_*cos(phi_*M_PI/180.0f));
 }
 
 void CCad_ShowView::DrawCad() {
@@ -960,8 +968,8 @@ void CCad_ShowView::OnHandleViewButton(UINT nID) {
     angle_y_big_cdn_ = 0.0f;
     angle_z_big_cdn_ = -135.0f;
 #else
-  theta_ = 45.0f;
-  phi_ = 135.0f;
+  theta_ = 135.0f;
+  phi_ = 45.0f;
   ::glMatrixMode( GL_MODELVIEW );
   ::glLoadIdentity();
 #endif

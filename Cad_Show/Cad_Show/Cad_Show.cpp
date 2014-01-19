@@ -25,7 +25,9 @@ BEGIN_MESSAGE_MAP(CCad_ShowApp, CWinAppEx)
 	ON_COMMAND(ID_FILE_OPEN, &CCad_ShowApp::OnFileOpen)
 	// Standard print setup command
 	ON_COMMAND(ID_FILE_PRINT_SETUP, &CWinAppEx::OnFilePrintSetup)
-  ///ON_UPDATE_COMMAND_UI(ID_FILE_MRU_FILE1, &CCad_ShowApp::OnUpdateFileMruFile1)
+#ifdef USE_SUB_MENU_RECENT_FILE
+	ON_UPDATE_COMMAND_UI(ID_FILE_MRU_FILE1, OnUpdateFileMruFile1)
+#endif
 END_MESSAGE_MAP()
 
 
@@ -214,7 +216,7 @@ BOOL CCad_ShowApp::LoadState(LPCTSTR lpszSectionName, CFrameImpl *pFrameImpl) {
   return TRUE;
 }
 
-
+ 
 // handle reading file stl
 void CCad_ShowApp::OnFileOpen() {
   UINT n_size = 0;
@@ -227,6 +229,7 @@ void CCad_ShowApp::OnFileOpen() {
   // Get file name 
   if (IDOK == Dlg.DoModal()) {
     file_name_stl = Dlg.GetPathName();
+		AfxGetApp()->OpenDocumentFile(file_name_stl);
   }
   // convert CString to char*
   char file_name[MAX_PATH];
@@ -373,12 +376,17 @@ void CCad_ShowApp::FreePoint() {
   }
 }
 
-
-//void CCad_ShowApp::OnUpdateFileMruFile1(CCmdUI *pcmd) {
-//  if (pcmd->m_nIndex == 0) {
-//    OnUpdateRecentFileMenu(pcmd);
-//  }
-//}
+// This function for sub menu recent file
+#ifdef USE_SUB_MENU_RECENT_FILE
+void CCad_ShowApp::OnUpdateFileMruFile1(CCmdUI *pcmd) {
+	if (pcmd->m_pSubMenu != NULL)
+	{
+		return;
+	}
+	CWinApp::OnUpdateRecentFileMenu(pcmd);
+	return;
+}
+#endif
 
 bool CCad_ShowApp::IsAssciiFormat(const char * path_file) {
   FILE *pFile = fopen(path_file, "rb");

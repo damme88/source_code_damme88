@@ -52,9 +52,10 @@ public:
   Vector* GetNormalVector () {return normal_vector_;} 
 
   bool IsAssciiFormat(const char * path_file); 
-  // handle recent file 
-  //virtual void OnUpdateFileMruFile1(CCmdUI * pcmd);
-  //void OnRencentFile();
+protected:
+#ifdef USE_SUB_MENU_RECENT_FILE
+  afx_msg void OnUpdateFileMruFile1(CCmdUI * pcmd);
+#endif 
 };
 
 extern CCad_ShowApp theApp;

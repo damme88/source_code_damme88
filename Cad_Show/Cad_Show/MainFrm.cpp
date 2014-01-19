@@ -174,6 +174,7 @@ BOOL CMainFrame::OnCreateClient(LPCREATESTRUCT lp, CCreateContext* pContext) {
   cad_show_view_ = reinterpret_cast<CCad_ShowView*>(info_splitter_.GetPane(0, 0));
   info_view_ = reinterpret_cast<InfoBar*>(info_splitter_.GetPane(1, 0));
   cad_show_view_->SetInforViewHandle(info_view_);
+	info_splitter_.SetActivePane(0, 0);
   return TRUE;
 }
 BOOL CMainFrame::PreCreateWindow(CREATESTRUCT& cs)
