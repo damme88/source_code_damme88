@@ -92,6 +92,9 @@ CCad_ShowView::CCad_ShowView() :
   lx_(0.0f),
   ly_(0.0f),
   lz_(0.0),
+	xPos_(0.0),
+	yPos_(0.0),
+	zPos_(0.0),
   enable_big_coordinate_(false),
   is_check_coordiante_button_(false)
 {
@@ -357,8 +360,8 @@ void CCad_ShowView::OnMouseMove(UINT nFlags, CPoint point)
   }
   mouse_down_point_ = point;
   if (middle_down_) {
-    x_position_ -= (float)(middle_down_pos_.x -point.x); 
-    y_position_ += (float)(middle_down_pos_.y -point.y);
+    xPos_ -= (float)(middle_down_pos_.x -point.x); 
+    yPos_ += (float)(middle_down_pos_.y -point.y);
     middle_down_pos_.x = point.x;
     middle_down_pos_.y = point.y;
     SendMessage(WM_PAINT, 0, 0);
@@ -395,11 +398,11 @@ BOOL CCad_ShowView::OnMouseWheel(UINT nFlags, short zDelta, CPoint point)
 {
   BOOL ret = FALSE ;
   if (zDelta >=0) {
-    m_scaling *= 1.5f;
+    m_scaling *= 1.25f;
     ret = TRUE ;
   }
   else {
-    m_scaling /= 1.5f;
+    m_scaling /= 1.25f;
     ret = TRUE ;
   }
   InvalidateRect(NULL,FALSE);
@@ -444,13 +447,13 @@ void CCad_ShowView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
         // TODO: Add your message handler code here and/or call default
         switch (nChar)
         {
-            case VK_UP:        y_position_ = y_position_ + 5.0f;
+            case VK_UP:        yPos_ = yPos_ + 10.0f;
                                           break;
-            case VK_DOWN:      y_position_ = y_position_ - 5.0f;
+            case VK_DOWN:      yPos_ = yPos_ - 10.0f;
                                           break;
-            case VK_LEFT:      x_position_ = x_position_ - 5.0f;
+            case VK_LEFT:      xPos_ = xPos_ - 10.0f;
                                           break;
-            case VK_RIGHT:     x_position_ = x_position_ + 5.0f;
+            case VK_RIGHT:     xPos_ = xPos_ + 10.0f;
                                           break;
         } 
         InvalidateRect(NULL,FALSE);
@@ -460,6 +463,8 @@ void CCad_ShowView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 void CCad_ShowView::RenderScene () {
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
   glLoadIdentity();
+
+	glTranslatef(xPos_, yPos_, zPos_);
 
 	gluLookAt(cen_x_ + sin((theta_*M_PI)/180.0)*cos((phi_*M_PI)/180.0),
 		cen_y_ + cos((theta_*M_PI)/180.0)*cos((phi_*M_PI)/180.0),
@@ -976,10 +981,10 @@ void CCad_ShowView::OnHandleViewButton(UINT nID) {
   }
 
   if (nID == ID_VIEW_ZOOM_IN) {
-    m_scaling *= 1.05f;  // scale is diff zoom 
+    m_scaling *= 1.25f;  // zoom +
   }
   if (nID == ID_VIEW_ZOOM_OUT) {
-    m_scaling /= 1.05f;
+    m_scaling /= 1.25f; // zoom -
   }
   InvalidateRect(NULL, FALSE);
 }

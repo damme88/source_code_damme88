@@ -173,6 +173,10 @@ private:
 
   GLdouble theta_;  // angle x
   GLdouble phi_;    // angle y
+
+	GLdouble xPos_;
+	GLdouble yPos_;
+	GLdouble zPos_;
 };
 
 #ifndef _DEBUG  // debug version in Cad_ShowView.cpp
