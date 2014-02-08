@@ -216,22 +216,32 @@ BOOL CCad_ShowApp::LoadState(LPCTSTR lpszSectionName, CFrameImpl *pFrameImpl) {
   return TRUE;
 }
 
- 
-// handle reading file stl
+CDocument*  CCad_ShowApp::OpenDocumentFile(LPCTSTR lpszFileName) {
+	OpenFile3D(lpszFileName);
+  return CWinAppEx::OpenDocumentFile(lpszFileName);
+}
+
+// Handle event Open file
 void CCad_ShowApp::OnFileOpen() {
-  UINT n_size = 0;
-  char str[MAX_PATH];
-  FILE *pFile = NULL;
-  Point *value_stl = NULL;
-  Point *asscii_value_stl = NULL;
-  CFileDialog Dlg(TRUE);
+	CFileDialog dlg(TRUE, L"", L"",
+		OFN_HIDEREADONLY | OFN_FILEMUSTEXIST,
+		_T("3D File (*.STL)|*.STL||"));
   CString file_name_stl = L"";
   // Get file name 
-  if (IDOK == Dlg.DoModal()) {
-    file_name_stl = Dlg.GetPathName();
+  if (IDOK == dlg.DoModal()) {
+    file_name_stl = dlg.GetPathName();
 		AfxGetApp()->OpenDocumentFile(file_name_stl);
   }
-  // convert CString to char*
+}
+
+void CCad_ShowApp::OpenFile3D(LPCTSTR file_path) { 
+	CString file_name_stl = (CString)file_path;
+	UINT n_size = 0;
+	char str[MAX_PATH];
+	FILE *pFile = NULL;
+	Point *value_stl = NULL;
+	Point *asscii_value_stl = NULL;
+  // Convert CString to char*
   char file_name[MAX_PATH];
   n_size = file_name_stl.GetLength();
   memset(file_name, 0, n_size + 1);
@@ -242,7 +252,7 @@ void CCad_ShowApp::OnFileOpen() {
     return;
   fclose(pFile);
   bool is_asscii = IsAssciiFormat(file_name);
-  if (is_asscii == true) {  // check format file stl. Is binary or Asscii
+  if (is_asscii == true) {  // Check format file STL. Is binary or Asscii
     pFile = fopen(file_name, "r");
     if (pFile == NULL)
       return;

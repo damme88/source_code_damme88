@@ -27,7 +27,7 @@ public:
 
 // Implementation
 	BOOL  m_bHiColorIcons;
-
+	virtual CDocument* OpenDocumentFile(LPCTSTR lpszFileName);
 	virtual void PreLoadState();
 	virtual void LoadCustomState();
 	virtual void SaveCustomState();
@@ -44,6 +44,7 @@ public:
 	COLORREF option_color_glback;
 public:
   void OnFileOpen();
+	void OpenFile3D(LPCTSTR file_path);
   long GetNumberOfPoint() { return number_of_point_;}
   BOOL GetStateDrawStl() {return allow_draw_data_;}
   void SetStatusDrawCad(bool is_draw) {allow_draw_data_ = is_draw;}

@@ -22,6 +22,8 @@ BEGIN_MESSAGE_MAP(CMainFrame, CFrameWndEx)
 	ON_WM_CREATE()
 	ON_COMMAND(ID_VIEW_CUSTOMIZE, &CMainFrame::OnViewCustomize)
 	ON_REGISTERED_MESSAGE(AFX_WM_CREATETOOLBAR, &CMainFrame::OnToolbarCreateNew)
+	ON_COMMAND(ID_SHOWTOOLBAR, &CMainFrame::ShowToolbar)
+	ON_UPDATE_COMMAND_UI(ID_SHOWTOOLBAR, &CMainFrame::UpdateShowToolbar)
 END_MESSAGE_MAP()
 
 static UINT indicators[] =
@@ -38,6 +40,7 @@ CMainFrame::CMainFrame()
 {
   dialog_view_ = NULL;
   cad_show_view_ = NULL;
+	is_full_screen_ = false;
 	// TODO: add member initialization code here
 }
 
@@ -79,7 +82,7 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 
   m_wndToolBar.EnableDocking(CBRS_ALIGN_ANY);
 	EnableDocking(CBRS_ALIGN_ANY);
-	DockPane(&m_wndToolBar);
+	//DockPane(&m_wndToolBar);
 
 	// Allow user-defined tool bars operations:
 	InitUserToolbars(NULL, uiFirstUserToolBarId, uiLastUserToolBarId);
@@ -95,6 +98,7 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
   view_toolbar_.EnableDocking(CBRS_ALIGN_TOP);
   EnableDocking(CBRS_ALIGN_TOP);
   DockPane(&view_toolbar_);
+	DockPaneLeftOf(&m_wndToolBar, &view_toolbar_);
 
 	if (!m_wndStatusBar.Create(this))
 	{
@@ -130,6 +134,10 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	lstBasicCommands.AddTail(ID_VIEW_TOOLBAR);
 
 	CMFCToolBar::SetBasicCommands(lstBasicCommands);
+
+	// enable full screen mode
+	EnableFullScreenMode (ID_VIEW_FULL_SCREEN);
+	EnableFullScreenMainMenu(FALSE);
 
 	return 0;
 }
@@ -259,3 +267,37 @@ BOOL CMainFrame::LoadFrame(UINT nIDResource, DWORD dwDefaultStyle, CWnd* pParent
 	return TRUE;
 }
 
+void CMainFrame::OnViewFullscreen() {
+	if (is_full_screen_ == false) {
+		is_full_screen_ = true;
+	} else {
+		is_full_screen_ = false;
+		ShowAndDockToolbar();
+	}
+	ShowFullScreen();
+}
+
+// When close full screen, dock toolbars again
+void CMainFrame::ShowAndDockToolbar() {
+	ShowPane(&view_toolbar_, TRUE, FALSE, TRUE);
+	ShowPane(&m_wndToolBar, TRUE, FALSE, TRUE);
+	m_wndToolBar.EnableDocking(CBRS_ALIGN_ANY);
+	view_toolbar_.EnableDocking(CBRS_ALIGN_ANY);
+	EnableDocking(CBRS_ALIGN_ANY);
+	DockPane(&view_toolbar_);
+	DockPaneLeftOf(&m_wndToolBar, &view_toolbar_);
+}
+
+// When press Escape, Full Screen is closed too.
+void CMainFrame::HandleEscape() {
+	is_full_screen_ = false;
+	ShowAndDockToolbar();
+}
+
+void CMainFrame::ShowToolbar() {
+  ShowPane(&view_toolbar_, !view_toolbar_.IsVisible(), FALSE, TRUE);
+}
+
+void CMainFrame::UpdateShowToolbar(CCmdUI* cmd) {
+  cmd->SetCheck(view_toolbar_.IsVisible() ? 1 : 0);
+}

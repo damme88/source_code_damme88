@@ -25,6 +25,11 @@ public:
 	virtual BOOL LoadFrame(UINT nIDResource, DWORD dwDefaultStyle = WS_OVERLAPPEDWINDOW | FWS_ADDTOTITLE, CWnd* pParentWnd = NULL, CCreateContext* pContext = NULL);
 
 	virtual ~CMainFrame();
+	void OnViewFullscreen();
+	void ShowAndDockToolbar();
+	void HandleEscape();
+	void ShowToolbar();
+	void UpdateShowToolbar(CCmdUI* cmd);
 #ifdef _DEBUG
 	virtual void AssertValid() const;
 	virtual void Dump(CDumpContext& dc) const;
@@ -40,6 +45,7 @@ protected:  // control bar embedded members
   CCad_ShowView *cad_show_view_;
   DialogBar *dialog_view_;
   InfoBar *info_view_;
+	bool is_full_screen_;
 
   // Generated message map functions
   virtual BOOL OnCreateClient(LPCREATESTRUCT lp, CCreateContext* pContext);

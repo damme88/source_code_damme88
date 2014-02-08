@@ -88,6 +88,7 @@ public: // create from serialization only
 
   void SetViewFrustum();
   void CalculateRotatefAngle(CPoint point);
+	void ViewFullscreen();
 // Generated message map functions
 protected:
 	virtual BOOL OnPreparePrinting(CPrintInfo* pInfo);

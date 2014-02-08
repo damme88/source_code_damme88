@@ -12,6 +12,7 @@
 #include "Cad_ShowDoc.h"
 #include "Cad_ShowView.h"
 #include "Cad_Point.h"
+#include "MainFrm.h"
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
@@ -49,6 +50,7 @@ BEGIN_MESSAGE_MAP(CCad_ShowView, CView)
   ON_UPDATE_COMMAND_UI(ID_SHOW_BIG_COORDINATE, SetCheckBigCoordinate)
   ON_COMMAND(ID_RESET_CAD, OnHandleResetCad)
   ON_COMMAND(ID_EDIT_DELETE, DeleteCad)
+	ON_COMMAND(ID_VIEW_FULL_SCREEN, ViewFullscreen)
 
 END_MESSAGE_MAP()
 
@@ -455,6 +457,15 @@ void CCad_ShowView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
                                           break;
             case VK_RIGHT:     xPos_ = xPos_ + 10.0f;
                                           break;
+						case VK_DELETE: {
+							DeleteCad();
+							InvalidateRect(NULL,FALSE);
+							break;
+						}
+						case VK_ESCAPE : {
+							CMainFrame * main_frame = static_cast<CMainFrame*>(AfxGetMainWnd());
+							main_frame->HandleEscape();
+						}
         } 
         InvalidateRect(NULL,FALSE);
         CView::OnKeyDown(nChar, nRepCnt, nFlags);
@@ -506,6 +517,16 @@ void CCad_ShowView::RenderScene () {
 }
 
 void CCad_ShowView::UpdateInfoToOutput() {
+	if (theta_ > 360.0f)
+		theta_ -= 360.0f;
+	if (theta_ < -360.0f)
+	  theta_ += 360.0f;
+
+	if (phi_ > 360.0f)
+		phi_ -= 360.0f;
+	if (phi_ < -360.0f)
+	  phi_ += 360.0f;
+
   infor_view_->OnUpdateAngleAxis(theta_, phi_, 0.0);
 	infor_view_->OnUpdateValueCam(cen_x_ + sin((theta_*M_PI)/180.0)*cos((phi_*M_PI)/180.0),
 																cen_y_ + cos((theta_*M_PI)/180.0)*cos((phi_*M_PI)/180.0),
@@ -992,16 +1013,16 @@ void CCad_ShowView::OnHandleViewButton(UINT nID) {
 void CCad_ShowView::OnHandleMoveButton(UINT nID) {
   if (theApp.GetTrianglePoint()) {
     if (nID == ID_VIEW_MOVE_DOWN) {
-      y_position_ -= 0.05f;
+      yPos_ -= 10.0f;
     }
     if (nID ==ID_VIEW_MOVE_UP) {
-      y_position_ += 0.05f;
+      yPos_ += 10.0f;
     }
     if (nID == ID_VIEW_MOVE_LEFT) {
-      x_position_ -= 0.05f;
+      xPos_ -= 10.0f;
     }
     if (nID == ID_VIEW_MOVE_RIGHT) {
-      x_position_ += 0.05f;
+      xPos_ += 10.0f;
     }
   }
   InvalidateRect(NULL, FALSE);
@@ -1023,11 +1044,17 @@ void CCad_ShowView::OnHandleResetCad() {
   angle_x_big_cdn_ = 0.0f;
   angle_y_big_cdn_ = 0.0f;
   angle_z_big_cdn_ = 0.0f;
-  theta_ = 45.0f;
-  phi_ = 135.0f;
+  theta_ = 135.0f;
+  phi_ = 45.0f;
   x_position_ = 0.0f;
   y_position_ = 0.0f;
+	xPos_ = 0.0f;
+	yPos_ = 0.0f;
   InvalidateRect(NULL, FALSE);
 }
 
 // CCad_ShowView message handlers
+void CCad_ShowView::ViewFullscreen() {
+	CMainFrame* main_frame = static_cast<CMainFrame*>(AfxGetMainWnd());
+	main_frame->OnViewFullscreen();
+}
