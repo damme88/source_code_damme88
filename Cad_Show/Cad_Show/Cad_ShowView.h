@@ -4,7 +4,7 @@
 
 #pragma once
 #include "DialogBar.h"
-#include "InforBar.h"
+//#include "InforBar.h"
 
 const double VALUE_AXIS = 10000.0;
 
@@ -37,7 +37,17 @@ public: // create from serialization only
 #endif
 
   enum ModelCad {SOLID_MODE_CAD, WIRE_FRAME_MODE_CAD, POINT_MODE_CAD};
-
+	enum SampleStyle {
+		kTearpot = 0,
+		kCube = 1,
+		kSphere = 2,
+		kTorus = 3,
+		kCone = 4,
+		kTetrahedron = 5,
+		kIcosahedron = 6,
+		kDodecahedron = 7,
+		kOctahedron = 8,
+	};
   void IsRotX(bool val_x) {is_rot_x_ = val_x; InvalidateRect(NULL, FALSE);}
   void IsRotY(bool val_y) {is_rot_y_ = val_y; InvalidateRect(NULL, FALSE);}
   void IsRotZ(bool val_z) {is_rot_z_ = val_z; InvalidateRect(NULL, FALSE);}
@@ -72,7 +82,7 @@ public: // create from serialization only
   void DrawStringAt(double x, double y, double z, char* s);
   void CreateOpenGLFont();
   void UpdateInfoToOutput();
-  void SetInforViewHandle(InfoBar * infor_view) {infor_view_ = infor_view;}
+  void SetFormViewHandle(DialogBar * form_view) {form_view_ = form_view;}
 
   void SetEyeXCam(double eye_x) {eye_x_ = eye_x; InvalidateRect(NULL, FALSE);}
   void SetEyeYCam(double eye_y) {eye_y_ = eye_y; InvalidateRect(NULL, FALSE);}
@@ -89,6 +99,9 @@ public: // create from serialization only
   void SetViewFrustum();
   void CalculateRotatefAngle(CPoint point);
 	void ViewFullscreen();
+	void DrawSampleOpengl();
+	void set_is_draw_sample(bool is_draw_sample) {is_draw_sample_ = is_draw_sample; InvalidateRect(NULL, FALSE);}
+	void set_current_sample(unsigned int st) {sample_style_ = st; InvalidateRect(NULL, FALSE);}
 // Generated message map functions
 protected:
 	virtual BOOL OnPreparePrinting(CPrintInfo* pInfo);
@@ -102,6 +115,8 @@ protected:
 	DECLARE_MESSAGE_MAP()
 
 private:
+	bool is_draw_sample_;
+	unsigned sample_style_;
   HGLRC m_hRC; //Rendering Context
   CDC* m_pDC; //Device Context
   GLuint m_editCLTip;
@@ -156,7 +171,7 @@ private:
   bool enable_big_coordinate_;
   bool is_check_coordiante_button_;
 
-  InfoBar *infor_view_;
+  DialogBar *form_view_;
 
   double eye_x_;
   double eye_y_;

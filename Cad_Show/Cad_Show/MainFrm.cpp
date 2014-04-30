@@ -148,6 +148,23 @@ BOOL CMainFrame::OnCreateClient(LPCREATESTRUCT lp, CCreateContext* pContext) {
 		return FALSE;
 	}
 
+#ifndef NO_INFO_BAR
+	if (!m_wndSplitter.CreateView(0, 0,
+		RUNTIME_CLASS(DialogBar), CSize(200, 500), pContext))
+	{
+		TRACE("Failed to create command view pane\n");
+		return FALSE;
+	}
+
+	if (!m_wndSplitter.CreateView(0, 1,
+		RUNTIME_CLASS(CCad_ShowView), CSize(200, 500), pContext))
+	{
+		TRACE("Failed to create command view pane\n");
+		return FALSE;
+	}
+	dialog_view_ = reinterpret_cast<DialogBar*>(m_wndSplitter.GetPane(0, 0));
+	cad_show_view_ = reinterpret_cast<CCad_ShowView*>(m_wndSplitter.GetPane(0, 1));
+#else
  // CRect rect;
  // GetClientRect(rect);
  // m_wndSplitter.SetColumnInfo(0, rect.Width()*1/4, 0);
@@ -158,6 +175,7 @@ BOOL CMainFrame::OnCreateClient(LPCREATESTRUCT lp, CCreateContext* pContext) {
 		TRACE("Failed to create command view pane\n");
     return FALSE;
   }
+
 
   //m_wndSplitter.SetColumnInfo(1, rect.Width()*3/4, 0);
   if(!info_splitter_.CreateStatic(&m_wndSplitter, 2, 1, WS_CHILD | WS_VISIBLE,
@@ -176,13 +194,12 @@ BOOL CMainFrame::OnCreateClient(LPCREATESTRUCT lp, CCreateContext* pContext) {
                                  CSize(150, 500), pContext)) {
     TRACE0("Failed to create view infor");
     return FALSE;
-  }
-
+  
   dialog_view_ = reinterpret_cast<DialogBar*>(m_wndSplitter.GetPane(0, 0));
   cad_show_view_ = reinterpret_cast<CCad_ShowView*>(info_splitter_.GetPane(0, 0));
-  info_view_ = reinterpret_cast<InfoBar*>(info_splitter_.GetPane(1, 0));
-  cad_show_view_->SetInforViewHandle(info_view_);
-	info_splitter_.SetActivePane(0, 0);
+  cad_show_view_->SetFormViewHandle(dialog_view_);
+	//info_splitter_.SetActivePane(0, 0);
+#endif
   return TRUE;
 }
 BOOL CMainFrame::PreCreateWindow(CREATESTRUCT& cs)

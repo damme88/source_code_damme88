@@ -6,7 +6,7 @@
 #include "DialogBar.h"
 #include "MainFrm.h"
 #include "Cad_ShowView.h"
-
+#include "SampleOpengl.h"
 // DialogBar
 
 IMPLEMENT_DYNCREATE(DialogBar, CFormView)
@@ -39,7 +39,7 @@ void DialogBar::DoDataExchange(CDataExchange* pDX)
 BEGIN_MESSAGE_MAP(DialogBar, CFormView)
   ON_BN_CLICKED(IDC_RADIO_WIRE_FRAME_CAD, &DialogBar::OnBnClickedRadioWireFrameCad)
   ON_BN_CLICKED(IDC_RADIO_SOLID_CAD, &DialogBar::OnBnClickedRadioSolidCad)
-  ON_BN_CLICKED(IDC_RADIO_LINE_CAD, &DialogBar::OnBnClickedRadioLineCad)
+  ON_BN_CLICKED(IDC_RADIO_POINT_CAD, &DialogBar::OnBnClickedRadioLineCad)
   ON_BN_CLICKED(IDC_ROTATE, &DialogBar::OnBnClickeCheckboxRotation)
   ON_WM_PAINT()
   ON_WM_LBUTTONUP()
@@ -48,6 +48,7 @@ BEGIN_MESSAGE_MAP(DialogBar, CFormView)
   ON_BN_CLICKED(IDC_ROTATE_X, &DialogBar::OnBnClickedRotateX)
   ON_BN_CLICKED(IDC_ROTATE_Y, &DialogBar::OnBnClickedRotateY)
   ON_BN_CLICKED(IDC_ROTATE_Z, &DialogBar::OnBnClickedRotateZ)
+	ON_BN_CLICKED(IDC_BTN_SAMPLE_OPENGL, &DialogBar::OnBnClickedSample)
 END_MESSAGE_MAP()
 
 
@@ -134,7 +135,7 @@ void DialogBar::OnLButtonUp(UINT nFlags, CPoint point) {
 CCad_ShowView *DialogBar::GetCadShowView() {
   CCad_ShowApp *pApp= (CCad_ShowApp*)AfxGetApp();
   CMainFrame *pMainFrame = (CMainFrame*)pApp->m_pMainWnd;
-  CCad_ShowView *pView = reinterpret_cast<CCad_ShowView*>(pMainFrame->info_splitter_.GetPane(0, 0));
+  CCad_ShowView *pView = reinterpret_cast<CCad_ShowView*>(pMainFrame->m_wndSplitter.GetPane(0, 1));
   return pView;
 }
 
@@ -222,4 +223,13 @@ void DialogBar::OnBnClickedRotateZ()
 {
   is_rot_z_ = cb_rot_z_.GetCheck() ? true : false;
   GetCadShowView()->IsRotZ(is_rot_z_);
+}
+
+void DialogBar::OnBnClickedSample() {
+  SampleOpengl dlg;
+	if(IDOK == dlg.DoModal()) {
+		GetCadShowView()->set_is_draw_sample(true);
+		unsigned int style = dlg.GetCurrentSample();
+		GetCadShowView()->set_current_sample(style);
+	}
 }

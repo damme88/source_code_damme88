@@ -99,10 +99,19 @@
     <None Include="res\Cad_Show.ico" />
     <None Include="res\Cad_Show.rc2" />
     <None Include="res\Cad_ShowDoc.ico" />
+    <None Include="res\Cone.bmp" />
+    <None Include="res\Cube.bmp" />
+    <None Include="res\Dodecahedron.bmp" />
     <None Include="res\icon1.ico" />
+    <None Include="res\Icosehadron.bmp" />
     <None Include="res\mainfram.bmp" />
+    <None Include="res\Octahedron.bmp" />
+    <None Include="res\Sphere.bmp" />
+    <None Include="res\Tearpot.bmp" />
+    <None Include="res\Tetrahedron.bmp" />
     <None Include="res\Toolbar.bmp" />
     <None Include="res\Toolbar256.bmp" />
+    <None Include="res\Torus.bmp" />
     <None Include="UserImages.bmp" />
   </ItemGroup>
   <ItemGroup>
@@ -114,6 +123,7 @@
     <ClInclude Include="InforBar.h" />
     <ClInclude Include="MainFrm.h" />
     <ClInclude Include="Resource.h" />
+    <ClInclude Include="SampleOpengl.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
   </ItemGroup>
@@ -124,6 +134,7 @@
     <ClCompile Include="DialogBar.cpp" />
     <ClCompile Include="InforBar.cpp" />
     <ClCompile Include="MainFrm.cpp" />
+    <ClCompile Include="SampleOpengl.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>

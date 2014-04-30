@@ -26,7 +26,6 @@ public:
   CCad_ShowView *GetCadShowView();
   virtual void OnInitialUpdate();
   void SetStatusSpeedBar();
-
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
   afx_msg void OnSize(UINT nType, int cx, int cy);
@@ -40,7 +39,7 @@ protected:
   afx_msg void OnBnClickedRotateX();
   afx_msg void OnBnClickedRotateY();
   afx_msg void OnBnClickedRotateZ();
-
+	afx_msg void OnBnClickedSample();
 	DECLARE_MESSAGE_MAP()
 // add new variable and function 
 private:

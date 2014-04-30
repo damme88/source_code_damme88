@@ -13,6 +13,7 @@
 #include "Cad_ShowView.h"
 #include "Cad_Point.h"
 #include "MainFrm.h"
+#include "SampleOpengl.h"
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
@@ -103,7 +104,8 @@ CCad_ShowView::CCad_ShowView() :
   rendering_rate_ = 1.0f;
   theta_ = 135.0f;
   phi_ = 45.0f;
-  infor_view_ = NULL;
+	is_draw_sample_ = false;
+  //infor_view_ = NULL;
 }
 
 CCad_ShowView::~CCad_ShowView()
@@ -512,6 +514,8 @@ void CCad_ShowView::RenderScene () {
   glRotatef(angle_z_cad_, 0.0f, 0.0f, 1.0f);
   SetUpLight();
   DrawCad();
+	// Draw Sample
+	DrawSampleOpengl();
   DisableSetupLigting();
   glPopMatrix();
 }
@@ -526,7 +530,7 @@ void CCad_ShowView::UpdateInfoToOutput() {
 		phi_ -= 360.0f;
 	if (phi_ < -360.0f)
 	  phi_ += 360.0f;
-
+#ifdef NO_USE_INFOBAR
   infor_view_->OnUpdateAngleAxis(theta_, phi_, 0.0);
 	infor_view_->OnUpdateValueCam(cen_x_ + sin((theta_*M_PI)/180.0)*cos((phi_*M_PI)/180.0),
 																cen_y_ + cos((theta_*M_PI)/180.0)*cos((phi_*M_PI)/180.0),
@@ -535,6 +539,7 @@ void CCad_ShowView::UpdateInfoToOutput() {
 																up_x_,
 																up_y_,
 																up_z_*cos(phi_*M_PI/180.0f));
+#endif
 }
 
 void CCad_ShowView::DrawCad() {
@@ -566,6 +571,7 @@ void CCad_ShowView::DrawCad() {
 }
 
 void CCad_ShowView::DeleteCad() {
+	is_draw_sample_ = false;
   theApp.SetStatusDrawCad(FALSE);
   theApp.FreePoint();
   InvalidateRect(NULL, FALSE);
@@ -608,8 +614,8 @@ void CCad_ShowView::DrawStringAt(double x, double y, double z, char* s) {
 
 void CCad_ShowView::SetUpLight() {
 
-  glEnable(GL_DEPTH_TEST); // khởi động chế độ chiều sâu
-  //glDepthFunc(GL_LESS);   // thiết lập loại chiều sâu là less
+  glEnable(GL_DEPTH_TEST);
+  //glDepthFunc(GL_LESS);
 
 	// prepare light source
 	GLfloat ambient[]  = {0.7f, 0.7f, 0.7f, 1.0f};
@@ -620,15 +626,16 @@ void CCad_ShowView::SetUpLight() {
 
 	float MatAmbientBack[]  = {0.1f, 0.2f, 0.0f, 1.0f};
 	glMaterialfv(GL_BACK, GL_AMBIENT, MatAmbientBack);
-	glLightModeli(GL_LIGHT_MODEL_TWO_SIDE, GL_TRUE); 
+
 
  	glEnable(GL_LIGHTING);
  	glEnable(GL_LIGHT0);
   glEnable(GL_NORMALIZE); //this is good command for light
 
 	glShadeModel(GL_SMOOTH);
-	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL); 	
-
+	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+#if 0
+	glLightModeli(GL_LIGHT_MODEL_TWO_SIDE, GL_TRUE); 
   /********clear AntiAliasing - Back Face*******************/
 	glEnable(GL_POINT_SMOOTH);
 	glHint(GL_POINT_SMOOTH_HINT, GL_NICEST);
@@ -639,6 +646,7 @@ void CCad_ShowView::SetUpLight() {
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
   glEnable(GL_CULL_FACE);
   /************clear AntiAliasing*Back Face ****************/
+#endif
 }
 
 
@@ -723,7 +731,6 @@ void CCad_ShowView::SetCheckBigCoordinate(CCmdUI* cmd) {
   InvalidateRect(NULL, FALSE);
 }
 
-// hàm thực hiện vẽ ra trục tọa độ oxyz 
 void CCad_ShowView::BuildAxisesList()
 {
   m_nAxisesList = glGenLists(1);        // gen list
@@ -831,7 +838,7 @@ void CCad_ShowView::OnTimer(UINT_PTR nIDEvent) {
 }
 
 void CCad_ShowView::SetRotateForCad() {
-  if (theApp.GetTrianglePoint() != NULL ) {
+  if (theApp.GetTrianglePoint() != NULL || is_draw_sample_) {
     if (is_rot_x_ == true) {
       angle_x_cad_ += speed_rotate_ + 0.5f;
     }
@@ -1057,4 +1064,88 @@ void CCad_ShowView::OnHandleResetCad() {
 void CCad_ShowView::ViewFullscreen() {
 	CMainFrame* main_frame = static_cast<CMainFrame*>(AfxGetMainWnd());
 	main_frame->OnViewFullscreen();
+}
+
+void CCad_ShowView::DrawSampleOpengl() {
+  if (is_draw_sample_) {
+		if (mode_cad_ == ModelCad::SOLID_MODE_CAD) {
+			switch(sample_style_) {
+			case SampleStyle::kTearpot:
+				glPushMatrix();
+				glRotatef(90.0, 1.0, 0.0, 0.0);
+				glutSolidTeapot(30.0);
+				glPopMatrix();
+					break;
+			case SampleStyle::kTorus:
+				glutSolidTorus(30.0, 50, 16, 256);
+				break;
+			case SampleStyle::kCube:
+				glutSolidCube(30.0);
+				break;
+			case SampleStyle::kSphere:
+				glutSolidSphere(30.0, 16, 256);
+				break;
+			case SampleStyle::kCone:
+				glutSolidCone(30.0, 50.0, 32, 128);
+				break;
+			case SampleStyle::kDodecahedron:
+				glScaled(10.0, 10.0, 10.0);
+				glutSolidDodecahedron();
+				break;
+			case SampleStyle::kIcosahedron:
+				glScaled(10.0, 10.0, 10.0);
+				glutSolidIcosahedron();
+				break;
+			case SampleStyle::kOctahedron:
+				glScaled(10.0, 10.0, 10.0);
+				glutSolidOctahedron();
+				break;
+			case SampleStyle::kTetrahedron:
+				glScaled(10.0, 10.0, 10.0);
+				glutSolidTetrahedron();
+				break;
+			default:
+				break;
+			}
+		} else if (mode_cad_ == ModelCad::WIRE_FRAME_MODE_CAD) {
+			switch(sample_style_) {
+			case SampleStyle::kTearpot:
+				glPushMatrix();
+				glRotatef(90.0, 1.0, 0.0, 0.0);
+				glutWireTeapot(30.0);
+				glPopMatrix();
+				break;
+			case SampleStyle::kTorus:
+				glutWireTorus(30.0, 50, 16, 256);
+				break;
+			case SampleStyle::kCube:
+				glutWireCube(30.0);
+				break;
+			case SampleStyle::kSphere:
+				glutWireSphere(30.0, 16, 256);
+				break;
+			case SampleStyle::kCone:
+				glutWireCone(30.0, 50.0, 32, 128);
+				break;
+			case SampleStyle::kDodecahedron:
+				glScaled(10.0, 10.0, 10.0);
+				glutWireDodecahedron();
+				break;
+			case SampleStyle::kIcosahedron:
+				glScaled(10.0, 10.0, 10.0);
+				glutWireIcosahedron();
+				break;
+			case SampleStyle::kOctahedron:
+				glScaled(10.0, 10.0, 10.0);
+				glutWireOctahedron();
+				break;
+			case SampleStyle::kTetrahedron:
+				glScaled(10.0, 10.0, 10.0);
+				glutWireTetrahedron();
+				break;
+			default:
+				break;
+			}
+		}
+	}
 }
