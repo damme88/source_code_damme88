@@ -1,0 +1,22 @@
+# 
+# Wavefront material file
+# Converted by 3D Exploration 1.2.54
+# XDimension Software
+# http://www.xdsoft.com/explorer/
+# 
+newmtl MAT_829AB8
+	 Ka 0.117647 0.117647 0.117647
+	 Kd 0.752941 0.752941 0.752941
+	 Ks 0.752941 0.752941 0.752941
+	 illum 0
+newmtl WOOD - DARK RED
+	 Ka 0 0 0
+	 Kd 0 0 0
+	 Ks 0.862745 0.807843 0.639216
+	 illum 0
+	 map_Kd BUBINGA.GIF
+newmtl BRASS
+	 Ka 0.584314 0.462745 0.356863
+	 Kd 0.784314 0.666667 0.462745
+	 Ks 1 1 1
+	 illum 0

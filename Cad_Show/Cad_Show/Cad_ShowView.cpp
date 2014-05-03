@@ -516,6 +516,10 @@ void CCad_ShowView::RenderScene () {
   DrawCad();
 	// Draw Sample
 	DrawSampleOpengl();
+	// Draw Obj
+	glScalef(500.0f, 500.0f, 500.0f);
+	glCallList(theApp.GetObjList());
+
   DisableSetupLigting();
   glPopMatrix();
 }

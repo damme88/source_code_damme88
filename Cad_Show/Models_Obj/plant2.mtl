@@ -1,0 +1,34 @@
+# 
+# Wavefront material file
+# Converted by 3D Exploration 1.2.54
+# XDimension Software
+# http://www.xdsoft.com/explorer/
+# 
+newmtl MAT_2F60684
+	 Ka 0.117647 0.117647 0.117647
+	 Kd 0.752941 0.752941 0.752941
+	 Ks 0.752941 0.752941 0.752941
+	 illum 0
+newmtl default_1
+	 Ka 0.298039 0.298039 0.298039
+	 Kd 0.4 0.4 0.4
+	 Ks 1 1 1
+	 illum 0
+newmtl plantdirt (sub)
+	 Ka 0.74902 0.74902 0.74902
+	 Kd 0.4 0.4 0.4
+	 Ks 1 1 1
+	 illum 0
+	 map_Kd PNTDIRT.TIF
+newmtl plant2lf (sub)
+	 Ka 0.321569 0.301961 0.207843
+	 Kd 0.921569 0.87451 0.603922
+	 Ks 0.721569 0.752941 0.670588
+	 illum 0
+	 map_Kd PLNTLF.TIF
+newmtl plant2pot (sub)
+	 Ka 1 1 1
+	 Kd 0.784314 0.784314 0.784314
+	 Ks 0.823529 0.823529 0.823529
+	 illum 0
+	 map_Kd PLNTPOT.TIF

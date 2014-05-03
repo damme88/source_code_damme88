@@ -120,6 +120,7 @@
     <ClInclude Include="Cad_ShowDoc.h" />
     <ClInclude Include="Cad_ShowView.h" />
     <ClInclude Include="DialogBar.h" />
+    <ClInclude Include="glm.h" />
     <ClInclude Include="InforBar.h" />
     <ClInclude Include="MainFrm.h" />
     <ClInclude Include="Resource.h" />
@@ -132,6 +133,7 @@
     <ClCompile Include="Cad_ShowDoc.cpp" />
     <ClCompile Include="Cad_ShowView.cpp" />
     <ClCompile Include="DialogBar.cpp" />
+    <ClCompile Include="glm.cpp" />
     <ClCompile Include="InforBar.cpp" />
     <ClCompile Include="MainFrm.cpp" />
     <ClCompile Include="SampleOpengl.cpp" />

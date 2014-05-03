@@ -1,0 +1,16 @@
+# 
+# Wavefront material file
+# Converted by 3D Exploration 1.2.5
+# XDimension Software
+# http://www.xdsoft.com/explorer/
+# 
+newmtl MAT_97D0E4
+	 Ka 0.117647 0.117647 0.117647
+	 Kd 0.752941 0.752941 0.752941
+	 Ks 0.752941 0.752941 0.752941
+	 illum 0
+newmtl COLOR137
+	 Ka 0 0.121569 0.121569
+	 Kd 0 0.27451 0.278431
+	 Ks 1 1 1
+	 illum 0

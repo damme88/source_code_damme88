@@ -1,0 +1,29 @@
+# 
+# Wavefront material file
+# Converted by 3D Exploration 1.2.54
+# XDimension Software
+# http://www.xdsoft.com/explorer/
+# 
+newmtl MAT_8B5200
+	 Ka 0.117647 0.117647 0.117647
+	 Kd 0.752941 0.752941 0.752941
+	 Ks 0.752941 0.752941 0.752941
+	 illum 0
+newmtl BOOK PAGES
+	 Ka 0 0 0
+	 Kd 0 0 0
+	 Ks 0 0 0
+	 illum 0
+	 map_Kd BOOK_PAG.CEL
+newmtl BOOK COVER TLAND
+	 Ka 0 0 0
+	 Kd 0 0 0
+	 Ks 1 1 1
+	 illum 0
+	 map_Kd BOOKCOV1.CEL
+newmtl TARGA HOUSE TEX
+	 Ka 0 0 0
+	 Kd 0 0 0
+	 Ks 0 0 0
+	 illum 0
+	 map_Kd BOOKCOV1.CEL

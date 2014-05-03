@@ -1,0 +1,32 @@
+# 
+# Wavefront material file
+# Converted by 3D Exploration 1.2.54
+# XDimension Software
+# http://www.xdsoft.com/explorer/
+# 
+newmtl MAT_829AB8
+	 Ka 0.117647 0.117647 0.117647
+	 Kd 0.752941 0.752941 0.752941
+	 Ks 0.752941 0.752941 0.752941
+	 illum 0
+newmtl GREY MATTE
+	 Ka 0 0 0
+	 Kd 0.431373 0.431373 0.431373
+	 Ks 0.623529 0.623529 0.623529
+	 illum 0
+newmtl R30G30B30A100
+	 Ka 0 0 0
+	 Kd 0.301961 0.301961 0.301961
+	 Ks 1 1 1
+	 illum 0
+newmtl CHROME TUSCANY
+	 Ka 0 0 0
+	 Kd 1 1 1
+	 Ks 0.882353 0.843137 0.760784
+	 illum 0
+newmtl BLUE BUMPY CLOTH
+	 Ka 0 0 0
+	 Kd 0 0 0.454902
+	 Ks 0 0 0
+	 illum 0
+	 map_Kd FABRIC2.JPG

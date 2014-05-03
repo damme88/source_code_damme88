@@ -28,6 +28,8 @@ void DialogBar::DoDataExchange(CDataExchange* pDX)
 {
   CFormView::DoDataExchange(pDX);
   DDX_Control(pDX, IDC_RADIO_SOLID_CAD, solid_radio_button_);
+	DDX_Control(pDX, IDC_RADIO_WIRE_FRAME_CAD, wire_radio_button_);
+	DDX_Control(pDX, IDC_RADIO_POINT_CAD, point_radio_button_);
   DDX_Control(pDX, IDC_BACKGROUND_COLOR, background_color_);
   DDX_Control(pDX, IDC_ROTATE, checkbox_rotate_);
   DDX_Control(pDX, IDC_SPEED_ROTATE, speed_rotate_);
@@ -79,7 +81,10 @@ void DialogBar::OnInitialUpdate() {
   GetCadShowView()->IsRotY(is_rot_y_);
   GetCadShowView()->IsRotZ(is_rot_z_);
   solid_radio_button_.SetCheck(BST_CHECKED);
-  // set checkbox is not checked at first time
+	wire_radio_button_.SetCheck(BST_UNCHECKED);
+	point_radio_button_.SetCheck(BST_UNCHECKED);
+
+  // set check box is not checked at first time
   checkbox_rotate_.SetCheck(is_check_rotate_ ? 1 : 0);
   speed_rotate_.EnableWindow(is_check_rotate_);
   cb_rot_x_.EnableWindow(is_check_rotate_);
@@ -165,12 +170,12 @@ void DialogBar::OnBnClickeCheckboxRotation() {
     cb_rot_x_.EnableWindow(true);
     cb_rot_y_.EnableWindow(true);
     cb_rot_z_.EnableWindow(true);
-    cb_rot_x_.SetCheck(1);
+    cb_rot_x_.SetCheck(0);
     cb_rot_y_.SetCheck(0);
-    cb_rot_z_.SetCheck(0);
-    is_rot_x_ = true;
+    cb_rot_z_.SetCheck(1);
+    is_rot_x_ = false;
     is_rot_y_ = false;
-    is_rot_z_ = false;
+    is_rot_z_ = true;
     GetCadShowView()->IsRotX(is_rot_x_);
     GetCadShowView()->IsRotY(is_rot_y_);
     GetCadShowView()->IsRotZ(is_rot_z_);

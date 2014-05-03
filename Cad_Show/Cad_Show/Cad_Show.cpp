@@ -11,6 +11,7 @@
 #include "Cad_ShowDoc.h"
 #include "Cad_ShowView.h"
 #include "Cad_Point.h"
+#include "glm.h"
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
@@ -137,6 +138,7 @@ BOOL CCad_ShowApp::InitInstance()
 	if (!ProcessShellCommand(cmdInfo))
 		return FALSE;
 
+		m_pMainWnd->DragAcceptFiles();
 	// The one and only window has been initialized, so show and update it
 	m_pMainWnd->ShowWindow(SW_SHOW);
 	m_pMainWnd->UpdateWindow();
@@ -217,7 +219,14 @@ BOOL CCad_ShowApp::LoadState(LPCTSTR lpszSectionName, CFrameImpl *pFrameImpl) {
 }
 
 CDocument*  CCad_ShowApp::OpenDocumentFile(LPCTSTR lpszFileName) {
-	OpenFile3D(lpszFileName);
+	CString str_extension = GetExtensionFile(lpszFileName);
+	CString str_stl = _T("stl");
+	CString str_obj = _T("obj");
+	if (str_extension.CompareNoCase(str_stl.GetString()) == false) {
+	  OpenFile3DStl(lpszFileName);
+  } else if (str_extension.CompareNoCase(str_obj) == false) {
+	  OpenFile3DObj(lpszFileName);
+	}
   return CWinAppEx::OpenDocumentFile(lpszFileName);
 }
 
@@ -225,7 +234,7 @@ CDocument*  CCad_ShowApp::OpenDocumentFile(LPCTSTR lpszFileName) {
 void CCad_ShowApp::OnFileOpen() {
 	CFileDialog dlg(TRUE, L"", L"",
 		OFN_HIDEREADONLY | OFN_FILEMUSTEXIST,
-		_T("3D File (*.STL)|*.STL||"));
+		_T("3D Stl File (*.STL)|*.STL|3d obj File(*.obj)|*.obj||"));
   CString file_name_stl = L"";
   // Get file name 
   if (IDOK == dlg.DoModal()) {
@@ -234,7 +243,7 @@ void CCad_ShowApp::OnFileOpen() {
   }
 }
 
-void CCad_ShowApp::OpenFile3D(LPCTSTR file_path) { 
+void CCad_ShowApp::OpenFile3DStl(LPCTSTR file_path) { 
 	CString file_name_stl = (CString)file_path;
 	UINT n_size = 0;
 	char str[MAX_PATH];
@@ -375,6 +384,31 @@ void CCad_ShowApp::OpenFile3D(LPCTSTR file_path) {
   }
 }
 
+void CCad_ShowApp::OpenFile3DObj(LPCTSTR file_path) {
+	GLfloat scale_factor = 0.0f;
+	GLMmodel *object_1;
+	CString str = file_path;
+	str.Replace(L"\\", L"//");
+	// convert to char
+	char * strch = new char [MAX_PATH];
+	long nsize = str.GetLength();
+	memset(strch, 0, nsize);
+	wcstombs(strch, str, nsize+1);
+
+
+	object_1 = glmReadOBJ(strch);
+	if (!scale_factor)
+		scale_factor = glmUnitize(object_1);
+	else 
+		glmScale(object_1, scale_factor);
+
+	glmScale(object_1, 2.5);
+
+	obj_list_ = glmList(object_1, GLM_SMOOTH);
+	glmDelete(object_1);
+}
+
+
 void CCad_ShowApp::FreePoint() {
   if (gl_point_ != NULL) {
     delete [] gl_point_;
@@ -409,4 +443,12 @@ bool CCad_ShowApp::IsAssciiFormat(const char * path_file) {
     }
   }
   return true;
+}
+
+CString CCad_ShowApp::GetExtensionFile(LPCTSTR file_path) {
+  CString str = file_path;
+	int dot_pos = str.ReverseFind('.');
+	int length = str.GetLength();
+	CString str_ex = str.Mid(dot_pos + 1, length-1);
+	return str_ex;
 }

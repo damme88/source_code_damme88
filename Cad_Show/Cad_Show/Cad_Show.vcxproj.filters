@@ -19,6 +19,9 @@
     <Filter Include="Source Files\InfoBar">
       <UniqueIdentifier>{6e163501-2375-444f-9333-59dbbfe2b90f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\glm">
+      <UniqueIdentifier>{53559860-b9e1-4310-85f5-231afc4b9208}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="ReadMe.txt" />
@@ -108,6 +111,9 @@
     <ClInclude Include="SampleOpengl.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="glm.h">
+      <Filter>Source Files\glm</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Cad_Show.cpp">
@@ -133,6 +139,9 @@
     </ClCompile>
     <ClCompile Include="SampleOpengl.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="glm.cpp">
+      <Filter>Source Files\glm</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

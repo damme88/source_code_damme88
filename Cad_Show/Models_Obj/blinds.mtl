@@ -1,0 +1,21 @@
+# 
+# Wavefront material file
+# Converted by 3D Exploration 1.2.54
+# XDimension Software
+# http://www.xdsoft.com/explorer/
+# 
+newmtl MAT_829AB8
+	 Ka 0.117647 0.117647 0.117647
+	 Kd 0.752941 0.752941 0.752941
+	 Ks 0.752941 0.752941 0.752941
+	 illum 0
+newmtl BLACK PLASTIC
+	 Ka 0.211765 0.211765 0.211765
+	 Kd 0.211765 0.211765 0.211765
+	 Ks 1 1 1
+	 illum 0
+newmtl WHITE PAINT
+	 Ka 1 1 1
+	 Kd 1 1 1
+	 Ks 1 1 1
+	 illum 0

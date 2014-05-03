@@ -1,0 +1,27 @@
+# 
+# Wavefront material file
+# Converted by 3D Exploration 1.2.54
+# XDimension Software
+# http://www.xdsoft.com/explorer/
+# 
+newmtl MAT_8B5200
+	 Ka 0.117647 0.117647 0.117647
+	 Kd 0.752941 0.752941 0.752941
+	 Ks 0.752941 0.752941 0.752941
+	 illum 0
+newmtl WOOD KIT_CAB
+	 Ka 0 0 0
+	 Kd 0 0 0
+	 Ks 0.901961 0.823529 0.635294
+	 illum 0
+	 map_Kd KIT_CAB1.CEL
+newmtl GLASS 2
+	 Ka 0 0 0
+	 Kd 0 0 0
+	 Ks 1 1 1
+	 illum 0
+newmtl BRASS CUSTOM
+	 Ka 0.462745 0.333333 0.145098
+	 Kd 0.545098 0.396078 0.180392
+	 Ks 0.517647 0.403922 0.247059
+	 illum 0

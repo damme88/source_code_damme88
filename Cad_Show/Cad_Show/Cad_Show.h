@@ -40,15 +40,19 @@ private:
   BOOL allow_draw_data_;
   Triangle *gl_point_;
   Vector *normal_vector_;
+	GLuint obj_list_;
 public:
 	COLORREF option_color_glback;
 public:
   void OnFileOpen();
-	void OpenFile3D(LPCTSTR file_path);
+	void OpenFile3DStl(LPCTSTR file_path);
+	void OpenFile3DObj(LPCTSTR file_path);
+	CString GetExtensionFile(LPCTSTR file_path);
   long GetNumberOfPoint() { return number_of_point_;}
   BOOL GetStateDrawStl() {return allow_draw_data_;}
   void SetStatusDrawCad(bool is_draw) {allow_draw_data_ = is_draw;}
   Triangle* GetTrianglePoint() {return gl_point_;}
+	GLuint GetObjList() {return obj_list_;}
   void FreePoint();
   Vector* GetNormalVector () {return normal_vector_;} 
 

@@ -44,6 +44,8 @@ protected:
 // add new variable and function 
 private:
   CButton solid_radio_button_;
+	CButton wire_radio_button_;
+	CButton point_radio_button_;
   CButton checkbox_rotate_;
   bool is_check_rotate_;
   CSliderCtrl speed_rotate_;

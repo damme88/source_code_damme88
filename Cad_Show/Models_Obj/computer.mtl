@@ -1,0 +1,64 @@
+# 
+# Wavefront material file
+# Converted by 3D Exploration 1.2.54
+# XDimension Software
+# http://www.xdsoft.com/explorer/
+# 
+newmtl MAT_7BAEE0
+	 Ka 0.117647 0.117647 0.117647
+	 Kd 0.752941 0.752941 0.752941
+	 Ks 0.752941 0.752941 0.752941
+	 illum 0
+newmtl BLACK PLASTIC
+	 Ka 0 0 0
+	 Kd 0 0 0
+	 Ks 0.729412 0.729412 0.729412
+	 illum 0
+newmtl STEPS PIC
+	 Ka 0 0 0
+	 Kd 0 0 0
+	 Ks 1 1 1
+	 illum 0
+	 map_Kd STEPS.GIF
+newmtl DARK GRAY MATTE
+	 Ka 0.227451 0.227451 0.227451
+	 Kd 0.227451 0.227451 0.227451
+	 Ks 0.227451 0.227451 0.227451
+	 illum 0
+newmtl GREEN NEON
+	 Ka 0.0431373 1 0.0431373
+	 Kd 0.0431373 1 0.0431373
+	 Ks 0.607843 1 0.607843
+	 illum 0
+newmtl GREEN MATTE
+	 Ka 0.321569 0.678431 0.556863
+	 Kd 0.321569 0.678431 0.556863
+	 Ks 0.552941 0.784314 0.705882
+	 illum 0
+newmtl CPU FACE (ALR)
+	 Ka 1 1 1
+	 Kd 1 1 1
+	 Ks 1 1 1
+	 illum 0
+	 map_Kd ALR_CPU.CEL
+newmtl CREAM PAINT, ALR
+	 Ka 0.788235 0.709804 0.556863
+	 Kd 0.788235 0.709804 0.556863
+	 Ks 0.960784 0.952941 0.917647
+	 illum 0
+newmtl KEYBOARD ALR
+	 Ka 1 1 1
+	 Kd 1 1 1
+	 Ks 1 1 1
+	 illum 0
+	 map_Kd ALR_KBD.CEL
+newmtl GOLDSTAR TEXT
+	 Ka 0 0 0.568627
+	 Kd 0 0 0.568627
+	 Ks 0 0 0
+	 illum 0
+newmtl VERT OPACITY LIN
+	 Ka 0.301961 0.301961 0.301961
+	 Kd 0.301961 0.301961 0.301961
+	 Ks 0 0 0
+	 illum 0
