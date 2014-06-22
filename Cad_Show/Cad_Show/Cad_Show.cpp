@@ -12,6 +12,7 @@
 #include "Cad_ShowView.h"
 #include "Cad_Point.h"
 #include "glm.h"
+#include "FileWork.h"
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
@@ -395,17 +396,21 @@ void CCad_ShowApp::OpenFile3DObj(LPCTSTR file_path) {
 	memset(strch, 0, nsize);
 	wcstombs(strch, str, nsize+1);
 
+	if (FileWrk::FileWork::ChecIsExistFile(strch)) {
 
-	object_1 = glmReadOBJ(strch);
-	if (!scale_factor)
-		scale_factor = glmUnitize(object_1);
-	else 
-		glmScale(object_1, scale_factor);
+		object_1 = glmReadOBJ(strch);
+		if (!scale_factor)
+			scale_factor = glmUnitize(object_1);
+		else 
+			glmScale(object_1, scale_factor);
 
-	glmScale(object_1, 2.5);
+		glmScale(object_1, 2.5);
 
-	obj_list_ = glmList(object_1, GLM_SMOOTH);
-	glmDelete(object_1);
+		obj_list_ = glmList(object_1, GLM_SMOOTH);
+		glmDelete(object_1);
+	} else {
+		;
+	}
 }
 
 

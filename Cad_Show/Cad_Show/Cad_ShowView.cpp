@@ -1073,6 +1073,7 @@ void CCad_ShowView::ViewFullscreen() {
 void CCad_ShowView::DrawSampleOpengl() {
   if (is_draw_sample_) {
 		if (mode_cad_ == ModelCad::SOLID_MODE_CAD) {
+			SetUpLight();
 			switch(sample_style_) {
 			case SampleStyle::kTearpot:
 				glPushMatrix();
@@ -1112,6 +1113,7 @@ void CCad_ShowView::DrawSampleOpengl() {
 				break;
 			}
 		} else if (mode_cad_ == ModelCad::WIRE_FRAME_MODE_CAD) {
+			DisableSetupLigting();
 			switch(sample_style_) {
 			case SampleStyle::kTearpot:
 				glPushMatrix();

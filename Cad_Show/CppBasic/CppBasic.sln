@@ -1,9 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Cad_Show", "Cad_Show\Cad_Show.vcxproj", "{1F136EFD-60F1-45A2-A182-8BBD530505ED}"
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CppBasic", "CppBasic\CppBasic\CppBasic.vcxproj", "{F464B6DC-926D-4619-8187-13426974E467}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CppBasic", "CppBasic\CppBasic.vcxproj", "{F464B6DC-926D-4619-8187-13426974E467}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -11,10 +9,6 @@ Global
 		Release|Win32 = Release|Win32
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{1F136EFD-60F1-45A2-A182-8BBD530505ED}.Debug|Win32.ActiveCfg = Debug|Win32
-		{1F136EFD-60F1-45A2-A182-8BBD530505ED}.Debug|Win32.Build.0 = Debug|Win32
-		{1F136EFD-60F1-45A2-A182-8BBD530505ED}.Release|Win32.ActiveCfg = Release|Win32
-		{1F136EFD-60F1-45A2-A182-8BBD530505ED}.Release|Win32.Build.0 = Release|Win32
 		{F464B6DC-926D-4619-8187-13426974E467}.Debug|Win32.ActiveCfg = Debug|Win32
 		{F464B6DC-926D-4619-8187-13426974E467}.Debug|Win32.Build.0 = Debug|Win32
 		{F464B6DC-926D-4619-8187-13426974E467}.Release|Win32.ActiveCfg = Release|Win32
