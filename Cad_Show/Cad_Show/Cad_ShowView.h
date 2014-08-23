@@ -103,6 +103,14 @@ public: // create from serialization only
 	void set_is_draw_sample(bool is_draw_sample) {is_draw_sample_ = is_draw_sample; InvalidateRect(NULL, FALSE);}
 	void set_current_sample(unsigned int st) {sample_style_ = st; InvalidateRect(NULL, FALSE);}
 // Generated message map functions
+	GLfloat* GetAmbien() const {return pAmbien_;}
+	GLfloat* GetSpecular() const {return pSpecular_;}
+	GLfloat* GetDiff()const {return pDiff_;}
+	GLfloat GetShininess() const {return shininess_;}
+	void SetAmbien(GLfloat* pAmbien) {pAmbien_ = pAmbien; InvalidateRect(NULL, FALSE);}
+	void SetSpecular(GLfloat* pSpecular) {pSpecular_ = pSpecular; InvalidateRect(NULL, FALSE);}
+	void SetDiff(GLfloat* pDiff) {pDiff_ = pDiff; InvalidateRect(NULL, FALSE);}
+	void SetShininess(GLfloat shininess) {shininess_ = shininess; InvalidateRect(NULL, FALSE);}
 protected:
 	virtual BOOL OnPreparePrinting(CPrintInfo* pInfo);
 	virtual void OnBeginPrinting(CDC* pDC, CPrintInfo* pInfo);
@@ -193,6 +201,11 @@ private:
 	GLdouble xPos_;
 	GLdouble yPos_;
 	GLdouble zPos_;
+
+	GLfloat *pAmbien_;
+	GLfloat *pSpecular_;
+	GLfloat *pDiff_;
+	GLfloat  shininess_;
 };
 
 #ifndef _DEBUG  // debug version in Cad_ShowView.cpp

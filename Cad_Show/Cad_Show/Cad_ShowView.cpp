@@ -106,10 +106,43 @@ CCad_ShowView::CCad_ShowView() :
   phi_ = 45.0f;
 	is_draw_sample_ = false;
   //infor_view_ = NULL;
+
+	pAmbien_ = new GLfloat[4];
+	pAmbien_[0] = 0.5f;
+	pAmbien_[1] = 0.5f;
+	pAmbien_[2] = 0.5f;
+	pAmbien_[3] = 1.0f;
+
+	pSpecular_ = new GLfloat[4];
+	pSpecular_[0] = 0.5f;
+	pSpecular_[1] = 0.5f;
+	pSpecular_[2] = 0.5f;
+	pSpecular_[3] = 1.0f;
+
+	pDiff_ = new GLfloat[4];
+	pDiff_[0] = 0.5f;
+	pDiff_[1] = 0.5f;
+	pDiff_[2] = 0.5f;
+	pDiff_[3] = 1.0f;
+
+	shininess_ = 50;
 }
 
 CCad_ShowView::~CCad_ShowView()
 {
+	if (pAmbien_ != NULL) {
+		delete [] pAmbien_;
+		pAmbien_ = NULL;
+	}
+
+	if (pSpecular_ != NULL) {
+		delete [] pSpecular_;
+		pSpecular_ = NULL;
+	}
+	if (pDiff_ != NULL) {
+		delete [] pDiff_;
+		pDiff_ = NULL;
+	}
 }
 
 BOOL CCad_ShowView::PreCreateWindow(CREATESTRUCT& cs)
@@ -621,10 +654,12 @@ void CCad_ShowView::SetUpLight() {
   glEnable(GL_DEPTH_TEST);
   //glDepthFunc(GL_LESS);
 
-	// prepare light source
-	GLfloat ambient[]  = {0.7f, 0.7f, 0.7f, 1.0f};
-	GLfloat diffuse[]  = {0.8f, 0.8f, 0.8f, 1.0f};
-	GLfloat specular[] = {0.5f, 0.5f, 0.5f, 1.0f};
+
+	glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, pAmbien_);
+	glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, pSpecular_);
+	glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, pDiff_);
+	glMateriali(GL_FRONT, GL_SHININESS, shininess_);
+
 	GLfloat position[] = {10000.0f, 10000.0f, 50000.0f, 1.0f};
 	GLfloat global_ambient[] = { 0.8f, 0.8f, 0.8f, 1 };
 

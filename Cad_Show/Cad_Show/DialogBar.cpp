@@ -7,6 +7,7 @@
 #include "MainFrm.h"
 #include "Cad_ShowView.h"
 #include "SampleOpengl.h"
+#include "DlgMaterialLight.h"
 // DialogBar
 
 IMPLEMENT_DYNCREATE(DialogBar, CFormView)
@@ -22,6 +23,9 @@ DialogBar::DialogBar()
 
 DialogBar::~DialogBar()
 {
+		pAmbien_ = NULL;
+		pSpecular_ = NULL;
+		pDiff_ = NULL;
 }
 
 void DialogBar::DoDataExchange(CDataExchange* pDX)
@@ -51,6 +55,7 @@ BEGIN_MESSAGE_MAP(DialogBar, CFormView)
   ON_BN_CLICKED(IDC_ROTATE_Y, &DialogBar::OnBnClickedRotateY)
   ON_BN_CLICKED(IDC_ROTATE_Z, &DialogBar::OnBnClickedRotateZ)
 	ON_BN_CLICKED(IDC_BTN_SAMPLE_OPENGL, &DialogBar::OnBnClickedSample)
+	ON_BN_CLICKED(IDC_BTN_MAT_LIGHT, &DialogBar::ShowMaterialLight)
 END_MESSAGE_MAP()
 
 
@@ -236,5 +241,25 @@ void DialogBar::OnBnClickedSample() {
 		GetCadShowView()->set_is_draw_sample(true);
 		unsigned int style = dlg.GetCurrentSample();
 		GetCadShowView()->set_current_sample(style);
+	}
+}
+
+void DialogBar::ShowMaterialLight() {
+
+	pAmbien_ = GetCadShowView()->GetAmbien();
+	pSpecular_ = GetCadShowView()->GetSpecular();
+	pDiff_ = GetCadShowView()->GetDiff();
+	shininess_ = GetCadShowView()->GetShininess();
+
+  DlgMaterialLight dlg(pAmbien_, pSpecular_, pDiff_, shininess_);
+	if (dlg.DoModal() == IDOK) {
+		pAmbien_ = dlg.GetAmbien();
+		pSpecular_ = dlg.GetSpecular();
+		pDiff_ = dlg.GetDiffuse();
+		shininess_ = dlg.GetShininess();
+	  GetCadShowView()->SetAmbien(pAmbien_);
+		GetCadShowView()->SetSpecular(pSpecular_);
+		GetCadShowView()->SetDiff(pDiff_);
+		GetCadShowView()->SetShininess(shininess_);
 	}
 }

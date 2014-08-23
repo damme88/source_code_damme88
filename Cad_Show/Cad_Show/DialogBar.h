@@ -40,6 +40,7 @@ protected:
   afx_msg void OnBnClickedRotateY();
   afx_msg void OnBnClickedRotateZ();
 	afx_msg void OnBnClickedSample();
+	afx_msg void ShowMaterialLight();
 	DECLARE_MESSAGE_MAP()
 // add new variable and function 
 private:
@@ -59,6 +60,11 @@ private:
   CButton cb_rot_x_;
   CButton cb_rot_y_;
   CButton cb_rot_z_;
+
+	GLfloat* pAmbien_;
+	GLfloat* pSpecular_;
+	GLfloat* pDiff_;
+	GLfloat shininess_;
 };
 
 
