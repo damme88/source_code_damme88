@@ -18,8 +18,10 @@ DlgMaterialLight::DlgMaterialLight(CWnd* pParent /*=NULL*/)
 
 DlgMaterialLight::DlgMaterialLight(GLfloat ambien[], GLfloat specular[],
 	                                 GLfloat diffuse[],GLfloat shininess,
+																	 unsigned int current_mat_type,
 																	 CWnd* pParent /*=NULL*/)
-: CDialogEx(DlgMaterialLight::IDD, pParent) {
+																	 : CDialogEx(DlgMaterialLight::IDD, pParent)
+{
 
 	ambien_[0] = ambien[0];
 	ambien_[1] = ambien[1];
@@ -36,6 +38,7 @@ DlgMaterialLight::DlgMaterialLight(GLfloat ambien[], GLfloat specular[],
 	diffuse_[2] = diffuse[2];
 	diffuse_[3] = diffuse[3];
 	shininess_ = shininess;
+	mat_current_sample_ = current_mat_type;
 }
 
 DlgMaterialLight::~DlgMaterialLight()
@@ -45,19 +48,21 @@ DlgMaterialLight::~DlgMaterialLight()
 void DlgMaterialLight::DoDataExchange(CDataExchange* pDX)
 {
 	CDialogEx::DoDataExchange(pDX);
-  DDX_Control(pDX, IDC_EDT_AM_RED, ambien_edt_[0]);
-  DDX_Control(pDX, IDC_EDT_AM_GREEN, ambien_edt_[1]);
-  DDX_Control(pDX, IDC_EDT_AM_BLUE, ambien_edt_[2]);
+	DDX_Control(pDX, IDC_EDT_AM_RED, ambien_edt_[0]);
+	DDX_Control(pDX, IDC_EDT_AM_GREEN, ambien_edt_[1]);
+	DDX_Control(pDX, IDC_EDT_AM_BLUE, ambien_edt_[2]);
 	DDX_Control(pDX, IDC_EDT_AM_ANPHA, ambien_edt_[3]);
-  DDX_Control(pDX, IDC_EDT_SPEC_RED, specular_edt_[0]);
-  DDX_Control(pDX, IDC_EDT_SPEC_GREEN, specular_edt_[1]);
-  DDX_Control(pDX, IDC_EDT_SPEC_BLUE, specular_edt_[2]);
-  DDX_Control(pDX, IDC_EDT_SPEC_ANPHA, specular_edt_[3]);
-  DDX_Control(pDX, IDC_EDT_DIFF_RED, diffuse_edt_[0]);
-  DDX_Control(pDX, IDC_EDT_DIFF_GREEN, diffuse_edt_[1]);
-  DDX_Control(pDX, IDC_EDT_DIFF_BLUE, diffuse_edt_[2]);
+	DDX_Control(pDX, IDC_EDT_SPEC_RED, specular_edt_[0]);
+	DDX_Control(pDX, IDC_EDT_SPEC_GREEN, specular_edt_[1]);
+	DDX_Control(pDX, IDC_EDT_SPEC_BLUE, specular_edt_[2]);
+	DDX_Control(pDX, IDC_EDT_SPEC_ANPHA, specular_edt_[3]);
+	DDX_Control(pDX, IDC_EDT_DIFF_RED, diffuse_edt_[0]);
+	DDX_Control(pDX, IDC_EDT_DIFF_GREEN, diffuse_edt_[1]);
+	DDX_Control(pDX, IDC_EDT_DIFF_BLUE, diffuse_edt_[2]);
 	DDX_Control(pDX, IDC_EDT_DIFF_ANPHA, diffuse_edt_[3]);
-  DDX_Control(pDX, IDC_EDT_SHININESS, shininess_edt_);
+	DDX_Control(pDX, IDC_EDT_SHININESS, shininess_edt_);
+	DDX_Control(pDX, IDC_CB_MAT_SAMPLE, combo_material_sample_);
+	DDX_Control(pDX, IDC_MAT_SAMPLE, material_picture_sample_);
 }
 
 
@@ -75,6 +80,7 @@ BEGIN_MESSAGE_MAP(DlgMaterialLight, CDialogEx)
 	ON_EN_CHANGE(IDC_EDT_DIFF_BLUE, EditDiffBlue)
 	ON_EN_CHANGE(IDC_EDT_DIFF_ANPHA, EditDiffAnpha)
 	ON_EN_CHANGE(IDC_EDT_SHININESS, EditShininess)
+	ON_CBN_SELENDOK(IDC_CB_MAT_SAMPLE, SelectItemCombox)
 END_MESSAGE_MAP()
 
 
@@ -123,9 +129,61 @@ BOOL DlgMaterialLight::OnInitDialog() {
 	str.Format(_T("%f"), shininess_);
 	shininess_edt_.SetWindowText(str);
 
+	combo_material_sample_.AddString(_T("Red"));
+	combo_material_sample_.AddString(_T("Green"));
+	combo_material_sample_.AddString(_T("Blue"));
+	combo_material_sample_.AddString(_T("Yellow"));
+	combo_material_sample_.AddString(_T("Pink"));
+	combo_material_sample_.AddString(_T("Gray"));
+
+	combo_material_sample_.SetCurSel(mat_current_sample_);
+	LoadBitmapSample(mat_current_sample_);
+
 	UpdateData(FALSE);
 	return TRUE;
 }
+
+void DlgMaterialLight::LoadBitmapSample(unsigned int mat_type) {
+	switch (mat_type) {
+	case SampleMaterial::RED: {
+		cbitmap_.Detach();
+		cbitmap_.LoadBitmap(IDB_MAT_RED);
+		material_picture_sample_.SetBitmap((HBITMAP)cbitmap_);
+		break;
+	}
+	case SampleMaterial::GREEN: {
+		cbitmap_.Detach();
+		cbitmap_.LoadBitmap(IDB_MAT_GREEN);
+		material_picture_sample_.SetBitmap((HBITMAP)cbitmap_);
+		break;
+	}
+	case SampleMaterial::BLUE:{
+		cbitmap_.Detach();
+		cbitmap_.LoadBitmap(IDB_MAT_BLUE);
+		material_picture_sample_.SetBitmap((HBITMAP)cbitmap_);
+		break;
+														}
+	case SampleMaterial::YELLOW: {
+		cbitmap_.Detach();
+		cbitmap_.LoadBitmap(IDB_MAT_YELLOW);
+		material_picture_sample_.SetBitmap((HBITMAP)cbitmap_);
+		break;
+															 }
+	case SampleMaterial::PINK: {
+		cbitmap_.Detach();
+		cbitmap_.LoadBitmap(IDB_MAT_PINK);
+		material_picture_sample_.SetBitmap((HBITMAP)cbitmap_);
+		break;
+														 }
+	case SampleMaterial::GRAY: {
+		cbitmap_.Detach();
+		cbitmap_.LoadBitmap(IDB_MAT_GRAY);
+		material_picture_sample_.SetBitmap((HBITMAP)cbitmap_);
+		break;
+														 }
+	}
+}
+
 
 void DlgMaterialLight::EditAmbienRed() {
 	CString str = _T("");
@@ -191,4 +249,97 @@ void DlgMaterialLight::EditShininess() {
 	CString str = _T("");
 	shininess_edt_.GetWindowText(str);
 	shininess_ = _tstof(str);
+}
+
+void DlgMaterialLight::SelectItemCombox() {
+	mat_current_sample_ = combo_material_sample_.GetCurSel();
+	LoadBitmapSample(mat_current_sample_);
+	SetMatDataSample((SampleMaterial)mat_current_sample_);
+}
+
+void DlgMaterialLight::SetMatDataSample(SampleMaterial type) {
+  switch(type) {
+	case SampleMaterial::RED: {
+		SetDataIntoEditBox(1.0, 0.0, 0.0, 1.0,
+			                 1.0, 1.0, 1.0, 1.0,
+											 1.0, 0.0, 0.0, 1.0,
+											 50);
+	  break;
+														}
+	case SampleMaterial::GREEN: {
+		SetDataIntoEditBox(0.0, 1.0, 0.0, 1.0,
+			                 1.0, 1.0, 1.0, 1.0,
+											 0.0, 1.0, 0.0, 1.0,
+											 50);
+		break;
+															}
+	case SampleMaterial::BLUE: {
+		SetDataIntoEditBox(0.0, 0.0, 1.0, 1.0,
+			                 1.0, 1.0, 1.0, 1.0,
+											 0.0, 0.0, 1.0, 1.0,
+											 50);
+		break;
+														 }
+	case SampleMaterial::YELLOW: {
+		SetDataIntoEditBox(1.0, 1.0, 0.0, 1.0,
+			                 1.0, 1.0, 1.0, 1.0,
+			                 1.0, 1.0, 0.0, 1.0,
+			                 50);
+		break;
+															 }
+	case SampleMaterial::PINK: {
+		SetDataIntoEditBox(1.0, 0.0, 1.0, 1.0,
+			1.0, 1.0, 1.0, 1.0,
+			1.0, 0.0, 1.0, 1.0,
+			50);
+		break;
+															}
+	case SampleMaterial::GRAY: {
+		SetDataIntoEditBox(0.5, 0.5, 0.5, 1.0,
+			                 1.0, 1.0, 1.0, 1.0,
+			                 0.5, 0.5, 0.5, 1.0,
+			                 50);
+		break;
+														 }
+	}
+}
+
+void DlgMaterialLight::SetDataIntoEditBox(GLfloat ambien_red, GLfloat ambien_green,
+	                                        GLfloat ambien_blue, GLfloat ambien_anpha,
+																					GLfloat spec_red, GLfloat spec_green,
+																					GLfloat spec_blue, GLfloat spec_anpha,
+																					GLfloat diff_red, GLfloat diff_green,
+																					GLfloat diff_blue, GLfloat diff_anpha,
+																					GLfloat shininess) {
+	CString str;
+	str.Format(_T("%f"), ambien_red);
+	ambien_edt_[0].SetWindowText(str);
+	str.Format(_T("%f"), ambien_green);
+	ambien_edt_[1].SetWindowText(str);
+	str.Format(_T("%f"), ambien_blue);
+	ambien_edt_[2].SetWindowText(str);
+	str.Format(_T("%f"), spec_anpha);
+	ambien_edt_[3].SetWindowText(str);
+
+	str.Format(_T("%f"), spec_red);
+	specular_edt_[0].SetWindowText(str);
+	str.Format(_T("%f"), spec_green);
+	specular_edt_[1].SetWindowText(str);
+	str.Format(_T("%f"), spec_blue);
+	specular_edt_[2].SetWindowText(str);
+	str.Format(_T("%f"), spec_anpha);
+	specular_edt_[3].SetWindowText(str);
+
+	str.Format(_T("%f"), diff_red);
+	diffuse_edt_[0].SetWindowText(str);
+	str.Format(_T("%f"), diff_green);
+	diffuse_edt_[1].SetWindowText(str);
+	str.Format(_T("%f"), diff_blue);
+	diffuse_edt_[2].SetWindowText(str);
+	str.Format(_T("%f"), diff_anpha);
+	diffuse_edt_[3].SetWindowText(str);
+
+	str.Format(_T("%f"), shininess);
+	shininess_edt_.SetWindowText(str);
+	UpdateData(FALSE);
 }

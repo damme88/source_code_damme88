@@ -65,6 +65,7 @@ private:
 	GLfloat* pSpecular_;
 	GLfloat* pDiff_;
 	GLfloat shininess_;
+	unsigned int mat_sample_;
 };
 
 

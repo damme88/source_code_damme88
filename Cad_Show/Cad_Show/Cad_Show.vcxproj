@@ -100,23 +100,35 @@
     </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <None Include="C:\Users\Damme88\Desktop\blue.bmp" />
+    <None Include="C:\Users\Damme88\Desktop\gray.bmp" />
+    <None Include="C:\Users\Damme88\Desktop\green.bmp" />
+    <None Include="C:\Users\Damme88\Desktop\pink.bmp" />
+    <None Include="C:\Users\Damme88\Desktop\red.bmp" />
+    <None Include="C:\Users\Damme88\Desktop\yellow.bmp" />
     <None Include="ReadMe.txt" />
+    <None Include="res\blue.bmp" />
     <None Include="res\Cad_Show.ico" />
     <None Include="res\Cad_Show.rc2" />
     <None Include="res\Cad_ShowDoc.ico" />
     <None Include="res\Cone.bmp" />
     <None Include="res\Cube.bmp" />
     <None Include="res\Dodecahedron.bmp" />
+    <None Include="res\gray.bmp" />
+    <None Include="res\green.bmp" />
     <None Include="res\icon1.ico" />
     <None Include="res\Icosehadron.bmp" />
     <None Include="res\mainfram.bmp" />
     <None Include="res\Octahedron.bmp" />
+    <None Include="res\pink.bmp" />
+    <None Include="res\red.bmp" />
     <None Include="res\Sphere.bmp" />
     <None Include="res\Tearpot.bmp" />
     <None Include="res\Tetrahedron.bmp" />
     <None Include="res\Toolbar.bmp" />
     <None Include="res\Toolbar256.bmp" />
     <None Include="res\Torus.bmp" />
+    <None Include="res\yellow.bmp" />
     <None Include="UserImages.bmp" />
   </ItemGroup>
   <ItemGroup>

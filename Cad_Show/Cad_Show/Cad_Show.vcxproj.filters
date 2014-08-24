@@ -76,6 +76,42 @@
     <None Include="res\Tearpot.bmp">
       <Filter>Resource Files</Filter>
     </None>
+    <None Include="C:\Users\Damme88\Desktop\red.bmp">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="C:\Users\Damme88\Desktop\green.bmp">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="C:\Users\Damme88\Desktop\blue.bmp">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="C:\Users\Damme88\Desktop\yellow.bmp">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="C:\Users\Damme88\Desktop\pink.bmp">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="C:\Users\Damme88\Desktop\gray.bmp">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="res\red.bmp">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="res\green.bmp">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="res\blue.bmp">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="res\yellow.bmp">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="res\pink.bmp">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="res\gray.bmp">
+      <Filter>Resource Files</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Cad_Show.h">

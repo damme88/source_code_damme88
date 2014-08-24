@@ -1,4 +1,5 @@
 #pragma once
+#include "afxwin.h"
 
 
 // DlgMaterialLight dialog
@@ -11,12 +12,23 @@ public:
 	DlgMaterialLight(GLfloat ambien[],
 									 GLfloat specular[],
 									 GLfloat diffuse[],
-									 GLfloat shininess,CWnd* pParent = NULL);
+									 GLfloat shininess,
+									 unsigned int current_mat_type,
+									 CWnd* pParent = NULL);
 	DlgMaterialLight(CWnd* pParent = NULL);   // standard constructor
 	virtual ~DlgMaterialLight();
 
 // Dialog Data
 	enum { IDD = IDD_DLG_MAT_LIGHT };
+
+	enum SampleMaterial {
+		RED,
+		GREEN,
+		BLUE,
+		YELLOW,
+		PINK,
+		GRAY
+	};
 
 	void EditAmbienRed();
 	void EditAmbienGreen();
@@ -31,6 +43,7 @@ public:
 	void EditDiffBlue();
 	void EditDiffAnpha();
 	void EditShininess();
+	unsigned int GetMatTerial() const {return mat_current_sample_;}
 	GLfloat* GetAmbien () const {
 		GLfloat *pAm = new GLfloat [4];
 		pAm[0] = ambien_[0];
@@ -57,6 +70,12 @@ public:
 		return pDiff;
 	}
 	GLfloat GetShininess() const {return shininess_;}
+	void LoadBitmapSample(unsigned int sam_type);
+	void SelectItemCombox();
+	void SetMatDataSample(SampleMaterial type);
+	void SetDataIntoEditBox(GLfloat ambien_red, GLfloat ambien_green, GLfloat ambien_blue, GLfloat ambien_anpha,
+		                      GLfloat spec_red, GLfloat spec_green, GLfloat spec_blue, GLfloat spec_anpha,
+													GLfloat diff_red, GLfloat diff_green, GLfloat diff_blue, GLfloat diff_anpha, GLfloat shininess);
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
 	virtual BOOL OnInitDialog();
@@ -70,4 +89,9 @@ private:
 	CEdit specular_edt_[4];
 	CEdit diffuse_edt_[4];
 	CEdit shininess_edt_;
+protected:
+	CComboBox combo_material_sample_;
+	CStatic material_picture_sample_;
+	CBitmap cbitmap_;
+	unsigned int mat_current_sample_;
 };

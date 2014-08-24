@@ -19,6 +19,7 @@ DialogBar::DialogBar()
   is_rot_x_ = false;
   is_rot_y_ = false;
   is_rot_z_ = false;
+	mat_sample_ = 5;
 }
 
 DialogBar::~DialogBar()
@@ -251,12 +252,13 @@ void DialogBar::ShowMaterialLight() {
 	pDiff_ = GetCadShowView()->GetDiff();
 	shininess_ = GetCadShowView()->GetShininess();
 
-  DlgMaterialLight dlg(pAmbien_, pSpecular_, pDiff_, shininess_);
+  DlgMaterialLight dlg(pAmbien_, pSpecular_, pDiff_, shininess_, mat_sample_);
 	if (dlg.DoModal() == IDOK) {
 		pAmbien_ = dlg.GetAmbien();
 		pSpecular_ = dlg.GetSpecular();
 		pDiff_ = dlg.GetDiffuse();
 		shininess_ = dlg.GetShininess();
+		mat_sample_ = dlg.GetMatTerial();
 	  GetCadShowView()->SetAmbien(pAmbien_);
 		GetCadShowView()->SetSpecular(pSpecular_);
 		GetCadShowView()->SetDiff(pDiff_);
