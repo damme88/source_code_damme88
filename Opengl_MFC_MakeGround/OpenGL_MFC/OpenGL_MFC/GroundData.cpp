@@ -102,7 +102,7 @@ void Ground3D::DrawRectangleBox(float length, float width, float height, bool so
 		glTexCoord2f(0.0f, 0.0f);
 		glVertex3f(-x, y, z);   //1
 		glTexCoord2f(0.0f, 1.0f);
-		glVertex3f(x, y, z);  //  7
+		glVertex3f(x, y, z);  //  8
 		glTexCoord2f(1.0f, 1.0f);
 		glVertex3f(x, y, -z);    // 5
 		glTexCoord2f(1.0f, 0.0f);
@@ -113,22 +113,22 @@ void Ground3D::DrawRectangleBox(float length, float width, float height, bool so
 		glBegin(GL_QUADS);
 		glNormal3f(-1.0, 0.0, 0.0);
 		glTexCoord2f(0.0f, 0.0f);
-		glVertex3f(x, y, z);   //7
+		glVertex3f(x, y, z);   //8
 		glTexCoord2f(0.0f, 1.0f);
-		glVertex3f(x, -y, z);  //  8
+		glVertex3f(x, -y, z);  //  7
 		glTexCoord2f(1.0f, 1.0f);
 		glVertex3f(x, -y, -z);    // 6
 		glTexCoord2f(1.0f, 0.0f);
 		glVertex3f(x, y, -z);     // 5
 		glEnd();
 
-		// right face
+		// left face
 		glBegin(GL_QUADS);
 		glNormal3f(-1.0, 0.0, 0.0);
 		glTexCoord2f(0.0f, 0.0f);
 		glVertex3f(x, -y, -z);    //6
 		glTexCoord2f(0.0f, 1.0f);
-		glVertex3f(x, -y, z);      // 8
+		glVertex3f(x, -y, z);      // 7
 		glTexCoord2f(1.0f, 1.0f);
 		glVertex3f(-x, -y, z);    //2
 		glTexCoord2f(1.0f, 0.0f);
@@ -141,11 +141,11 @@ void Ground3D::DrawRectangleBox(float length, float width, float height, bool so
 		glTexCoord2f(0.0f, 0.0f);
 		glVertex3f(-x, -y, z);     //2
 		glTexCoord2f(0.0f, 1.0f);
-		glVertex3f(x, -y, z);   //  8
+		glVertex3f(x, -y, z);   //  7
 		glTexCoord2f(1.0f, 1.0f);
-		glVertex3f(x, y, z);    //7
+		glVertex3f(x, y, z);    //8
 		glTexCoord2f(1.0f, 0.0f);
-		glVertex3f(-x, y, -z);     // 4
+			glVertex3f(-x, y, z);     // 1
 		glEnd();
 	}
 }

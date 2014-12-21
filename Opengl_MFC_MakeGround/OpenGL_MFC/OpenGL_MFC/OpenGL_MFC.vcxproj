@@ -107,6 +107,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GroundData.h" />
+    <ClInclude Include="House.h" />
     <ClInclude Include="MainFrm.h" />
     <ClInclude Include="OpenGL_MFC.h" />
     <ClInclude Include="OpenGL_MFCDoc.h" />
@@ -118,6 +119,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GroundData.cpp" />
+    <ClCompile Include="House.cpp" />
     <ClCompile Include="MainFrm.cpp" />
     <ClCompile Include="OpenGL_MFC.cpp" />
     <ClCompile Include="OpenGL_MFCDoc.cpp" />

@@ -68,7 +68,8 @@ COpenGL_MFCView::COpenGL_MFCView():
 	rendering_rate_ = 1.0f;
 	m_theta = 60.0;
 	m_phi = 60.0;
-	pGround_ = new Ground3D(1000, 800, 50, 5);
+	pGround_ = new Ground3D(1000, 800, 0, 5);
+	pHouse_ = new House(50.0, 50.0, 100.0);
 }
 
 COpenGL_MFCView::~COpenGL_MFCView()
@@ -76,6 +77,10 @@ COpenGL_MFCView::~COpenGL_MFCView()
 	if (pGround_ != NULL) {
 		delete pGround_;
 		pGround_ = NULL;
+	}
+	if (pHouse_ != NULL) {
+		delete pHouse_;
+		pHouse_ = NULL;
 	}
 }
 
@@ -130,7 +135,7 @@ BOOL COpenGL_MFCView::InitializeOpenGL() {
 	::glShadeModel(GL_SMOOTH);
 	// Setup lighting and material
 
-  listId_ = MakeObject();
+  //listId_ = pHouse_->MakeHouse();
 	OnLoadTexture();
 }
 
@@ -191,8 +196,8 @@ void COpenGL_MFCView::SetViewFrustum() {
 	double top_ = (double)cy_ *0.5/ rendering_rate_;
 	double bottom_ = -(double)cy_ *0.5/ rendering_rate_;
 
-	double zfar = 2000/rendering_rate_;
-	zfar = max(2000, rendering_rate_);
+	double zfar = 1000/rendering_rate_;
+	zfar = max(1000, rendering_rate_);
 	glOrtho(left_, right_, bottom_, top_, -zfar, zfar);
 }
 
@@ -448,13 +453,15 @@ void COpenGL_MFCView::RenderScene () {
 	glPopMatrix();
 
 
-	glPushMatrix();
-	OnEnableLight();
-	glTranslatef(0.0, 0.0, 50.0);
-	glColor3f(1.0, 1.0, 0.0);
-	//glCallList(listId_);
-	glPopMatrix();
-	OnDisableLight();
+	for (int i = 0; i < 8; i ++) {
+		glPushMatrix();
+		//OnEnableLight();
+		glTranslatef(-400.0 + i*80, 0.0, pHouse_->GetHeigh()/2.0);
+		//glColor3f(1.0, 1.0, 0.0);
+		pHouse_->MakeHouse();
+		glPopMatrix();
+	}
+	//OnDisableLight();
 	DrawGround();
 }
 
@@ -467,6 +474,11 @@ void COpenGL_MFCView::OnLoadTexture() {
 	//Create Texture Names
 	glGenTextures(2, m_texture);
 	LoadTexture(L"TAB.bmp",  0);
+	LoadTexture(L"hs22.bmp", 1);
+	if (pGround_)
+		pGround_->SetTextureData(m_texture[0]);
+	if (pHouse_)
+		pHouse_->SetTexture(m_texture[1]);
 }
 
 void COpenGL_MFCView::LoadTexture(CString file_name, int text_name )
@@ -493,9 +505,6 @@ void COpenGL_MFCView::LoadTexture(CString file_name, int text_name )
 	gluBuild2DMipmaps(GL_TEXTURE_2D, 3, texture->sizeX,
 		texture->sizeY, GL_RGB, GL_UNSIGNED_BYTE,
 		texture->data);
-
-	if (pGround_)
-		pGround_->SetTextureData(m_texture[0]);
 }
 
 

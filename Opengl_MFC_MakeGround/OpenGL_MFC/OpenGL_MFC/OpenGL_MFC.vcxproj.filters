@@ -66,6 +66,9 @@
     <ClInclude Include="GroundData.h">
       <Filter>Source Files\GroundData</Filter>
     </ClInclude>
+    <ClInclude Include="House.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="OpenGL_MFC.cpp">
@@ -88,6 +91,9 @@
     </ClCompile>
     <ClCompile Include="GroundData.cpp">
       <Filter>Source Files\GroundData</Filter>
+    </ClCompile>
+    <ClCompile Include="House.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

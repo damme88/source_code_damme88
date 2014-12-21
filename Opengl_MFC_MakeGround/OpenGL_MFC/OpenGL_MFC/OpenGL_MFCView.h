@@ -5,6 +5,7 @@
 #pragma once
 #include "Vector3D.h"
 #include "GroundData.h"
+#include "House.h"
 
 class COpenGL_MFCView : public CView
 {
@@ -95,6 +96,7 @@ private:
 
 	GLuint m_texture[4];
 	Ground3D *pGround_;
+	House *pHouse_;
 };
 
 #ifndef _DEBUG  // debug version in OpenGL_MFCView.cpp
