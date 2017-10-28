@@ -8,6 +8,7 @@
 #include "Cad_ShowView.h"
 #include "SampleOpengl.h"
 #include "DlgMaterialLight.h"
+#include "TerrainPropertiesDlg.h"
 // DialogBar
 
 IMPLEMENT_DYNCREATE(DialogBar, CFormView)
@@ -57,6 +58,7 @@ BEGIN_MESSAGE_MAP(DialogBar, CFormView)
   ON_BN_CLICKED(IDC_ROTATE_Z, &DialogBar::OnBnClickedRotateZ)
 	ON_BN_CLICKED(IDC_BTN_SAMPLE_OPENGL, &DialogBar::OnBnClickedSample)
 	ON_BN_CLICKED(IDC_BTN_MAT_LIGHT, &DialogBar::ShowMaterialLight)
+  ON_BN_CLICKED(IDC_BTN_TERRAIN, &DialogBar::ShowTerrainProperty)
 END_MESSAGE_MAP()
 
 
@@ -243,6 +245,20 @@ void DialogBar::OnBnClickedSample() {
 		unsigned int style = dlg.GetCurrentSample();
 		GetCadShowView()->set_current_sample(style);
 	}
+}
+
+void DialogBar::ShowTerrainProperty()
+{
+  TerrainPropertiesDlg terrian_dlg;
+  if (terrian_dlg.DoModal() == IDOK)
+  {
+    CString img_file = terrian_dlg.GetFileImg();
+    float height = terrian_dlg.GetHeight();
+    GetCadShowView()->set_is_create_terrain(true);
+    GetCadShowView()->set_file_img_terrain(img_file);
+    GetCadShowView()->set_height_terrain(height);
+    GetCadShowView()->IniterTerrain();
+  }
 }
 
 void DialogBar::ShowMaterialLight() {

@@ -4,6 +4,8 @@
 
 #pragma once
 #include "DialogBar.h"
+#include "Terrain.h"
+#include "md2model.h"
 //#include "InforBar.h"
 
 const double VALUE_AXIS = 10000.0;
@@ -64,6 +66,7 @@ public: // create from serialization only
   void DisableSetupLigting();
   // functions for drawing
   void DrawCad();
+  void DrawTerrain();
   void OnMButtonDown(UINT nFlags, CPoint point);
   void OnMButtonUp(UINT nFlags, CPoint point);
   void SetModeCad(unsigned int mode_cad) {mode_cad_ = mode_cad;}
@@ -95,7 +98,11 @@ public: // create from serialization only
   void SetUpXCam(double up_x) {up_x_ = up_x; InvalidateRect(NULL, FALSE);}
   void SetUpYCam(double up_y) {up_y_ = up_y; InvalidateRect(NULL, FALSE);}
   void SetUpZCam(double up_z) {up_z_ = up_z; InvalidateRect(NULL, FALSE);}
-
+  void set_is_create_terrain(const bool& is_terrain) {is_create_terrain_ = is_terrain; InvalidateRect(NULL, FALSE);}
+  bool get_is_create_terrain() const {return is_create_terrain_;}
+  CString get_file_img_terrain() const {return file_img_terrain_;}
+  void set_file_img_terrain(const CString& file_img_terrain) {file_img_terrain_ = file_img_terrain;}
+  void set_height_terrain(const float& height) {height_terrain_ = height;}
   void SetViewFrustum();
   void CalculateRotatefAngle(CPoint point);
 	void ViewFullscreen();
@@ -111,6 +118,8 @@ public: // create from serialization only
 	void SetSpecular(GLfloat* pSpecular) {pSpecular_ = pSpecular; InvalidateRect(NULL, FALSE);}
 	void SetDiff(GLfloat* pDiff) {pDiff_ = pDiff; InvalidateRect(NULL, FALSE);}
 	void SetShininess(GLfloat shininess) {shininess_ = shininess; InvalidateRect(NULL, FALSE);}
+  void IniterTerrain();
+  void DrawModelMd2();
 protected:
 	virtual BOOL OnPreparePrinting(CPrintInfo* pInfo);
 	virtual void OnBeginPrinting(CDC* pDC, CPrintInfo* pInfo);
@@ -123,6 +132,7 @@ protected:
 	DECLARE_MESSAGE_MAP()
 
 private:
+  MD2Model* p_md2_model_;
 	bool is_draw_sample_;
 	unsigned sample_style_;
   HGLRC m_hRC; //Rendering Context
@@ -152,6 +162,11 @@ private:
 	GLfloat y_position_ ;
   int     m_nFontOffset;
   GLuint  m_nAxisesList;
+
+  bool is_create_terrain_;
+  CString file_img_terrain_;
+  Terrain* p_terrain_;
+  float height_terrain_;
 
   //Variable for MButtonDown
   BOOL middle_down_;

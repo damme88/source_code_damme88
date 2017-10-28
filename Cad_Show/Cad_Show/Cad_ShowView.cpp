@@ -14,6 +14,7 @@
 #include "Cad_Point.h"
 #include "MainFrm.h"
 #include "SampleOpengl.h"
+#include "BasicConverts.h"
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
@@ -126,6 +127,8 @@ CCad_ShowView::CCad_ShowView() :
 	pDiff_[3] = 1.0f;
 
 	shininess_ = 50;
+  is_create_terrain_ = false;
+  p_terrain_ = NULL;
 }
 
 CCad_ShowView::~CCad_ShowView()
@@ -190,8 +193,20 @@ BOOL CCad_ShowView::InitializeOpenGL() {
   //Enable Depth Testing
   ::glEnable(GL_DEPTH_TEST);
   CreateOpenGLFont();
+
+  //Load the model
+  p_md2_model_ = MD2Model::load("tallguy.md2");
+  if (p_md2_model_ != NULL) {
+    p_md2_model_->setAnimation("run");
+  }
 }
 
+void CCad_ShowView::IniterTerrain()
+{
+  // Create terrain
+  char* file_name = Converts::CStringToChar(file_img_terrain_);
+  p_terrain_ = LoadTerrain(file_name, height_terrain_);
+}
 
 BOOL CCad_ShowView::SetupPixelFormat() {
   int nPixelFormat;
@@ -476,6 +491,7 @@ void CCad_ShowView::OnMButtonDown(UINT nFlags, CPoint point) {
 
 void CCad_ShowView::OnMButtonUp(UINT nFlags, CPoint point) {
   CView::OnMButtonUp(nFlags, point);
+  ReleaseCapture();
   middle_down_ = FALSE;
 }
 
@@ -498,6 +514,8 @@ void CCad_ShowView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 							break;
 						}
 						case VK_ESCAPE : {
+              middle_down_ = FALSE;
+              ReleaseCapture();
 							CMainFrame * main_frame = static_cast<CMainFrame*>(AfxGetMainWnd());
 							main_frame->HandleEscape();
 						}
@@ -547,11 +565,26 @@ void CCad_ShowView::RenderScene () {
   glRotatef(angle_z_cad_, 0.0f, 0.0f, 1.0f);
   SetUpLight();
   DrawCad();
+  DrawTerrain();
+  //DrawModelMd2();
 	// Draw Sample
 	DrawSampleOpengl();
 	// Draw Obj
-	glScalef(500.0f, 500.0f, 500.0f);
-	glCallList(theApp.GetObjList());
+  glPushMatrix();
+  glTranslatef(0.0, 0.0, -20.0);
+  glScalef(5.0f, 5.0f, 5.0f);
+  glCallList(theApp.GetObjList());
+
+  glTranslatef(5.0, 0.0, 0.0);
+  //glScalef(10.0f, 10.0f, 10.0f);
+  glCallList(theApp.GetObjList());
+
+  glTranslatef(10.0, 0.0, 0.0);
+  //glScalef(10.0f, 10.0f, 10.0f);
+  glCallList(theApp.GetObjList());
+
+  glPopMatrix();
+
 
   DisableSetupLigting();
   glPopMatrix();
@@ -595,16 +628,80 @@ void CCad_ShowView::DrawCad() {
      else {
        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
      }
-     int a = theApp.GetNumberOfPoint();
-     for (unsigned long i = 0; i < theApp.GetNumberOfPoint(); i = i+3) {
-     glBegin(GL_POLYGON);
-     glNormal3f(theApp.GetNormalVector()[i/3][0], theApp.GetNormalVector()[i/3][1], theApp.GetNormalVector()[i/3][2]); 
-		 glVertex3f(theApp.GetTrianglePoint()->Vertex[i][0], theApp.GetTrianglePoint()->Vertex[i][1], theApp.GetTrianglePoint()->Vertex[i][2]);
-		 glVertex3f(theApp.GetTrianglePoint()->Vertex[i+1][0], theApp.GetTrianglePoint()->Vertex[i+1][1], theApp.GetTrianglePoint()->Vertex[i+1][2]);
-		 glVertex3f(theApp.GetTrianglePoint()->Vertex[i+2][0], theApp.GetTrianglePoint()->Vertex[i+2][1], theApp.GetTrianglePoint()->Vertex[i+2][2]);
-		 glEnd();
+
+     long numbers = theApp.GetNumberOfPoint();
+     for (unsigned long i = 0; i < numbers; i = i+3) 
+     {
+       glBegin(GL_POLYGON);
+       glNormal3f(theApp.GetNormalVector()[i/3][0], theApp.GetNormalVector()[i/3][2],  theApp.GetNormalVector()[i/3][1]); 
+       glVertex3f(theApp.GetTrianglePoint()->Vertex[i][0], theApp.GetTrianglePoint()->Vertex[i][1], theApp.GetTrianglePoint()->Vertex[i][2]);
+		   glVertex3f(theApp.GetTrianglePoint()->Vertex[i+1][0], theApp.GetTrianglePoint()->Vertex[i+1][1], theApp.GetTrianglePoint()->Vertex[i+1][2]);
+		   glVertex3f(theApp.GetTrianglePoint()->Vertex[i+2][0], theApp.GetTrianglePoint()->Vertex[i+2][1], theApp.GetTrianglePoint()->Vertex[i+2][2]);
+		   glEnd();
 		 }
 	 }
+}
+
+void CCad_ShowView::DrawModelMd2()
+{
+  if (p_md2_model_ != NULL) 
+  {
+    glEnable(GL_TEXTURE_2D);
+    double z_value = 40.0;
+    if (p_terrain_)
+    {
+       z_value += p_terrain_->get_height(100, 100 + 1);
+    }
+
+    glPushMatrix();
+    glTranslatef(100.0, 100.0, z_value);
+    glRotatef(90.0f, 0.0f, 1.0f, 0.0f);
+    glScalef(2.0f, 2.0f, 2.0f);
+    p_md2_model_->draw();
+    glPopMatrix();
+  }
+  glDisable(GL_TEXTURE_2D);
+
+  //Advance the animation
+  if (p_md2_model_ != NULL) {
+    p_md2_model_->advance(0.0025f);
+  }
+}
+void CCad_ShowView::DrawTerrain()
+{
+  if (is_create_terrain_)
+  {
+    glPushMatrix();
+    glTranslatef(-(float)(p_terrain_->get_width() - 1) / 2, -(float)(p_terrain_->get_length() - 1) / 2, 0.0f);
+    glColor3f(0.3f, 0.4f, 0.2f);
+    int length = p_terrain_->get_length();
+    int with = p_terrain_->get_width();
+    for(int z = 0; z < length - 1; z++) 
+    {
+
+      if (mode_cad_ == WIRE_FRAME_MODE_CAD)
+      {
+        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+      }
+      else {
+        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+      }
+
+      glBegin(GL_TRIANGLE_STRIP);
+      for(int x = 0; x < with; x++) 
+      {
+        Vector3d normal = p_terrain_->get_normal(x, z);
+        glNormal3f(normal[0], normal[2], normal[1]);
+        glVertex3f(x, z, p_terrain_->get_height(x, z));
+
+        normal = p_terrain_->get_normal(x, z + 1);
+        glNormal3f(normal[0], normal[2], normal[1]);
+        glVertex3f(x, z + 1, p_terrain_->get_height(x, z + 1));
+      }
+      glEnd();
+    }
+    glPopMatrix();
+  }
 }
 
 void CCad_ShowView::DeleteCad() {
@@ -650,21 +747,19 @@ void CCad_ShowView::DrawStringAt(double x, double y, double z, char* s) {
 
 
 void CCad_ShowView::SetUpLight() {
-
   glEnable(GL_DEPTH_TEST);
   //glDepthFunc(GL_LESS);
 
+  glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, pAmbien_);
+  glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, pSpecular_);
+  glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, pDiff_);
+  glMateriali(GL_FRONT, GL_SHININESS, shininess_);
 
-	glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, pAmbien_);
-	glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, pSpecular_);
-	glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, pDiff_);
-	glMateriali(GL_FRONT, GL_SHININESS, shininess_);
+  GLfloat position[] = {10000.0f, 10000.0f, 50000.0f, 1.0f};
+  GLfloat global_ambient[] = { 0.8f, 0.8f, 0.8f, 1 };
 
-	GLfloat position[] = {10000.0f, 10000.0f, 50000.0f, 1.0f};
-	GLfloat global_ambient[] = { 0.8f, 0.8f, 0.8f, 1 };
-
-	float MatAmbientBack[]  = {0.1f, 0.2f, 0.0f, 1.0f};
-	glMaterialfv(GL_BACK, GL_AMBIENT, MatAmbientBack);
+  float MatAmbientBack[]  = {0.1f, 0.2f, 0.0f, 1.0f};
+  glMaterialfv(GL_BACK, GL_AMBIENT, MatAmbientBack);
 
 
  	glEnable(GL_LIGHTING);
@@ -673,6 +768,7 @@ void CCad_ShowView::SetUpLight() {
 
 	glShadeModel(GL_SMOOTH);
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+
 #if 0
 	glLightModeli(GL_LIGHT_MODEL_TWO_SIDE, GL_TRUE); 
   /********clear AntiAliasing - Back Face*******************/
@@ -877,7 +973,7 @@ void CCad_ShowView::OnTimer(UINT_PTR nIDEvent) {
 }
 
 void CCad_ShowView::SetRotateForCad() {
-  if (theApp.GetTrianglePoint() != NULL || is_draw_sample_) {
+  //if (theApp.GetTrianglePoint() != NULL || is_draw_sample_) {
     if (is_rot_x_ == true) {
       angle_x_cad_ += speed_rotate_ + 0.5f;
     }
@@ -896,7 +992,7 @@ void CCad_ShowView::SetRotateForCad() {
     if (angle_z_cad_ >= 360.0f) {
       angle_z_cad_ = 0.0f;
     }
-  }
+ // }
 }
 
 void CCad_ShowView::OnHandleViewButton(UINT nID) {
@@ -1106,6 +1202,7 @@ void CCad_ShowView::ViewFullscreen() {
 }
 
 void CCad_ShowView::DrawSampleOpengl() {
+#if 1
   if (is_draw_sample_) {
 		if (mode_cad_ == ModelCad::SOLID_MODE_CAD) {
 			SetUpLight();
@@ -1189,4 +1286,5 @@ void CCad_ShowView::DrawSampleOpengl() {
 			}
 		}
 	}
+#endif
 }

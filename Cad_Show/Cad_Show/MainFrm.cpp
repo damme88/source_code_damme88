@@ -307,8 +307,11 @@ void CMainFrame::ShowAndDockToolbar() {
 
 // When press Escape, Full Screen is closed too.
 void CMainFrame::HandleEscape() {
-	is_full_screen_ = false;
-	ShowAndDockToolbar();
+  if (is_full_screen_ == true)
+  {
+	  ShowAndDockToolbar();
+    is_full_screen_ = false;
+  }
 }
 
 void CMainFrame::ShowToolbar() {

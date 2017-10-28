@@ -439,7 +439,9 @@ void CCad_ShowApp::OnUpdateFileMruFile1(CCmdUI *pcmd) {
 
 bool CCad_ShowApp::IsAssciiFormat(const char * path_file) {
   FILE *pFile = fopen(path_file, "rb");
+#ifdef DEBUG_
   assert(pFile != NULL);
+#endif
   char buff[MAX_PATH];
   int rc = fread(buff, 1, sizeof(buff), pFile);
   for(int i = 0; i< rc; i++) {

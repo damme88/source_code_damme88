@@ -41,6 +41,7 @@ protected:
   afx_msg void OnBnClickedRotateZ();
 	afx_msg void OnBnClickedSample();
 	afx_msg void ShowMaterialLight();
+  afx_msg void ShowTerrainProperty();
 	DECLARE_MESSAGE_MAP()
 // add new variable and function 
 private:

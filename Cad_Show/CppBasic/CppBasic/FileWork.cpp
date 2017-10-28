@@ -41,7 +41,8 @@ namespace FileWrk {
 		return ret;
 	}
 
-	bool FileWork::CopyFileIntoFolder(const char* src_path, const char* des_path) {
+	bool FileWork::CopyFileIntoFolder(const char* src_path, const char* des_path) 
+  {
 
 		std::ifstream::pos_type size;
 		char * memblock;

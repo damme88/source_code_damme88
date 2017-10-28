@@ -22,6 +22,18 @@
     <Filter Include="Source Files\glm">
       <UniqueIdentifier>{53559860-b9e1-4310-85f5-231afc4b9208}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\ImageProcess">
+      <UniqueIdentifier>{a29c702c-1caf-40d7-93c9-00179412db28}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Terrain">
+      <UniqueIdentifier>{04865aa4-c72d-41f3-991a-c22ef785e575}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\BasicUtil">
+      <UniqueIdentifier>{8d9dc6a0-23b7-4712-bf48-a083823177aa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\ModelMd2">
+      <UniqueIdentifier>{f58388fe-8715-4407-945e-64e7bdd45a9d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="ReadMe.txt" />
@@ -112,6 +124,24 @@
     <None Include="res\gray.bmp">
       <Filter>Resource Files</Filter>
     </None>
+    <None Include="res\b1.bmp">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="res\b2.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="res\b3.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="res\bitmap2.bmp">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="res\b2.bmp">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="res\b3.bmp">
+      <Filter>Resource Files</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Cad_Show.h">
@@ -150,8 +180,29 @@
     <ClInclude Include="glm.h">
       <Filter>Source Files\glm</Filter>
     </ClInclude>
+    <ClInclude Include="ImageProcess.h">
+      <Filter>Source Files\ImageProcess</Filter>
+    </ClInclude>
+    <ClInclude Include="Terrain.h">
+      <Filter>Source Files\Terrain</Filter>
+    </ClInclude>
     <ClInclude Include="DlgMaterialLight.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="TerrainPropertiesDlg.h">
+      <Filter>Source Files\Terrain</Filter>
+    </ClInclude>
+    <ClInclude Include="BasicConverts.h">
+      <Filter>Header Files\BasicUtil</Filter>
+    </ClInclude>
+    <ClInclude Include="Base.h">
+      <Filter>Header Files\BasicUtil</Filter>
+    </ClInclude>
+    <ClInclude Include="md2model.h">
+      <Filter>Source Files\ModelMd2</Filter>
+    </ClInclude>
+    <ClInclude Include="vec3f.h">
+      <Filter>Source Files\ModelMd2</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -184,6 +235,21 @@
     </ClCompile>
     <ClCompile Include="DlgMaterialLight.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ImageProcess.cpp">
+      <Filter>Source Files\ImageProcess</Filter>
+    </ClCompile>
+    <ClCompile Include="Terrain.cpp">
+      <Filter>Source Files\Terrain</Filter>
+    </ClCompile>
+    <ClCompile Include="TerrainPropertiesDlg.cpp">
+      <Filter>Source Files\Terrain</Filter>
+    </ClCompile>
+    <ClCompile Include="md2model.cpp">
+      <Filter>Source Files\ModelMd2</Filter>
+    </ClCompile>
+    <ClCompile Include="vec3f.cpp">
+      <Filter>Source Files\ModelMd2</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
