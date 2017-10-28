@@ -162,6 +162,8 @@ BOOL CMainFrame::OnCreateClient(LPCREATESTRUCT lp, CCreateContext* pContext) {
 		TRACE("Failed to create command view pane\n");
 		return FALSE;
 	}
+
+
 	dialog_view_ = reinterpret_cast<DialogBar*>(m_wndSplitter.GetPane(0, 0));
 	cad_show_view_ = reinterpret_cast<CCad_ShowView*>(m_wndSplitter.GetPane(0, 1));
 #else
