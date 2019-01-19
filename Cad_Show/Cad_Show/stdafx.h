@@ -39,8 +39,6 @@
 
 // library for opengl 
 #include <gl\glut.h>
-#include <gl\GLU.h>
-#include <gl\GL.H>
 
 #include <math.h>
 #include "Vector3d.h"

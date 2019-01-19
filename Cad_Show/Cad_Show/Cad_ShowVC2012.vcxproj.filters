@@ -1,0 +1,260 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Source Files\Dialog_Bar">
+      <UniqueIdentifier>{9fb8d8b1-ac20-49aa-b1ea-7cdff4b5c17d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\InfoBar">
+      <UniqueIdentifier>{6e163501-2375-444f-9333-59dbbfe2b90f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\glm">
+      <UniqueIdentifier>{53559860-b9e1-4310-85f5-231afc4b9208}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\ImageProcess">
+      <UniqueIdentifier>{a29c702c-1caf-40d7-93c9-00179412db28}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Terrain">
+      <UniqueIdentifier>{04865aa4-c72d-41f3-991a-c22ef785e575}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\BasicUtil">
+      <UniqueIdentifier>{8d9dc6a0-23b7-4712-bf48-a083823177aa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\ModelMd2">
+      <UniqueIdentifier>{f58388fe-8715-4407-945e-64e7bdd45a9d}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ReadMe.txt" />
+    <None Include="UserImages.bmp">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="res\Cad_Show.rc2">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="res\Cad_ShowDoc.ico">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="res\Cad_Show.ico">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="res\Toolbar.bmp">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="res\Toolbar256.bmp">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="res\mainfram.bmp">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="res\icon1.ico">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="res\Cube.bmp">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="res\Cone.bmp">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="res\Sphere.bmp">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="res\Torus.bmp">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="res\Dodecahedron.bmp">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="res\Icosehadron.bmp">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="res\Octahedron.bmp">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="res\Tetrahedron.bmp">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="res\Tearpot.bmp">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="C:\Users\Damme88\Desktop\red.bmp">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="C:\Users\Damme88\Desktop\green.bmp">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="C:\Users\Damme88\Desktop\blue.bmp">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="C:\Users\Damme88\Desktop\yellow.bmp">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="C:\Users\Damme88\Desktop\pink.bmp">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="C:\Users\Damme88\Desktop\gray.bmp">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="res\red.bmp">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="res\green.bmp">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="res\blue.bmp">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="res\yellow.bmp">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="res\pink.bmp">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="res\gray.bmp">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="res\b1.bmp">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="res\b2.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="res\b3.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="res\bitmap2.bmp">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="res\b2.bmp">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="res\b3.bmp">
+      <Filter>Resource Files</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Cad_Show.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="stdafx.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="targetver.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MainFrm.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Cad_ShowDoc.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Cad_ShowView.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Cad_Point.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="DialogBar.h">
+      <Filter>Source Files\Dialog_Bar</Filter>
+    </ClInclude>
+    <ClInclude Include="InforBar.h">
+      <Filter>Source Files\InfoBar</Filter>
+    </ClInclude>
+    <ClInclude Include="SampleOpengl.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="glm.h">
+      <Filter>Source Files\glm</Filter>
+    </ClInclude>
+    <ClInclude Include="ImageProcess.h">
+      <Filter>Source Files\ImageProcess</Filter>
+    </ClInclude>
+    <ClInclude Include="Terrain.h">
+      <Filter>Source Files\Terrain</Filter>
+    </ClInclude>
+    <ClInclude Include="DlgMaterialLight.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="TerrainPropertiesDlg.h">
+      <Filter>Source Files\Terrain</Filter>
+    </ClInclude>
+    <ClInclude Include="BasicConverts.h">
+      <Filter>Header Files\BasicUtil</Filter>
+    </ClInclude>
+    <ClInclude Include="Base.h">
+      <Filter>Header Files\BasicUtil</Filter>
+    </ClInclude>
+    <ClInclude Include="md2model.h">
+      <Filter>Source Files\ModelMd2</Filter>
+    </ClInclude>
+    <ClInclude Include="vec3f.h">
+      <Filter>Source Files\ModelMd2</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Cad_Show.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="stdafx.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MainFrm.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Cad_ShowDoc.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Cad_ShowView.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DialogBar.cpp">
+      <Filter>Source Files\Dialog_Bar</Filter>
+    </ClCompile>
+    <ClCompile Include="InforBar.cpp">
+      <Filter>Source Files\InfoBar</Filter>
+    </ClCompile>
+    <ClCompile Include="SampleOpengl.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="glm.cpp">
+      <Filter>Source Files\glm</Filter>
+    </ClCompile>
+    <ClCompile Include="DlgMaterialLight.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ImageProcess.cpp">
+      <Filter>Source Files\ImageProcess</Filter>
+    </ClCompile>
+    <ClCompile Include="Terrain.cpp">
+      <Filter>Source Files\Terrain</Filter>
+    </ClCompile>
+    <ClCompile Include="TerrainPropertiesDlg.cpp">
+      <Filter>Source Files\Terrain</Filter>
+    </ClCompile>
+    <ClCompile Include="md2model.cpp">
+      <Filter>Source Files\ModelMd2</Filter>
+    </ClCompile>
+    <ClCompile Include="vec3f.cpp">
+      <Filter>Source Files\ModelMd2</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Cad_Show.rc">
+      <Filter>Resource Files</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+</Project>

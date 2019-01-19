@@ -199,6 +199,7 @@ BOOL CCad_ShowView::InitializeOpenGL() {
   if (p_md2_model_ != NULL) {
     p_md2_model_->setAnimation("run");
   }
+  return true;
 }
 
 void CCad_ShowView::IniterTerrain()
