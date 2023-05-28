@@ -422,7 +422,8 @@ void CCad_ShowView::OnMouseMove(UINT nFlags, CPoint point)
   }
 }
 
-void CCad_ShowView::CalculateRotatefAngle(CPoint point) {
+void CCad_ShowView::CalculateRotatefAngle(CPoint point) 
+{
   int ix = point.x - mouse_down_point_.x;
   int iy = point.y - mouse_down_point_.y;
   float fAngle;
@@ -567,7 +568,7 @@ void CCad_ShowView::RenderScene () {
   SetUpLight();
   DrawCad();
   DrawTerrain();
-  //DrawModelMd2();
+  DrawModelMd2();
 	// Draw Sample
 	DrawSampleOpengl();
 	// Draw Obj
@@ -668,6 +669,7 @@ void CCad_ShowView::DrawModelMd2()
     p_md2_model_->advance(0.0025f);
   }
 }
+
 void CCad_ShowView::DrawTerrain()
 {
   if (is_create_terrain_)
@@ -747,7 +749,8 @@ void CCad_ShowView::DrawStringAt(double x, double y, double z, char* s) {
 }
 
 
-void CCad_ShowView::SetUpLight() {
+void CCad_ShowView::SetUpLight() 
+{
   glEnable(GL_DEPTH_TEST);
   //glDepthFunc(GL_LESS);
 
@@ -828,8 +831,10 @@ void CCad_ShowView::RenderSmallCoordinate() {
   glPopMatrix();
 }
 
-void CCad_ShowView::OnDrawCoordinateBig() {
-  if (enable_big_coordinate_ == true) {
+void CCad_ShowView::OnDrawCoordinateBig() 
+{
+  if (enable_big_coordinate_ == true) 
+  {
     glLineWidth(1.0f);
     glBegin(GL_LINES);
     glColor3f(1.0f, 0.0f, 0.0f);

@@ -44,8 +44,8 @@
 
 #include <Windows.h>
 #include <iostream>
-#include <string.h>
-#include <vector.h>
+#include <string>
+#include <vector>
 #include <math.h>
 
 using namespace std;

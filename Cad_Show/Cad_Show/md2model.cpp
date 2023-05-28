@@ -371,7 +371,8 @@ MD2Model* MD2Model::load(const char* filename) {
 	//Load the texture coordinates
 	input.seekg(texCoordOffset, ios_base::beg);
 	model->texCoords = new MD2TexCoord[numTexCoords];
-	for(int i = 0; i < numTexCoords; i++) {
+	for(int i = 0; i < numTexCoords; i++) 
+    {
 		MD2TexCoord* texCoord = model->texCoords + i;
 		texCoord->texCoordX = (float)readShort(input) / textureWidth;
 		texCoord->texCoordY = 1 - (float)readShort(input) / textureHeight;

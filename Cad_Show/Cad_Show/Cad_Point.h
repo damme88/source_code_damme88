@@ -4,7 +4,8 @@
 typedef float Point[3];
 typedef Point Vector;
 
-typedef struct _Triangle {
+typedef struct _Triangle 
+{
  Point Vertex[3];
 } Triangle;
 
